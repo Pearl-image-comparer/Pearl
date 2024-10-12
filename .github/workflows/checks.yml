@@ -1,4 +1,4 @@
-name: Ci
+name: Checks
 
 on: [push, pull_request]
 
@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -18,10 +20,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
+      - name: Lint
         run: npm run lint
 
-      - name: Run Prettier
+      - name: Check style
         run: npm run format:check
 
       - name: Validate all commits in branch with commitlint
