@@ -24,7 +24,7 @@ jobs:
       - name: Run Prettier
         run: npm run format:check
 
-      - name: Validate current commit (last commit) with commitlint
+      - name: Validate all commits in branch with commitlint
         if: github.event_name == 'push'
         run: npx commitlint --from=$(git rev-list --max-parents=0 HEAD) --to=HEAD --verbose
 
