@@ -1,30 +1,40 @@
 ---
 name: Bug report
 about: Create a report about some issue
-title: "[Bug]: "
+title: "[Bug]: <title>"
 labels: ["bug"]
-assignees: ""
+projects: ["Pearl-image-comparer/1"]
 ---
 
-**Describe the bug**
+<!--
+!!!IMPORTANT!!! Describe the bug here
 A clear and concise description of what the bug is.
+-->
 
-**To Reproduce**
+### To reproduce
+
+<!--
 Steps to reproduce the behavior:
 
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
+-->
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+### Expected behavior
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+<!-- A clear and concise description of what you expected to happen. -->
 
-**Additional context**
-Add any other context about the problem here.
+### Screenshots
 
-**Assign to someone**
-Assign this issue to the person you think made the code causing the issue.
+<!-- If applicable, add screenshots to help explain your problem. -->
+
+### Additional context
+
+<!-- Add any other context about the problem here. -->
+
+<!--
+!!!IMPORTANT!!!
+Remember to assign this issue to the person you think made the code causing the issue.
+-->
