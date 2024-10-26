@@ -10,6 +10,10 @@ the window object and DOM elements.
 
 import { LayersControl, MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { Icon } from "leaflet";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 
 export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
@@ -35,7 +39,22 @@ export default function MapComponent() {
             />
           </LayersControl.BaseLayer>
         </LayersControl>
-        <Marker position={center} />
+        <Marker
+          position={center}
+          icon={
+            // Needed to fix final bundle URLs.
+            new Icon({
+              iconUrl: markerIcon,
+              iconRetinaUrl: markerIcon2x,
+              iconSize: [25, 41],
+              iconAnchor: [12.5, 41],
+              shadowUrl: markerShadow,
+              shadowRetinaUrl: markerShadow,
+              shadowSize: [41, 41],
+              shadowAnchor: [12.5, 41],
+            })
+          }
+        />
       </MapContainer>
     </div>
   );
