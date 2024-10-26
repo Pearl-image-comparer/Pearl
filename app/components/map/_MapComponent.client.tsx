@@ -11,7 +11,7 @@ the window object and DOM elements.
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-export default function MapComponent(): JSX.Element {
+export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
 
   return (
