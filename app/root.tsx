@@ -5,8 +5,9 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import "./main.css";
 
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <html lang="en">
       <head>
