@@ -4,10 +4,10 @@ import { lazy, Suspense } from "react";
 const LazyMap = lazy(() => import("./_MapComponent.client"));
 
 export default function Map(): JSX.Element {
-    return (
-        //TODO: Add proper fallback
-        <Suspense fallback={<p>Lazy loading...</p>}>
-            <LazyMap />
-        </Suspense>
-    )
+  return (
+    //TODO: Add proper fallback
+    <Suspense fallback={<p>Lazy loading...</p>}>
+      <LazyMap />
+    </Suspense>
+  );
 }
