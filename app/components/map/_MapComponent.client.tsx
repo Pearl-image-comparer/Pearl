@@ -15,7 +15,13 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 
-export default function MapComponent() {
+export interface Map {
+  name: string;
+  tile: string;
+  id: string;
+}
+
+export default function MapComponent(props: { maps: Map[] }) {
   const center: L.LatLngExpression = [61.4978, 23.761];
 
   return (
@@ -32,12 +38,14 @@ export default function MapComponent() {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           </LayersControl.BaseLayer>
-          <LayersControl.BaseLayer name="Satellite images">
-            <TileLayer
-              attribution="&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
-              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-            />
-          </LayersControl.BaseLayer>
+          {props.maps.map(({ name, tile, id }) => (
+            <LayersControl.BaseLayer name={name} key={id}>
+              <TileLayer
+                attribution="&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+                url={`https://wayback.maptiles.arcgis.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${tile}/{z}/{y}/{x}`}
+              />
+            </LayersControl.BaseLayer>
+          ))}
         </LayersControl>
         <Marker
           position={center}
