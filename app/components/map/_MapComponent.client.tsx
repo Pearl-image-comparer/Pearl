@@ -8,20 +8,20 @@ component to be rendered on the client side so that Leaflet can access
 the window object and DOM elements.
 */
 
-import { LayersControl, MapContainer, Marker, TileLayer } from "react-leaflet";
+import {
+  LayersControl,
+  MapContainer,
+  Marker,
+  TileLayer,
+  WMSTileLayer,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 
-export interface Map {
-  name: string;
-  tile: string;
-  id: string;
-}
-
-export default function MapComponent(props: { maps: Map[] }) {
+export default function MapComponent(props: { instanceId: string }) {
   const center: L.LatLngExpression = [61.4978, 23.761];
 
   return (
@@ -38,14 +38,16 @@ export default function MapComponent(props: { maps: Map[] }) {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           </LayersControl.BaseLayer>
-          {props.maps.map(({ name, tile, id }) => (
-            <LayersControl.BaseLayer name={name} key={id}>
-              <TileLayer
-                attribution="&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
-                url={`https://wayback.maptiles.arcgis.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${tile}/{z}/{y}/{x}`}
-              />
-            </LayersControl.BaseLayer>
-          ))}
+          <LayersControl.BaseLayer name="Satellite images">
+            <WMSTileLayer
+              attribution='&copy; <a href="https://dataspace.copernicus.eu/" target="_blank">Copernicus Data Space Ecosystem</a>'
+              url={`https://sh.dataspace.copernicus.eu/ogc/wms/${props.instanceId}`}
+              layers="TRUE_COLOR"
+              // @ts-expect-error Time is valid but not included in the type definition.
+              time={new Date().toISOString().slice(0, 10)}
+              crossOrigin
+            />
+          </LayersControl.BaseLayer>
         </LayersControl>
         <Marker
           position={center}
