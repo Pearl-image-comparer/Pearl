@@ -21,7 +21,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 
-export default function MapComponent(props: { instanceId: string }) {
+export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
 
   return (
@@ -41,11 +41,10 @@ export default function MapComponent(props: { instanceId: string }) {
           <LayersControl.BaseLayer name="Satellite images">
             <WMSTileLayer
               attribution='&copy; <a href="https://dataspace.copernicus.eu/" target="_blank">Copernicus Data Space Ecosystem</a>'
-              url={`https://sh.dataspace.copernicus.eu/ogc/wms/${props.instanceId}`}
+              url="/wms"
               layers="TRUE_COLOR"
               // @ts-expect-error Time is valid but not included in the type definition.
               time={new Date().toISOString().slice(0, 10)}
-              crossOrigin
             />
           </LayersControl.BaseLayer>
         </LayersControl>
