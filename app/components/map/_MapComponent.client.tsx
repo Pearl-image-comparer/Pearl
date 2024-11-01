@@ -20,6 +20,7 @@ import { Icon } from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import Controls from "../controls/Controls";
 
 export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
@@ -31,7 +32,7 @@ export default function MapComponent() {
         zoom={13}
         style={{ width: "100%", height: "100%", zIndex: 1 }}
       >
-        <LayersControl>
+        <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="Base layer">
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -64,6 +65,7 @@ export default function MapComponent() {
             })
           }
         />
+        <Controls />
       </MapContainer>
     </div>
   );
