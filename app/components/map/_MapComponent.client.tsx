@@ -20,7 +20,7 @@ import { Icon } from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import Controls from "../controls/Controls";
+import Controls from "~/components/controls/Controls";
 
 export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
