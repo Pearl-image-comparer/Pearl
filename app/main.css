@@ -6,3 +6,7 @@ body {
 body {
   margin: 0;
 }
+
+div.leaflet-top {
+  top: 3.4rem;
+}
