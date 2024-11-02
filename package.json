@@ -15,8 +15,6 @@
     "commitlint": "commitlint --edit"
   },
   "dependencies": {
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
     "@keyv/memcache": "^2.0.1",
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
