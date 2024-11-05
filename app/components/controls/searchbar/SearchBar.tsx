@@ -1,30 +1,176 @@
-import { IconButton, InputBase, Paper, styled } from "@mui/material";
+import {
+  Autocomplete,
+  debounce,
+  Paper,
+  styled,
+  TextField,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { useEffect, useMemo, useState } from "react";
+import { useMap } from "react-leaflet";
+
+interface Location {
+  id: number;
+  name: string;
+  lng: number;
+  lat: number;
+}
+
+// These are the result types for the GISCO API.
+interface Geometry {
+  coordinates: number[];
+  type: string;
+}
+interface Properties {
+  osm_id: number;
+  osm_type: string;
+  extent: number[];
+  country: string;
+  osm_key: string;
+  city: string;
+  countrycode: string;
+  osm_value: string;
+  name: string;
+  county: string;
+  state: string;
+  type: string;
+}
+interface Feature {
+  geometry: Geometry;
+  type: string;
+  properties: Properties;
+}
+
+function LocationSearch() {
+  const [value, setValue] = useState<Location | null>(null);
+  const [input, setInput] = useState<string>("");
+  const [options, setOptions] = useState<readonly Location[]>([]);
+  const map = useMap();
+
+  // Limit how quickly requests can be made with debounce.
+  const locationFetch = useMemo(
+    () =>
+      debounce(
+        (
+          request: { input: string },
+          callback: (results?: readonly Location[]) => void,
+        ) => {
+          const params = new URLSearchParams({ q: request.input, limit: "10" });
+          // Fetch requested locations using the GISCO API.
+          fetch(`https://gisco-services.ec.europa.eu/api/?${params}`)
+            .then((response) => response.json())
+            // Convert to the location format.
+            .then((data) =>
+              (data.features as Feature[]).map(({ geometry, properties }) => ({
+                lng: geometry.coordinates[0],
+                lat: geometry.coordinates[1],
+                id: properties.osm_id,
+                name: properties.name,
+              })),
+            )
+            // Filter out duplicate results.
+            .then((result) =>
+              result.filter(
+                ({ id: filterId }, index, arr) =>
+                  arr.findIndex(({ id }) => id === filterId) === index,
+              ),
+            )
+            .then(callback);
+        },
+        400,
+      ),
+    [],
+  );
+
+  useEffect(() => {
+    let active = true;
+
+    if (input.length === 0) {
+      setOptions(value ? [value] : []);
+      return;
+    }
+
+    // Fetch new locations when input changes.
+    locationFetch({ input }, (results) => {
+      if (active) {
+        let newOptions: readonly Location[] = [];
+
+        if (value) newOptions = [value];
+
+        if (results) newOptions = [...newOptions, ...results];
+
+        setOptions(newOptions);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [value, input, locationFetch]);
+
+  return (
+    <Autocomplete
+      id="location-search"
+      getOptionLabel={(option) =>
+        typeof option === "string" ? option : option.name
+      }
+      filterOptions={(x) => x}
+      options={options}
+      autoComplete
+      includeInputInList
+      filterSelectedOptions
+      value={value}
+      noOptionsText="No locations"
+      onChange={(_, newValue) => {
+        setOptions(newValue ? [newValue, ...options] : options);
+        setValue(newValue);
+        if (newValue)
+          map.panTo(
+            { lat: newValue.lat, lng: newValue.lng },
+            { animate: true },
+          );
+      }}
+      onInputChange={(_, newInput) => setInput(newInput)}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          placeholder="Search for a place"
+          size="small"
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              type: "search",
+              startAdornment: <SearchIcon />,
+            },
+          }}
+        />
+      )}
+      renderOption={(props, option) => {
+        const { ...optionProps } = props;
+
+        // TODO: Make this more robust.
+        return (
+          <li {...optionProps} key={option.id}>
+            {option.name}
+          </li>
+        );
+      }}
+    />
+  );
+}
 
 export default function SearchBar() {
   const StyledPaper = styled(Paper)({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     position: "absolute",
     top: "0.7rem",
     left: "0.7rem",
     right: "0.7rem",
-    padding: "0.1rem 0.2rem 0.1rem 0.6rem",
     zIndex: 1000,
-  });
-
-  const StyledInputBase = styled(InputBase)({
-    marginLeft: 1,
-    flex: 1,
   });
 
   return (
     <StyledPaper>
-      <StyledInputBase placeholder="Search for a place" />
-      <IconButton type="button">
-        <SearchIcon />
-      </IconButton>
+      <LocationSearch />
     </StyledPaper>
   );
 }
