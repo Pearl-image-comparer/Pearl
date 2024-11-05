@@ -7,10 +7,13 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useMemo, useState } from "react";
+import { useMap } from "react-leaflet";
 
 interface Location {
   id: number;
   name: string;
+  lng: number;
+  lat: number;
 }
 
 // These are the result types for the GISCO API.
@@ -42,6 +45,7 @@ function LocationSearch() {
   const [value, setValue] = useState<Location | null>(null);
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<readonly Location[]>([]);
+  const map = useMap();
 
   // Limit how quickly requests can be made with debounce.
   const locationFetch = useMemo(
@@ -57,7 +61,9 @@ function LocationSearch() {
             .then((response) => response.json())
             // Convert to the location format.
             .then((data) =>
-              (data.features as Feature[]).map(({ properties }) => ({
+              (data.features as Feature[]).map(({ geometry, properties }) => ({
+                lng: geometry.coordinates[0],
+                lat: geometry.coordinates[1],
                 id: properties.osm_id,
                 name: properties.name,
               })),
@@ -118,6 +124,11 @@ function LocationSearch() {
       onChange={(_, newValue) => {
         setOptions(newValue ? [newValue, ...options] : options);
         setValue(newValue);
+        if (newValue)
+          map.panTo(
+            { lat: newValue.lat, lng: newValue.lng },
+            { animate: true },
+          );
       }}
       onInputChange={(_, newInput) => setInput(newInput)}
       renderInput={(params) => (
