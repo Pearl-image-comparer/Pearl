@@ -5,7 +5,7 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 
 export default function ReportLayer() {
-  // Note: Temporary hardcoded list of species locations
+  // Note: Temporary hardcoded list of report locations
   const reports: LatLngExpression[] = [
     [61.5004, 23.8214],
     [61.4482, 23.857],
