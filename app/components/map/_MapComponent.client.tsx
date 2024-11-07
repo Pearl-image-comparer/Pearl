@@ -11,15 +11,10 @@ the window object and DOM elements.
 import {
   LayersControl,
   MapContainer,
-  Marker,
   TileLayer,
   WMSTileLayer,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon } from "leaflet";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import Controls from "~/components/controls/Controls";
 import SpeciesLayer from "./layers/SpeciesLayer";
 import ReportLayer from "./layers/ReportLayer";
