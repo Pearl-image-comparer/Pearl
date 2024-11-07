@@ -55,22 +55,6 @@ export default function MapComponent() {
           <ReportLayer />
           <ConservationLayer />
         </LayersControl>
-        <Marker
-          position={center}
-          icon={
-            // Needed to fix final bundle URLs.
-            new Icon({
-              iconUrl: markerIcon,
-              iconRetinaUrl: markerIcon2x,
-              iconSize: [25, 41],
-              iconAnchor: [12.5, 41],
-              shadowUrl: markerShadow,
-              shadowRetinaUrl: markerShadow,
-              shadowSize: [41, 41],
-              shadowAnchor: [12.5, 41],
-            })
-          }
-        />
         <Controls />
       </MapContainer>
     </div>
