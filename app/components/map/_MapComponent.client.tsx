@@ -11,16 +11,14 @@ the window object and DOM elements.
 import {
   LayersControl,
   MapContainer,
-  Marker,
   TileLayer,
   WMSTileLayer,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon } from "leaflet";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import Controls from "~/components/controls/Controls";
+import SpeciesLayer from "./layers/SpeciesLayer";
+import ReportLayer from "./layers/ReportLayer";
+import ConservationLayer from "./layers/ConservationLayer";
 
 export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
@@ -48,23 +46,10 @@ export default function MapComponent() {
               time={new Date().toISOString().slice(0, 10)}
             />
           </LayersControl.BaseLayer>
+          <SpeciesLayer />
+          <ReportLayer />
+          <ConservationLayer />
         </LayersControl>
-        <Marker
-          position={center}
-          icon={
-            // Needed to fix final bundle URLs.
-            new Icon({
-              iconUrl: markerIcon,
-              iconRetinaUrl: markerIcon2x,
-              iconSize: [25, 41],
-              iconAnchor: [12.5, 41],
-              shadowUrl: markerShadow,
-              shadowRetinaUrl: markerShadow,
-              shadowSize: [41, 41],
-              shadowAnchor: [12.5, 41],
-            })
-          }
-        />
         <Controls />
       </MapContainer>
     </div>
