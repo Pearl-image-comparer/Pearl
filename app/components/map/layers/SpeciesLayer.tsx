@@ -1,8 +1,7 @@
-import { Icon, LatLngExpression } from "leaflet";
-import { LayerGroup, LayersControl, Marker } from "react-leaflet";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import { LatLngExpression } from "leaflet";
+import { LayersControl } from "react-leaflet";
+import CustomMarker from "~/components/map/markers/CustomMarker";
+import MarkerClusterGroup from "react-leaflet-cluster";
 
 export default function SpeciesLayer() {
   // Note: Temporary hardcoded list of species locations
@@ -16,26 +15,11 @@ export default function SpeciesLayer() {
 
   return (
     <LayersControl.Overlay name="Species layer">
-      <LayerGroup>
+      <MarkerClusterGroup>
         {species.map((s, index) => (
-          <Marker
-            key={index}
-            position={s}
-            icon={
-              new Icon({
-                iconUrl: markerIcon,
-                iconRetinaUrl: markerIcon2x,
-                iconSize: [25, 41],
-                iconAnchor: [12.5, 41],
-                shadowUrl: markerShadow,
-                shadowRetinaUrl: markerShadow,
-                shadowSize: [41, 41],
-                shadowAnchor: [12.5, 41],
-              })
-            }
-          />
+          <CustomMarker key={index} position={s} />
         ))}
-      </LayerGroup>
+      </MarkerClusterGroup>
     </LayersControl.Overlay>
   );
 }
