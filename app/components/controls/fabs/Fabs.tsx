@@ -4,12 +4,12 @@ import SatelliteAltIcon from "@mui/icons-material/SatelliteAlt";
 import AddIcon from "@mui/icons-material/Add";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { useTheme, Theme } from "@mui/material/styles";
-import MyLocationIcon from "@mui/icons-material/MyLocation";
+import { useMap } from "react-leaflet";
 
 export default function Fabs() {
-  const [viewCentered, setViewCentered] = useState(false);
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const theme: Theme = useTheme();
+  const map = useMap();
 
   const StyledStack = styled(Stack)({
     display: "flex",
@@ -46,22 +46,34 @@ export default function Fabs() {
     },
   });
 
-  const handleViewCentered = () => {
-    setViewCentered(!viewCentered);
-  };
-
   const handleSatelliteView = () => {
     setSatelliteViewOpen(!satelliteViewOpen);
+  };
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          map.flyTo([latitude, longitude], 16);
+        },
+        (err) => {
+          console.error(err.message);
+        },
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
   };
 
   return (
     <StyledStack direction="column">
       <StyledToggleButton
-        value="check"
-        selected={viewCentered}
-        onChange={handleViewCentered}
+        value="button"
+        onChange={() => {
+          getLocation();
+        }}
       >
-        {viewCentered ? <MyLocationIcon /> : <LocationSearchingIcon />}
+        {<LocationSearchingIcon />}
       </StyledToggleButton>
       <StyledToggleButton
         value="check"
