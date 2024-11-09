@@ -45,20 +45,25 @@ export default function Fabs() {
       backgroundColor: theme.palette.background.paper,
     },
   });
-    
+
   const handleSatelliteView = () => {
-    setSatelliteViewOpen(!satelliteViewOpen); 
-  }; 
+    setSatelliteViewOpen(!satelliteViewOpen);
+  };
   const getLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition( 
+      navigator.geolocation.getCurrentPosition(
         (position) => {
-           const { latitude, longitude } = position.coords; 
-           map.flyTo([latitude, longitude], 16);
-           }, (err) => { console.error(err.message); }
-           ); 
-          } else { 
-            console.error("Geolocation is not supported by this browser."); } };
+          const { latitude, longitude } = position.coords;
+          map.flyTo([latitude, longitude], 16);
+        },
+        (err) => {
+          console.error(err.message);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
 
   return (
     <StyledStack direction="column">
