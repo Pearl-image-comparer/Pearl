@@ -19,7 +19,6 @@ import Controls from "~/components/controls/Controls";
 import SpeciesLayer from "./layers/SpeciesLayer";
 import ReportLayer from "./layers/ReportLayer";
 import ConservationLayer from "./layers/ConservationLayer";
-import Fabs from "../controls/fabs/Fabs";
 
 export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
@@ -52,7 +51,6 @@ export default function MapComponent() {
           <ConservationLayer />
         </LayersControl>
         <Controls />
-        <Fabs />
       </MapContainer>
     </div>
   );
