@@ -4,11 +4,9 @@ import SatelliteAltIcon from "@mui/icons-material/SatelliteAlt";
 import AddIcon from "@mui/icons-material/Add";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { useTheme, Theme } from "@mui/material/styles";
-import MyLocationIcon from "@mui/icons-material/MyLocation";
 import { useMap } from "react-leaflet";
 
 export default function Fabs() {
-  const [viewCentered, setViewCentered] = useState(false);
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const theme: Theme = useTheme();
   const map = useMap();
@@ -57,7 +55,6 @@ export default function Fabs() {
         (position) => {
            const { latitude, longitude } = position.coords; 
            map.flyTo([latitude, longitude], 16);
-           map 
            }, (err) => { console.error(err.message); }
            ); 
           } else { 
@@ -67,12 +64,11 @@ export default function Fabs() {
     <StyledStack direction="column">
       <StyledToggleButton
         value="check"
-        selected={viewCentered}
         onChange={() => {
           getLocation();
         }}
       >
-        {viewCentered ? <MyLocationIcon /> : <LocationSearchingIcon />}
+        {<LocationSearchingIcon />}
       </StyledToggleButton>
       <StyledToggleButton
         value="check"
