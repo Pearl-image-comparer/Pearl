@@ -58,7 +58,7 @@ export default function Fabs() {
         },
         (err) => {
           console.error(err.message);
-        }
+        },
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
