@@ -68,7 +68,7 @@ export default function Fabs() {
   return (
     <StyledStack direction="column">
       <StyledToggleButton
-        value="check"
+        value="button"
         onChange={() => {
           getLocation();
         }}
