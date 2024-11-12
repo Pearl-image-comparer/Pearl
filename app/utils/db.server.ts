@@ -37,8 +37,25 @@ export interface Observation {
   date: Date;
 }
 
-export async function getObservations(): Promise<Observation[]> {
-  const { rows } = await client.query("SELECT * FROM observations");
+export async function getObservations(area?: {
+  topLeft: Location;
+  bottomRight: Location;
+}): Promise<Observation[]> {
+  const { rows } = area
+    ? await client.query(
+        `SELECT * FROM
+          observations
+        WHERE
+          location[0] BETWEEN $1 AND $3 AND
+          location[1] BETWEEN $2 AND $4`,
+        [
+          area.topLeft.x,
+          area.topLeft.y,
+          area.bottomRight.x,
+          area.bottomRight.y,
+        ],
+      )
+    : await client.query("SELECT * FROM observations");
   // Map IDs from strings to numbers.
   return rows.map((row) => ({
     ...row,
