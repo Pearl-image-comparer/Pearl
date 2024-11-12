@@ -79,3 +79,7 @@ export async function createObservation(
   );
   return Number(rows[0].id);
 }
+
+export async function deleteObservation(id: number) {
+  await client.query("DELETE FROM observations WHERE id = $1", [id]);
+}
