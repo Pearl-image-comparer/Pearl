@@ -23,11 +23,16 @@ await init();
 
 export default client;
 
+export interface Location {
+  x: number;
+  y: number;
+}
+
 export interface Observation {
   id: number;
   title: string;
   description: string;
-  location: { x: number; y: number };
+  location: Location;
   picture: string | null;
   date: Date;
 }
@@ -39,4 +44,21 @@ export async function getObservations(): Promise<Observation[]> {
     ...row,
     id: Number(row.id),
   }));
+}
+
+export async function createObservation(
+  title: string,
+  description: string,
+  location: Location,
+  picture: string | null = null,
+) {
+  const { rows } = await client.query(
+    `INSERT INTO observations
+      (title, description, location, picture)
+    VALUES
+      ($1, $2, POINT($3,$4), $5)
+    RETURNING id`,
+    [title, description, location.x, location.y, picture],
+  );
+  return Number(rows[0].id);
 }
