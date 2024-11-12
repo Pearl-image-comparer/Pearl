@@ -22,3 +22,21 @@ async function init() {
 await init();
 
 export default client;
+
+export interface Observation {
+  id: number;
+  title: string;
+  description: string;
+  location: { x: number; y: number };
+  picture: string | null;
+  date: Date;
+}
+
+export async function getObservations(): Promise<Observation[]> {
+  const { rows } = await client.query("SELECT * FROM observations");
+  // Map IDs from strings to numbers.
+  return rows.map((row) => ({
+    ...row,
+    id: Number(row.id),
+  }));
+}
