@@ -28,15 +28,26 @@ export interface Location {
   y: number;
 }
 
+/** A single observation. */
 export interface Observation {
   id: number;
   title: string;
   description: string;
+  /** Specific location where the observation was found on. */
   location: Location;
+  /** Optional picture for the observation which refers to the S3 bucket. */
   picture: string | null;
+  /** Date on which the observation was recorded on. */
   date: Date;
 }
 
+/**
+ * Find observations in a given area.
+ *
+ * @param area The area from where to search for observations
+ *
+ * @returns All found observations
+ */
 export async function getObservations(area?: {
   topLeft: Location;
   bottomRight: Location;
@@ -55,7 +66,9 @@ export async function getObservations(area?: {
           area.bottomRight.y,
         ],
       )
-    : await client.query("SELECT * FROM observations");
+    : // If no area was specified, search for all observations in the database.
+      await client.query("SELECT * FROM observations");
+
   // Map IDs from strings to numbers.
   return rows.map((row) => ({
     ...row,
@@ -63,23 +76,42 @@ export async function getObservations(area?: {
   }));
 }
 
+/**
+ * Create a new observation.
+ *
+ * @param title Observation title
+ * @param description Observation description
+ * @param location Coordinates for the observation
+ * @param picture Optional picture key referring to the S3 bucket
+ *
+ * @returns The newly created observation
+ */
 export async function createObservation(
   title: string,
   description: string,
   location: Location,
   picture: string | null = null,
-) {
+): Promise<Observation> {
   const { rows } = await client.query(
     `INSERT INTO observations
       (title, description, location, picture)
     VALUES
       ($1, $2, POINT($3,$4), $5)
-    RETURNING id`,
+    RETURNING id, date`,
     [title, description, location.x, location.y, picture],
   );
-  return Number(rows[0].id);
+
+  return {
+    id: Number(rows[0].id),
+    title,
+    description,
+    location,
+    picture,
+    date: rows[0].date,
+  };
 }
 
+/** Delete the obervation with a given ID. */
 export async function deleteObservation(id: number) {
   await client.query("DELETE FROM observations WHERE id = $1", [id]);
 }
