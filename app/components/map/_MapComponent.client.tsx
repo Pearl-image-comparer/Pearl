@@ -12,6 +12,7 @@ import {
   LayersControl,
   MapContainer,
   TileLayer,
+  useMap,
   WMSTileLayer,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -19,6 +20,58 @@ import Controls from "~/components/controls/Controls";
 import SpeciesLayer from "./layers/SpeciesLayer";
 import ReportLayer from "./layers/ReportLayer";
 import ConservationLayer from "./layers/ConservationLayer";
+import { useEffect, useRef } from "react";
+
+function MapBounds() {
+  const map = useMap();
+  const hasFetchedInitially = useRef(false);
+
+  useEffect(() => {
+    const handleMoveEnd = () => {
+      const newBounds = map.getBounds();
+      const northEast = newBounds.getNorthEast();
+      const southEast = newBounds.getSouthEast();
+      const northWest = newBounds.getNorthWest();
+
+      const northLat = northEast.lat;
+      const southLat = southEast.lat;
+      const eastLng = northEast.lng;
+      const westLng = northWest.lng;
+      const bounds = `${southLat}:${northLat}:${westLng}:${eastLng}`;
+
+      const url = `/lajidata?bounds=${encodeURIComponent(bounds)}`;
+
+      fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok: " + response.statusText,
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    };
+
+    map.on("moveend", handleMoveEnd);
+
+    if (!hasFetchedInitially.current) {
+      handleMoveEnd();
+      hasFetchedInitially.current = true;
+    }
+
+    return () => {
+      map.off("moveend", handleMoveEnd);
+    };
+  }, [map]);
+
+  return null;
+}
 
 export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
@@ -30,6 +83,7 @@ export default function MapComponent() {
         zoom={13}
         style={{ width: "100%", height: "100%", zIndex: 1 }}
       >
+        <MapBounds />
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="Base layer">
             <TileLayer
