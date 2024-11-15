@@ -1,13 +1,24 @@
 import { Fab, Stack, ToggleButton, styled } from "@mui/material";
-import { useState } from "react";
 import SatelliteAltIcon from "@mui/icons-material/SatelliteAlt";
 import AddIcon from "@mui/icons-material/Add";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { useTheme, Theme } from "@mui/material/styles";
 import { useMap } from "react-leaflet";
+import CompareIcon from "@mui/icons-material/Compare";
 
-export default function Fabs() {
-  const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
+interface FabsProps {
+  satelliteViewOpen: boolean;
+  setSatelliteViewOpen: (v: boolean) => void;
+  comparisonViewOpen: boolean;
+  setComparisonViewOpen: (v: boolean) => void;
+}
+
+export default function Fabs({
+  satelliteViewOpen,
+  setSatelliteViewOpen,
+  comparisonViewOpen,
+  setComparisonViewOpen,
+}: FabsProps) {
   const theme: Theme = useTheme();
   const map = useMap();
 
@@ -15,11 +26,7 @@ export default function Fabs() {
     display: "flex",
     alignItems: "flex-end",
     gap: "0.5rem",
-    right: "1.25rem",
-    bottom: "2.5rem",
     pointerEvents: "auto",
-    position: "absolute",
-    zIndex: 1000,
   });
 
   const StyledAddFab = styled(Fab)({
@@ -46,9 +53,6 @@ export default function Fabs() {
     },
   });
 
-  const handleSatelliteView = () => {
-    setSatelliteViewOpen(!satelliteViewOpen);
-  };
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -75,10 +79,19 @@ export default function Fabs() {
       >
         {<LocationSearchingIcon />}
       </StyledToggleButton>
+      {satelliteViewOpen && (
+        <StyledToggleButton
+          value="check"
+          selected={comparisonViewOpen}
+          onChange={() => setComparisonViewOpen(!comparisonViewOpen)}
+        >
+          <CompareIcon />
+        </StyledToggleButton>
+      )}
       <StyledToggleButton
         value="check"
         selected={satelliteViewOpen}
-        onChange={handleSatelliteView}
+        onChange={() => setSatelliteViewOpen(!satelliteViewOpen)}
       >
         <SatelliteAltIcon />
       </StyledToggleButton>
