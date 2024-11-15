@@ -5,10 +5,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   const bounds = url.searchParams.get("bounds");
   const accessToken = process.env.LAJI_ACCESS_TOKEN;
 
-  if (!bounds || !accessToken) {
-    console.error("Missing bounds or access token.");
+  if (!bounds) {
+    console.error("Missing bounds");
     return json(
-      { data: [], message: "Missing required bounds or access token" },
+      { data: [], message: "Missing required bounds" },
       { status: 400 },
     );
   }
@@ -47,12 +47,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const api = `https://api.laji.fi/v0/warehouse/query/unit/list?${queryParams.toString()}`;
 
-  const response = await fetch(api);
-
-  if (!response.ok) {
-    console.error("Network response was not ok.");
-    throw new Error("Failed to fetch data from Laji API");
-  }
-  const data = await response.json();
-  return data;
+  return fetch(api).then((response) => {
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from Laji API");
+    }
+    return response;
+  });
 };
