@@ -20,11 +20,11 @@ import Controls from "~/components/controls/Controls";
 import SpeciesLayer from "./layers/SpeciesLayer";
 import ReportLayer from "./layers/ReportLayer";
 import ConservationLayer from "./layers/ConservationLayer";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 function MapBounds() {
   const map = useMap();
-  const hasFetchedInitially = useRef(false);
+  const [hasFetchedInitially, setHasFetchedInitially] = useState(false);
 
   useEffect(() => {
     const handleMoveEnd = () => {
@@ -60,9 +60,9 @@ function MapBounds() {
 
     map.on("moveend", handleMoveEnd);
 
-    if (!hasFetchedInitially.current) {
+    if (!hasFetchedInitially) {
       handleMoveEnd();
-      hasFetchedInitially.current = true;
+      setHasFetchedInitially(true);
     }
 
     return () => {
