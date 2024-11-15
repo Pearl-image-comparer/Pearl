@@ -9,7 +9,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     console.error("Missing bounds or access token.");
     return json(
       { data: [], message: "Missing required bounds or access token" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!accessToken) {
