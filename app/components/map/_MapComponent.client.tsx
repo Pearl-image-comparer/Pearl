@@ -25,6 +25,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 
 export default function MapComponent() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [period, setPeriod] = useState({
     start: dayjs("2015-10-10"),
     end: dayjs(),
