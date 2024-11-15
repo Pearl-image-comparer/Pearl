@@ -3,7 +3,7 @@ import { json, LoaderFunction } from "@remix-run/node";
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const bounds = url.searchParams.get("bounds");
-  const accessToken = process.env.ACCESS_TOKEN;
+  const accessToken = process.env.LAJI_ACCESS_TOKEN;
 
   if (!bounds || !accessToken) {
     console.error("Missing bounds or access token.");
