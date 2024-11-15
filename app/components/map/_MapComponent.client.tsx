@@ -30,18 +30,23 @@ function MapBounds() {
     const handleMoveEnd = () => {
       const newBounds = map.getBounds();
       const northEast = newBounds.getNorthEast();
-      const northWest = newBounds.getNorthWest();
       const southEast = newBounds.getSouthEast();
+      const northWest = newBounds.getNorthWest();
+
       const northLat = northEast.lat;
       const southLat = southEast.lat;
       const eastLng = northEast.lng;
       const westLng = northWest.lng;
-      fetch(
-        `https://api.laji.fi/v0/warehouse/query/unit/list?wgs84CenterPoint=${southLat}:${northLat}:${westLng}:${eastLng}:WGS84&redListStatusId=MX.iucnEN,MX.iucnCR,MX.iucnVU,MX.iucnNT&pageSize=10&access_token=${import.meta.env.VITE_ACCESS_TOKEN}`,
-      )
+      const bounds = `${southLat}:${northLat}:${westLng}:${eastLng}`;
+
+      const url = `/lajidata?bounds=${encodeURIComponent(bounds)}`;
+
+      fetch(url)
         .then((response) => {
           if (!response.ok) {
-            throw new Error("Network response was not ok");
+            throw new Error(
+              "Network response was not ok: " + response.statusText,
+            );
           }
           return response.json();
         })
@@ -49,17 +54,16 @@ function MapBounds() {
           console.log(data);
         })
         .catch((error) => {
-          console.error("Error: ", error);
+          console.error("Error fetching data:", error);
         });
     };
 
-    // Get initial coordinates
+    map.on("moveend", handleMoveEnd);
+
     if (!hasFetchedInitially.current) {
       handleMoveEnd();
       hasFetchedInitially.current = true;
     }
-
-    map.on("moveend", handleMoveEnd);
 
     return () => {
       map.off("moveend", handleMoveEnd);
