@@ -9,7 +9,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     console.error("Missing bounds or access token.");
     return json(
       { data: [], message: "Missing required bounds or access token" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -17,7 +17,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   try {
     const response = await fetch(
-      `https://api.laji.fi/v0/warehouse/query/unit/list?wgs84CenterPoint=${southLat}:${northLat}:${westLng}:${eastLng}:WGS84&redListStatusId=MX.iucnEN,MX.iucnCR,MX.iucnVU,MX.iucnNT&pageSize=10&access_token=${accessToken}`
+      `https://api.laji.fi/v0/warehouse/query/unit/list?wgs84CenterPoint=${southLat}:${northLat}:${westLng}:${eastLng}:WGS84&redListStatusId=MX.iucnEN,MX.iucnCR,MX.iucnVU,MX.iucnNT&pageSize=10&access_token=${accessToken}`,
     );
 
     if (!response.ok) {
@@ -34,7 +34,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         data: [],
         message: "Error fetching data from API",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
