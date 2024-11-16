@@ -19,6 +19,7 @@ import Controls from "~/components/controls/Controls";
 import SpeciesLayer from "./layers/SpeciesLayer";
 import ReportLayer from "./layers/ReportLayer";
 import ConservationLayer from "./layers/ConservationLayer";
+import MapBounds from "./MapBounds";
 
 export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
@@ -30,6 +31,7 @@ export default function MapComponent() {
         zoom={13}
         style={{ width: "100%", height: "100%", zIndex: 1 }}
       >
+        <MapBounds />
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="Base layer">
             <TileLayer
