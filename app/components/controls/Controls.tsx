@@ -1,8 +1,8 @@
-import { Container, styled } from "@mui/material";
+import { Container, debounce, styled } from "@mui/material";
 import SearchBar from "./searchbar/SearchBar";
 import Fabs from "./fabs/Fabs";
 import DateSlider from "./slider/DateSlider";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 
 interface Period {
@@ -45,16 +45,22 @@ export default function Controls({
     padding: "2rem 2rem",
   });
 
+  // Debounce wms tile fetching on slider change
+  const debounceSliderInput = useMemo(() =>
+    debounce((value: number | number[]) => {
+      if (Array.isArray(value)) {
+        setStartDate(dayjs(value[0]));
+        setEndDate(dayjs(value[1]));
+      } else {
+        setEndDate(dayjs(value));
+      }
+    }, 400),
+    [setEndDate, setStartDate],
+  );
+
   const handleSliderChange = (event: Event, value: number | number[]) => {
     setSliderValue(value);
-
-    // Setting endDate and startDate
-    if (Array.isArray(value)) {
-      setStartDate(dayjs(value[0]));
-      setEndDate(dayjs(value[1]));
-    } else {
-      setEndDate(dayjs(value));
-    }
+    debounceSliderInput(value)
   };
 
   return (
