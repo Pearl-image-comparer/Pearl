@@ -9,8 +9,15 @@ interface DateSliderProps {
   max: number;
 }
 
-// Renders a basic slider (one handle) if value prop holds a single number value
-// or a range slider (two handles) if value prop holds array of two numbers
+/**
+ * Renders a slider based on the `value` prop.
+ *
+ * - If the `value` prop holds a single number, a basic slider (one handle) is rendered.
+ * - If the `value` prop holds an array of two numbers, a range slider (two handles) is rendered.
+ *
+ * @param {DateSliderProps} props - The properties passed to the `DateSlider` component.
+ * @returns {JSX.Element} The rendered slider component.
+ */
 export default function DateSlider({
   value,
   onChange,
