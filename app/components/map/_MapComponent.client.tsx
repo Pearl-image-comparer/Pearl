@@ -21,7 +21,7 @@ import ReportLayer from "./layers/ReportLayer";
 import ConservationLayer from "./layers/ConservationLayer";
 import MapBounds from "./MapBounds";
 import SideBySide from "./comparison/SideBySide";
-import { useState } from "react";
+import { memo, useState } from "react";
 import dayjs from "dayjs";
 
 export default function MapComponent() {
@@ -34,6 +34,24 @@ export default function MapComponent() {
   const [endDate, setEndDate] = useState(period.end);
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
+
+  interface WMSParams {
+    attribution: string;
+    url: string;
+    layers: string;
+    time: string;
+  }
+
+  // eslint-disable-next-line react/display-name
+  const MemoizedWMSTileLayer = memo((wmsParams: WMSParams) => (
+    <WMSTileLayer
+      attribution={wmsParams.attribution}
+      url={wmsParams.url}
+      layers={wmsParams.layers}
+      // @ts-expect-error Time is valid but not included in the type definition.
+      time={wmsParams.time}
+    />
+  ));
 
   const center: L.LatLngExpression = [61.4978, 23.761];
   return (
@@ -53,11 +71,10 @@ export default function MapComponent() {
               onTop="left"
             />
           ) : (
-            <WMSTileLayer
+            <MemoizedWMSTileLayer
               attribution='&copy; <a href="https://dataspace.copernicus.eu/" target="_blank">Copernicus Data Space Ecosystem</a>'
               url="/wms"
               layers="TRUE_COLOR"
-              // @ts-expect-error Time is valid but not included in the type definition.
               time={endDate.toISOString().split("T")[0]}
             />
           )
