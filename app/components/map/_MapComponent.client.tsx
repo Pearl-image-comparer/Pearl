@@ -20,10 +20,40 @@ import SpeciesLayer from "./layers/SpeciesLayer";
 import ReportLayer from "./layers/ReportLayer";
 import ConservationLayer from "./layers/ConservationLayer";
 import MapBounds from "./MapBounds";
+import SideBySide from "./comparison/SideBySide";
+import { memo, useState } from "react";
+import dayjs from "dayjs";
 
 export default function MapComponent() {
-  const center: L.LatLngExpression = [61.4978, 23.761];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [period, setPeriod] = useState({
+    start: dayjs("2015-10-10"),
+    end: dayjs(),
+  });
+  const [startDate, setStartDate] = useState(period.start);
+  const [endDate, setEndDate] = useState(period.end);
+  const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
+  const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
 
+  interface WMSParams {
+    attribution: string;
+    url: string;
+    layers: string;
+    time: string;
+  }
+
+  // eslint-disable-next-line react/display-name
+  const MemoizedWMSTileLayer = memo((wmsParams: WMSParams) => (
+    <WMSTileLayer
+      attribution={wmsParams.attribution}
+      url={wmsParams.url}
+      layers={wmsParams.layers}
+      // @ts-expect-error Time is valid but not included in the type definition.
+      time={wmsParams.time}
+    />
+  ));
+
+  const center: L.LatLngExpression = [61.4978, 23.761];
   return (
     <div className="map" style={{ width: "100%", height: "100%" }}>
       <MapContainer
@@ -32,27 +62,42 @@ export default function MapComponent() {
         style={{ width: "100%", height: "100%", zIndex: 1 }}
       >
         <MapBounds />
-        <LayersControl position="topright">
-          <LayersControl.BaseLayer checked name="Base layer">
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        {satelliteViewOpen ? (
+          comparisonViewOpen ? (
+            <SideBySide
+              leftDate={startDate.toISOString().split("T")[0]}
+              rightDate={endDate.toISOString().split("T")[0]}
+              opacity={1}
+              onTop="left"
             />
-          </LayersControl.BaseLayer>
-          <LayersControl.BaseLayer name="Satellite images">
-            <WMSTileLayer
+          ) : (
+            <MemoizedWMSTileLayer
               attribution='&copy; <a href="https://dataspace.copernicus.eu/" target="_blank">Copernicus Data Space Ecosystem</a>'
               url="/wms"
               layers="TRUE_COLOR"
-              // @ts-expect-error Time is valid but not included in the type definition.
-              time={new Date().toISOString().slice(0, 10)}
+              time={endDate.toISOString().split("T")[0]}
             />
-          </LayersControl.BaseLayer>
+          )
+        ) : (
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        )}
+        <LayersControl position="topright">
           <SpeciesLayer />
           <ReportLayer />
           <ConservationLayer />
         </LayersControl>
-        <Controls />
+        <Controls
+          satelliteViewOpen={satelliteViewOpen}
+          setSatelliteViewOpen={setSatelliteViewOpen}
+          comparisonViewOpen={comparisonViewOpen}
+          setComparisonViewOpen={setComparisonViewOpen}
+          period={period}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+        />
       </MapContainer>
     </div>
   );
