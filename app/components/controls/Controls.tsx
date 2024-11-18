@@ -46,21 +46,22 @@ export default function Controls({
   });
 
   // Debounce wms tile fetching on slider change
-  const debounceSliderInput = useMemo(() =>
-    debounce((value: number | number[]) => {
-      if (Array.isArray(value)) {
-        setStartDate(dayjs(value[0]));
-        setEndDate(dayjs(value[1]));
-      } else {
-        setEndDate(dayjs(value));
-      }
-    }, 400),
+  const debounceSliderInput = useMemo(
+    () =>
+      debounce((value: number | number[]) => {
+        if (Array.isArray(value)) {
+          setStartDate(dayjs(value[0]));
+          setEndDate(dayjs(value[1]));
+        } else {
+          setEndDate(dayjs(value));
+        }
+      }, 400),
     [setEndDate, setStartDate],
   );
 
   const handleSliderChange = (event: Event, value: number | number[]) => {
     setSliderValue(value);
-    debounceSliderInput(value)
+    debounceSliderInput(value);
   };
 
   return (
