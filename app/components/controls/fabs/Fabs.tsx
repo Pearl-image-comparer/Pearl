@@ -6,11 +6,12 @@ import { useTheme, Theme } from "@mui/material/styles";
 import { useMap } from "react-leaflet";
 import CompareIcon from "@mui/icons-material/Compare";
 
-interface FabsProps {
+export interface FabsProps {
   satelliteViewOpen: boolean;
   setSatelliteViewOpen: (v: boolean) => void;
   comparisonViewOpen: boolean;
   setComparisonViewOpen: (v: boolean) => void;
+  onAddClick: () => void;
 }
 
 export default function Fabs({
@@ -18,6 +19,7 @@ export default function Fabs({
   setSatelliteViewOpen,
   comparisonViewOpen,
   setComparisonViewOpen,
+  onAddClick,
 }: FabsProps) {
   const theme: Theme = useTheme();
   const map = useMap();
@@ -95,7 +97,7 @@ export default function Fabs({
       >
         <SatelliteAltIcon />
       </StyledToggleButton>
-      <StyledAddFab color="primary" aria-label="add">
+      <StyledAddFab color="primary" aria-label="add" onClick={onAddClick}>
         <StyledAddIcon />
       </StyledAddFab>
     </StyledStack>

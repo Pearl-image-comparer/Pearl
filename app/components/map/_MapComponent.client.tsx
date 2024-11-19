@@ -21,6 +21,7 @@ import ReportLayer from "./layers/ReportLayer";
 import ConservationLayer from "./layers/ConservationLayer";
 import MapBounds from "./MapBounds";
 import SideBySide from "./comparison/SideBySide";
+import ReportDialog from "~/components/observations/ReportDialog";
 import { memo, useState } from "react";
 import dayjs from "dayjs";
 
@@ -34,6 +35,7 @@ export default function MapComponent() {
   const [endDate, setEndDate] = useState(period.end);
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   interface WMSParams {
     attribution: string;
@@ -56,6 +58,7 @@ export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
   return (
     <div className="map" style={{ width: "100%", height: "100%" }}>
+      <ReportDialog open={reportOpen} onClose={() => setReportOpen(false)} />
       <MapContainer
         center={center}
         zoom={13}
@@ -97,6 +100,7 @@ export default function MapComponent() {
           period={period}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
+          onAddClick={() => setReportOpen(true)}
         />
       </MapContainer>
     </div>
