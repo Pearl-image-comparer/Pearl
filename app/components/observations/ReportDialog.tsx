@@ -13,12 +13,14 @@ import {
   styled,
   TextField,
 } from "@mui/material";
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
 export default function ReportDialog(props: {
   open: boolean;
   onClose: () => void;
 }) {
+  const [pictureUrl, setPictureUrl] = useState<string | null>(null);
+
   const StyledDialogTitle = styled(DialogTitle)({
     display: "flex",
     justifyContent: "space-between",
@@ -37,6 +39,11 @@ export default function ReportDialog(props: {
     width: 1,
   });
 
+  const Picture = styled("img")({
+    width: "100%",
+    borderRadius: 10,
+  });
+
   return (
     <Dialog
       open={props.open}
@@ -46,7 +53,8 @@ export default function ReportDialog(props: {
         component: "form",
         onSubmit: (event: FormEvent<HTMLFormElement>) => {
           event.preventDefault();
-          console.log(event);
+          const data = new FormData(event.currentTarget);
+          console.log(data);
         },
       }}
     >
@@ -71,9 +79,19 @@ export default function ReportDialog(props: {
                 type="file"
                 accept="image/*"
                 capture="environment"
+                name="picture"
+                onChange={(event) => {
+                  const file = event.currentTarget.files?.item(0);
+                  if (file) setPictureUrl(URL.createObjectURL(file));
+                }}
               />
             </Button>
           </Grid>
+          {pictureUrl && (
+            <Grid size={2}>
+              <Picture src={pictureUrl} alt="Ladattu kuva" />
+            </Grid>
+          )}
           <Grid size={2}>
             <TextField
               required
