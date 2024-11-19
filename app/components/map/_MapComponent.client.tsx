@@ -58,7 +58,11 @@ export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
   return (
     <div className="map" style={{ width: "100%", height: "100%" }}>
-      <ReportDialog open={reportOpen} onClose={() => setReportOpen(false)} />
+      <ReportDialog
+        open={reportOpen}
+        onClose={() => setReportOpen(false)}
+        onSubmit={console.log}
+      />
       <MapContainer
         center={center}
         zoom={13}

@@ -13,13 +13,31 @@ import {
   styled,
   TextField,
 } from "@mui/material";
-import { useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+
+export interface Observation {
+  picture: File | null;
+  title: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+}
 
 export default function ReportDialog(props: {
   open: boolean;
   onClose: () => void;
+  onSubmit: (observation: Observation) => void;
 }) {
-  const [pictureUrl, setPictureUrl] = useState<string | null>(null);
+  const [picture, setPicture] = useState<File | null>(null);
+  const pictureUrl = useMemo(
+    () => picture && URL.createObjectURL(picture),
+    [picture],
+  );
+
+  // Reset picture when dialog is opened again.
+  useEffect(() => {
+    if (props.open) setPicture(null);
+  }, [props.open]);
 
   const StyledDialogTitle = styled(DialogTitle)({
     display: "flex",
@@ -54,7 +72,15 @@ export default function ReportDialog(props: {
         onSubmit: (event: FormEvent<HTMLFormElement>) => {
           event.preventDefault();
           const data = new FormData(event.currentTarget);
-          console.log(data);
+          props.onSubmit({
+            picture,
+            title: data.get("title") as string,
+            latitude: Number(data.get("latitude") as string),
+            longitude: Number(data.get("longitude") as string),
+            description: data.get("description") as string,
+          });
+          // Close after submission.
+          props.onClose();
         },
       }}
     >
@@ -82,7 +108,7 @@ export default function ReportDialog(props: {
                 name="picture"
                 onChange={(event) => {
                   const file = event.currentTarget.files?.item(0);
-                  if (file) setPictureUrl(URL.createObjectURL(file));
+                  if (file) setPicture(file);
                 }}
               />
             </Button>
@@ -105,22 +131,22 @@ export default function ReportDialog(props: {
             <TextField
               required
               margin="dense"
-              name="lat"
+              name="latitude"
               label="Leveyspiiri"
               type="number"
               fullWidth
-              slotProps={{ htmlInput: { min: -90, max: 90, step: 0.0001 } }}
+              slotProps={{ htmlInput: { min: -90, max: 90, step: 1e-12 } }}
             />
           </Grid>
           <Grid size={1}>
             <TextField
               required
               margin="dense"
-              name="lon"
+              name="longitude"
               label="Pituuspiiri"
               type="number"
               fullWidth
-              slotProps={{ htmlInput: { min: -180, max: 180, step: 0.0001 } }}
+              slotProps={{ htmlInput: { min: -180, max: 180, step: 1e-12 } }}
             />
           </Grid>
           <Grid size={2}>
