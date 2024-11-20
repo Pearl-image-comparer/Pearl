@@ -1,20 +1,16 @@
 import { Container, debounce, styled } from "@mui/material";
 import SearchBar from "./searchbar/SearchBar";
-import Fabs from "./fabs/Fabs";
+import Fabs, { type FabsProps } from "./fabs/Fabs";
 import DateSlider from "./slider/DateSlider";
 import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 
-interface Period {
+export interface Period {
   start: Dayjs;
   end: Dayjs;
 }
 
-interface ControlsProps {
-  satelliteViewOpen: boolean;
-  setSatelliteViewOpen: (v: boolean) => void;
-  comparisonViewOpen: boolean;
-  setComparisonViewOpen: (v: boolean) => void;
+export interface ControlsProps {
   period: Period;
   setStartDate: (v: Dayjs) => void;
   setEndDate: (v: Dayjs) => void;
@@ -28,7 +24,8 @@ export default function Controls({
   period,
   setStartDate,
   setEndDate,
-}: ControlsProps) {
+  onAddClick,
+}: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
     dayjs().valueOf(),
@@ -73,6 +70,7 @@ export default function Controls({
           comparisonViewOpen={comparisonViewOpen}
           setSatelliteViewOpen={setSatelliteViewOpen}
           setComparisonViewOpen={setComparisonViewOpen}
+          onAddClick={onAddClick}
         />
         {satelliteViewOpen && (
           <DateSlider

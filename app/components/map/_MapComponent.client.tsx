@@ -21,8 +21,12 @@ import ReportLayer from "./layers/ReportLayer";
 import ConservationLayer from "./layers/ConservationLayer";
 import MapBounds from "./MapBounds";
 import SideBySide from "./comparison/SideBySide";
+import ReportDialog from "~/components/observations/ReportDialog";
 import { memo, useState } from "react";
 import dayjs from "dayjs";
+import ReportCreator from "../observations/ReportCreator";
+import type { LatLng } from "leaflet";
+import { Backdrop, Typography } from "@mui/material";
 
 export default function MapComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,6 +38,8 @@ export default function MapComponent() {
   const [endDate, setEndDate] = useState(period.end);
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
+  const [reportLocation, setReportLocation] = useState<LatLng | null>(null);
+  const [selectLocation, setSelectLocation] = useState(false);
 
   interface WMSParams {
     attribution: string;
@@ -56,11 +62,24 @@ export default function MapComponent() {
   const center: L.LatLngExpression = [61.4978, 23.761];
   return (
     <div className="map" style={{ width: "100%", height: "100%" }}>
+      <ReportDialog
+        isOpen={reportLocation !== null}
+        location={reportLocation}
+        onClose={() => setReportLocation(null)}
+        onSubmit={console.log}
+      />
       <MapContainer
         center={center}
         zoom={13}
         style={{ width: "100%", height: "100%", zIndex: 1 }}
       >
+        <ReportCreator
+          onCreateReport={(location) => {
+            setSelectLocation(false);
+            setReportLocation(location);
+          }}
+          singleClickSelect={selectLocation}
+        />
         <MapBounds />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
@@ -97,8 +116,15 @@ export default function MapComponent() {
           period={period}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
+          onAddClick={() => setSelectLocation((prev) => !prev)}
         />
       </MapContainer>
+      <Backdrop
+        open={selectLocation}
+        sx={{ zIndex: 100, pointerEvents: "none" }}
+      >
+        <Typography color="white">Klikkaa sijaintia kartalta</Typography>
+      </Backdrop>
     </div>
   );
 }

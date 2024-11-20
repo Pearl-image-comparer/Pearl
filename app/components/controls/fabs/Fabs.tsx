@@ -3,14 +3,15 @@ import SatelliteAltIcon from "@mui/icons-material/SatelliteAlt";
 import AddIcon from "@mui/icons-material/Add";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { useTheme, Theme } from "@mui/material/styles";
-import { useMap } from "react-leaflet";
+import { useMapEvent } from "react-leaflet";
 import CompareIcon from "@mui/icons-material/Compare";
 
-interface FabsProps {
+export interface FabsProps {
   satelliteViewOpen: boolean;
   setSatelliteViewOpen: (v: boolean) => void;
   comparisonViewOpen: boolean;
   setComparisonViewOpen: (v: boolean) => void;
+  onAddClick: () => void;
 }
 
 export default function Fabs({
@@ -18,9 +19,9 @@ export default function Fabs({
   setSatelliteViewOpen,
   comparisonViewOpen,
   setComparisonViewOpen,
+  onAddClick,
 }: FabsProps) {
   const theme: Theme = useTheme();
-  const map = useMap();
 
   const StyledStack = styled(Stack)({
     display: "flex",
@@ -53,30 +54,13 @@ export default function Fabs({
     },
   });
 
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          map.flyTo([latitude, longitude], 16);
-        },
-        (err) => {
-          console.error(err.message);
-        },
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  };
+  const map = useMapEvent("locationfound", (event) =>
+    map.flyTo(event.latlng, 16),
+  );
 
   return (
     <StyledStack direction="column">
-      <StyledToggleButton
-        value="button"
-        onChange={() => {
-          getLocation();
-        }}
-      >
+      <StyledToggleButton value="button" onChange={() => map.locate()}>
         {<LocationSearchingIcon />}
       </StyledToggleButton>
       {satelliteViewOpen && (
@@ -95,7 +79,7 @@ export default function Fabs({
       >
         <SatelliteAltIcon />
       </StyledToggleButton>
-      <StyledAddFab color="primary" aria-label="add">
+      <StyledAddFab color="primary" aria-label="add" onClick={onAddClick}>
         <StyledAddIcon />
       </StyledAddFab>
     </StyledStack>
