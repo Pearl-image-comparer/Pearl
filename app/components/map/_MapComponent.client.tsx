@@ -24,6 +24,8 @@ import SideBySide from "./comparison/SideBySide";
 import ReportDialog from "~/components/observations/ReportDialog";
 import { memo, useState } from "react";
 import dayjs from "dayjs";
+import ReportCreator from "../observations/ReportCreator";
+import type { LatLng } from "leaflet";
 
 export default function MapComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,7 +37,7 @@ export default function MapComponent() {
   const [endDate, setEndDate] = useState(period.end);
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
-  const [reportOpen, setReportOpen] = useState(false);
+  const [reportLocation, setReportLocation] = useState<LatLng | null>(null);
 
   interface WMSParams {
     attribution: string;
@@ -59,8 +61,8 @@ export default function MapComponent() {
   return (
     <div className="map" style={{ width: "100%", height: "100%" }}>
       <ReportDialog
-        open={reportOpen}
-        onClose={() => setReportOpen(false)}
+        location={reportLocation}
+        onClose={() => setReportLocation(null)}
         onSubmit={console.log}
       />
       <MapContainer
@@ -68,6 +70,7 @@ export default function MapComponent() {
         zoom={13}
         style={{ width: "100%", height: "100%", zIndex: 1 }}
       >
+        <ReportCreator onCreateReport={setReportLocation} />
         <MapBounds />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
@@ -104,7 +107,7 @@ export default function MapComponent() {
           period={period}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
-          onAddClick={() => setReportOpen(true)}
+          onAddClick={() => setReportLocation(null)}
         />
       </MapContainer>
     </div>
