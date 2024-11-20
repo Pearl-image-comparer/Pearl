@@ -3,7 +3,7 @@ import SatelliteAltIcon from "@mui/icons-material/SatelliteAlt";
 import AddIcon from "@mui/icons-material/Add";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { useTheme, Theme } from "@mui/material/styles";
-import { useMap } from "react-leaflet";
+import { useMapEvent } from "react-leaflet";
 import CompareIcon from "@mui/icons-material/Compare";
 
 export interface FabsProps {
@@ -22,7 +22,6 @@ export default function Fabs({
   onAddClick,
 }: FabsProps) {
   const theme: Theme = useTheme();
-  const map = useMap();
 
   const StyledStack = styled(Stack)({
     display: "flex",
@@ -55,30 +54,13 @@ export default function Fabs({
     },
   });
 
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          map.flyTo([latitude, longitude], 16);
-        },
-        (err) => {
-          console.error(err.message);
-        },
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  };
+  const map = useMapEvent("locationfound", (event) =>
+    map.flyTo(event.latlng, 16),
+  );
 
   return (
     <StyledStack direction="column">
-      <StyledToggleButton
-        value="button"
-        onChange={() => {
-          getLocation();
-        }}
-      >
+      <StyledToggleButton value="button" onChange={() => map.locate()}>
         {<LocationSearchingIcon />}
       </StyledToggleButton>
       {satelliteViewOpen && (
