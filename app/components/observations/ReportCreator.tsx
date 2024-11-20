@@ -8,7 +8,7 @@ export default function ReportCreator(props: {
   useMapEvents({
     contextmenu: (event) =>
       props.singleClickSelect || props.onCreateReport(event.latlng),
-    click: (event) => 
+    click: (event) =>
       props.singleClickSelect && props.onCreateReport(event.latlng),
   });
 
