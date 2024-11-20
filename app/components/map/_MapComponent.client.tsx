@@ -26,6 +26,7 @@ import { memo, useState } from "react";
 import dayjs from "dayjs";
 import ReportCreator from "../observations/ReportCreator";
 import type { LatLng } from "leaflet";
+import { Backdrop, Typography } from "@mui/material";
 
 export default function MapComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,6 +39,7 @@ export default function MapComponent() {
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
   const [reportLocation, setReportLocation] = useState<LatLng | null>(null);
+  const [selectLocation, setSelectLocation] = useState(false);
 
   interface WMSParams {
     attribution: string;
@@ -61,6 +63,7 @@ export default function MapComponent() {
   return (
     <div className="map" style={{ width: "100%", height: "100%" }}>
       <ReportDialog
+        isOpen={reportLocation !== null}
         location={reportLocation}
         onClose={() => setReportLocation(null)}
         onSubmit={console.log}
@@ -70,7 +73,13 @@ export default function MapComponent() {
         zoom={13}
         style={{ width: "100%", height: "100%", zIndex: 1 }}
       >
-        <ReportCreator onCreateReport={setReportLocation} />
+        <ReportCreator
+          onCreateReport={(location) => {
+            setSelectLocation(false);
+            setReportLocation(location);
+          }}
+          singleClickSelect={selectLocation}
+        />
         <MapBounds />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
@@ -107,9 +116,15 @@ export default function MapComponent() {
           period={period}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
-          onAddClick={() => setReportLocation(null)}
+          onAddClick={() => setSelectLocation((prev) => !prev)}
         />
       </MapContainer>
+      <Backdrop
+        open={selectLocation}
+        sx={{ zIndex: 100, pointerEvents: "none" }}
+      >
+        <Typography color="white">Klikkaa sijaintia kartalta</Typography>
+      </Backdrop>
     </div>
   );
 }

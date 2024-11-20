@@ -25,6 +25,7 @@ export interface Observation {
 }
 
 export default function ReportDialog(props: {
+  isOpen: boolean;
   location: LatLng | null;
   onClose: () => void;
   onSubmit: (observation: Observation) => void;
@@ -37,8 +38,8 @@ export default function ReportDialog(props: {
 
   // Reset picture when dialog is opened again.
   useEffect(() => {
-    if (props.location) setPicture(null);
-  }, [props.location]);
+    if (props.isOpen) setPicture(null);
+  }, [props.isOpen]);
 
   const StyledDialogTitle = styled(DialogTitle)({
     display: "flex",
@@ -80,7 +81,7 @@ export default function ReportDialog(props: {
 
   return (
     <Dialog
-      open={props.location !== null}
+      open={props.isOpen}
       onClose={props.onClose}
       scroll="body"
       PaperProps={{
