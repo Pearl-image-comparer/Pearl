@@ -1,7 +1,12 @@
 import { useMap } from "react-leaflet";
 import { useEffect, useState } from "react";
+import { Sighting } from "~/routes/lajidata";
 
-export default function MapBounds() {
+interface MapBoundsProps {
+  setSightings: (v: Sighting[]) => void;
+}
+
+export default function MapBounds({ setSightings }: MapBoundsProps) {
   const map = useMap();
   const [hasFetchedInitially, setHasFetchedInitially] = useState(false);
 
@@ -30,7 +35,7 @@ export default function MapBounds() {
           return response.json();
         })
         .then((data) => {
-          console.log(data);
+          setSightings(data);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -47,7 +52,7 @@ export default function MapBounds() {
     return () => {
       map.off("moveend", handleMoveEnd);
     };
-  }, [map, hasFetchedInitially]);
+  }, [map, hasFetchedInitially, setSightings]);
 
   return null;
 }

@@ -27,6 +27,7 @@ import dayjs from "dayjs";
 import ReportCreator from "../observations/ReportCreator";
 import type { LatLng } from "leaflet";
 import { Backdrop, Typography } from "@mui/material";
+import { Sighting } from "~/routes/lajidata";
 
 export default function MapComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -40,6 +41,7 @@ export default function MapComponent() {
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
   const [reportLocation, setReportLocation] = useState<LatLng | null>(null);
   const [selectLocation, setSelectLocation] = useState(false);
+  const [sightings, setSightings] = useState<Sighting[]>([])
 
   interface WMSParams {
     attribution: string;
@@ -80,7 +82,7 @@ export default function MapComponent() {
           }}
           singleClickSelect={selectLocation}
         />
-        <MapBounds />
+        <MapBounds setSightings={setSightings} />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
             <SideBySide
@@ -104,7 +106,7 @@ export default function MapComponent() {
           />
         )}
         <LayersControl position="topright">
-          <SpeciesLayer />
+          <SpeciesLayer data={sightings} />
           <ReportLayer />
           <ConservationLayer />
         </LayersControl>
