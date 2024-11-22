@@ -1,6 +1,7 @@
 import { useMap } from "react-leaflet";
 import { useEffect, useState } from "react";
 import { Sighting } from "~/routes/lajidata";
+import { debounce } from "@mui/material";
 
 interface MapBoundsProps {
   setSightings: (v: Sighting[]) => void;
@@ -11,7 +12,7 @@ export default function MapBounds({ setSightings }: MapBoundsProps) {
   const [hasFetchedInitially, setHasFetchedInitially] = useState(false);
 
   useEffect(() => {
-    const handleMoveEnd = () => {
+    const fetchSightings = () => {
       const newBounds = map.getBounds();
       const northEast = newBounds.getNorthEast();
       const southEast = newBounds.getSouthEast();
@@ -40,17 +41,21 @@ export default function MapBounds({ setSightings }: MapBoundsProps) {
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
-    };
+    }
 
-    map.on("moveend", handleMoveEnd);
+    // Debounce to delay fetching data after map movement to avoid too many request
+    const debouncedFetch = debounce(fetchSightings, 600);
+
+    map.on("moveend", debouncedFetch);
 
     if (!hasFetchedInitially) {
-      handleMoveEnd();
+      fetchSightings(); // Call immediately for initial fetch
       setHasFetchedInitially(true);
     }
 
     return () => {
-      map.off("moveend", handleMoveEnd);
+      map.off("moveend", debouncedFetch);
+      debouncedFetch.clear();
     };
   }, [map, hasFetchedInitially, setSightings]);
 
