@@ -40,6 +40,7 @@ export default function Controls({
     flexDirection: "column",
     justifyContent: "center",
     padding: "2rem 2rem",
+    pointerEvents: "none",
   });
 
   // Debounce wms tile fetching on slider change
