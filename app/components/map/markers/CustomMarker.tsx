@@ -7,13 +7,16 @@ import sightingOrangeMarker from "~/assets/sighting_pin_orange.png";
 import sightingYellowMarker from "~/assets/sighting_pin_yellow.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import defaultMarker from "leaflet/dist/images/marker-icon.png";
+import { ReactNode } from "react";
 
 interface CustomMarkerProps {
+  children?: ReactNode;
   position: LatLngExpression;
   endangermentStatus?: string | null;
 }
 
 export default function CustomMarker({
+  children,
   position,
   endangermentStatus = null,
 }: CustomMarkerProps) {
@@ -45,6 +48,8 @@ export default function CustomMarker({
           shadowAnchor: [14, 41],
         })
       }
-    />
+    >
+      {children}
+    </Marker>
   );
 }
