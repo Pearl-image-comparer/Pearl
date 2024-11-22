@@ -26,11 +26,11 @@ export const action = async ({ request }: { request: Request }) => {
       title,
       description,
       location,
-      picture,
+      picture
     );
 
     return json(newObservation, { status: 201 });
-  } catch (error) {
+  } catch {
     return json({ error: "Failed to create observation" }, { status: 500 });
   }
 };
