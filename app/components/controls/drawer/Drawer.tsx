@@ -1,5 +1,6 @@
 import {
     Drawer,
+    SwipeableDrawer,
     styled,
     Box,
     IconButton,
@@ -10,15 +11,17 @@ import {
 import MenuIcon from "@mui/icons-material/MenuOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
+import { useMap } from "react-leaflet";
+import LayerControl from "../layerControl/LayerControl";
 
-//TODO descide the correct width of drawer
+//TODO decide the correct width of drawer
 const DrawerWidth = 250;
 
-//TODO to be removed once the correct opening logic is implemented
+//TODO refactor to a better menu opening button
 //Button container for the temporary opening logic for the drawer
 const ButtonContainer = styled("div")(({ theme }) => ({
     position: "fixed",
-    zIndex: 900,
+    zIndex: 1200,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -34,19 +37,26 @@ const ButtonContainer = styled("div")(({ theme }) => ({
     },
 }));
 
-export default function MenuDrawer() {
-    /**
-     * TODO isDrawerOpen and toggleDrawer propably need to be moved to a parent component
-     * once additional logic is implemented for drawer opening, like satellite comparison
-     */
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+interface MenuDrawerProps {
+    isDrawerOpen: boolean;
+    setIsDrawerOpen: (open: boolean) => void;
+    isMobile: boolean;
+}
+
+export default function MenuDrawer({
+    isDrawerOpen,
+    setIsDrawerOpen,
+    isMobile,
+}: MenuDrawerProps) {
     // Toggle function to open/close the drawer
     const toggleDrawer = (open: boolean) => {
         setIsDrawerOpen(open);
     };
 
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    // Handling the map drag when menu open
+    const map = useMap();
+    const stopMapDrag = () => map.dragging.disable();
+    const startMapDrag = () => map.dragging.enable();
 
     return (
         <>
@@ -72,6 +82,10 @@ export default function MenuDrawer() {
                 variant="persistent"
                 anchor={isMobile ? "bottom" : "left"}
                 open={isDrawerOpen}
+                onMouseDown={stopMapDrag}
+                onMouseUp={startMapDrag}
+                onTouchStart={stopMapDrag}
+                onTouchEnd={startMapDrag}
                 sx={{
                     "& .MuiDrawer-paper": {
                         width: isMobile ? "100%" : DrawerWidth,
@@ -99,8 +113,7 @@ export default function MenuDrawer() {
                         <CloseIcon />
                     </IconButton>
 
-                    <h3>Menu</h3>
-                    <p>Drawer Content</p>
+                    <LayerControl />
                 </Box>
             </Drawer>
         </>

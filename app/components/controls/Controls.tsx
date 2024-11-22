@@ -1,9 +1,16 @@
-import { Container, debounce, styled } from "@mui/material";
+import {
+  Container,
+  debounce,
+  styled,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import SearchBar from "./searchbar/SearchBar";
 import Fabs, { type FabsProps } from "./fabs/Fabs";
 import DateSlider from "./slider/DateSlider";
 import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
+import MenuDrawer from "./drawer/Drawer";
 
 export interface Period {
   start: Dayjs;
@@ -14,6 +21,7 @@ export interface ControlsProps {
   period: Period;
   setStartDate: (v: Dayjs) => void;
   setEndDate: (v: Dayjs) => void;
+  isDrawerOpen: boolean;
 }
 
 export default function Controls({
@@ -30,6 +38,9 @@ export default function Controls({
   const [sliderValue, setSliderValue] = useState<number | number[]>(
     dayjs().valueOf(),
   );
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const StyledContainer = styled(Container)({
     position: "absolute",
@@ -64,7 +75,12 @@ export default function Controls({
 
   return (
     <Container>
-      <SearchBar />
+      <MenuDrawer
+        isDrawerOpen={isDrawerOpen}
+        setIsDrawerOpen={setIsDrawerOpen}
+        isMobile={isMobile}
+      />
+      <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
       <StyledContainer maxWidth={false}>
         <Fabs
           satelliteViewOpen={satelliteViewOpen}
