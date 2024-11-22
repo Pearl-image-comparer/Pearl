@@ -26,7 +26,7 @@ export const action = async ({ request }: { request: Request }) => {
       title,
       description,
       location,
-      picture
+      picture,
     );
 
     return json(newObservation, { status: 201 });
