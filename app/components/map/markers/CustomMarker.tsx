@@ -6,29 +6,29 @@ import sightingRedMarker from "~/assets/sighting_pin_red.png";
 import sightingOrangeMarker from "~/assets/sighting_pin_orange.png";
 import sightingYellowMarker from "~/assets/sighting_pin_yellow.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import defaultMarker from "leaflet/dist/images/marker-icon.png";
 
 interface CustomMarkerProps {
   position: LatLngExpression;
-  variant?: "observation" | "black" | "red" | "orange" | "yellow";
+  endangermentStatus?: string | null;
 }
 
 export default function CustomMarker({
   position,
-  variant = "observation",
+  endangermentStatus = null,
 }: CustomMarkerProps) {
   const determineMarker = () => {
-    switch (variant) {
-      case "black":
-        return sightingBlackMarker;
-      case "red":
-        return sightingRedMarker;
-      case "orange":
-        return sightingOrangeMarker;
-      case "yellow":
-        return sightingYellowMarker;
-      default:
-        return observationMarker
-    }
+    // Default to the observation marker if no endangerment status is provided
+    if (!endangermentStatus) return observationMarker;
+
+    // Return markers based on the endangerment status
+    if (endangermentStatus.includes("MX.iucnCR")) return sightingBlackMarker;
+    if (endangermentStatus.includes("MX.iucnEN")) return sightingRedMarker;
+    if (endangermentStatus.includes("MX.iucnVU")) return sightingOrangeMarker;
+    if (endangermentStatus.includes("MX.iucnNT")) return sightingYellowMarker;
+
+    // Default to a Leaflet marker if the endangerment status is unrecognized
+    return defaultMarker;
   };
 
   return (
