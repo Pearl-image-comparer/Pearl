@@ -12,15 +12,16 @@ export default function SpeciesLayer({ data }: SpeciesLayerProps) {
   return (
     <LayersControl.Overlay name="Species layer">
       <MarkerClusterGroup>
-        {data && data.map((s, index) => (
-          <CustomMarker
-            key={index}
-            position={s.coordinates}
-            endangermentStatus={s.endangerment}
-          >
-            <SightingPopup sighting={s} />
-          </CustomMarker>
-        ))}
+        {data &&
+          data.map((s, index) => (
+            <CustomMarker
+              key={index}
+              position={s.coordinates}
+              endangermentStatus={s.endangerment}
+            >
+              <SightingPopup sighting={s} />
+            </CustomMarker>
+          ))}
       </MarkerClusterGroup>
     </LayersControl.Overlay>
   );

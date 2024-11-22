@@ -41,7 +41,7 @@ export default function MapBounds({ setSightings }: MapBoundsProps) {
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
-    }
+    };
 
     // Debounce to delay fetching data after map movement to avoid too many request
     const debouncedFetch = debounce(fetchSightings, 600);

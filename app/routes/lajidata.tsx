@@ -99,9 +99,9 @@ export const loader: LoaderFunction = async ({ request }) => {
           item.gathering.conversions.wgs84CenterPoint.lat,
           item.gathering.conversions.wgs84CenterPoint.lon,
         ],
-        endangerment: item.unit.linkings.taxon.latestRedListStatusFinland.status
-      })
-    );
+        endangerment:
+          item.unit.linkings.taxon.latestRedListStatusFinland.status,
+      }));
     return json(sightings);
   } catch (error) {
     console.error(error);

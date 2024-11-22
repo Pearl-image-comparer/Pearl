@@ -41,7 +41,7 @@ export default function MapComponent() {
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
   const [reportLocation, setReportLocation] = useState<LatLng | null>(null);
   const [selectLocation, setSelectLocation] = useState(false);
-  const [sightings, setSightings] = useState<Sighting[]>([])
+  const [sightings, setSightings] = useState<Sighting[]>([]);
 
   interface WMSParams {
     attribution: string;

@@ -8,7 +8,9 @@ interface ObservationPopupProps {
   observation: Observation;
 }
 
-export default function ObservationPopup({ observation }: ObservationPopupProps) {
+export default function ObservationPopup({
+  observation,
+}: ObservationPopupProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,12 +21,12 @@ export default function ObservationPopup({ observation }: ObservationPopupProps)
       // Clearing to avoid memory leak
       return () => URL.revokeObjectURL(url);
     }
-  }, [observation.picture])
+  }, [observation.picture]);
 
   const StyledImage = styled("img")({
     width: "100%",
     borderRadius: "0.5rem",
-    marginTop: "1rem"
+    marginTop: "1rem",
   });
 
   return (
@@ -39,7 +41,3 @@ export default function ObservationPopup({ observation }: ObservationPopupProps)
     </Popup>
   );
 }
-
-
-
-

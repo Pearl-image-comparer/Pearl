@@ -6,13 +6,13 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PlaceIcon from "@mui/icons-material/Place";
 
 interface SightingPopupProps {
-  sighting: Sighting
+  sighting: Sighting;
 }
 
 export default function SightingPopup({ sighting }: SightingPopupProps) {
   const capitalizeName = (name: string) => {
     if (name) {
-      return name[0].toUpperCase() + name.slice(1, name.length)
+      return name[0].toUpperCase() + name.slice(1, name.length);
     }
     return name;
   };
@@ -22,8 +22,8 @@ export default function SightingPopup({ sighting }: SightingPopupProps) {
     if (endangerment.includes("MX.iucnEN")) return "Erittäin uhanalaiset";
     if (endangerment.includes("MX.iucnVU")) return "Vaarantuneet";
     if (endangerment.includes("MX.iucnNT")) return "Silmälläpidettävät";
-    return "Ei tiedossa"
-  }
+    return "Ei tiedossa";
+  };
 
   return (
     <Popup>
@@ -48,32 +48,8 @@ export default function SightingPopup({ sighting }: SightingPopupProps) {
       </Stack>
       <Stack direction="row" alignItems="center" spacing={0.5}>
         <CalendarMonthIcon />
-        <Typography >{sighting.sightingTime}</Typography>
+        <Typography>{sighting.sightingTime}</Typography>
       </Stack>
     </Popup>
   );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
