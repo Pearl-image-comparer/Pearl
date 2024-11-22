@@ -3,7 +3,7 @@ import { createObservation } from "~/utils/db.server";
 
 type Location = { x: number; y: number };
 
-export let action = async ({ request }: { request: Request }) => {
+export const action = async ({ request }: { request: Request }) => {
   const formData = await request.json();
 
   const {

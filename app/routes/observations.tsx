@@ -1,7 +1,7 @@
 import { LoaderFunction } from "@remix-run/node";
 import { getObservations } from "~/utils/db.server";
 
-export let loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const topLeftX = parseFloat(url.searchParams.get("topLeftX") || "");
   const topLeftY = parseFloat(url.searchParams.get("topLeftY") || "");
