@@ -27,12 +27,13 @@ export default function Fabs({
     display: "flex",
     alignItems: "flex-end",
     gap: "0.5rem",
-    pointerEvents: "auto",
+    pointerEvents: "none",
   });
 
   const StyledAddFab = styled(Fab)({
     width: "4.3rem",
     height: "4.3rem",
+    pointerEvents: "auto",
   });
 
   const StyledAddIcon = styled(AddIcon)({
@@ -40,6 +41,7 @@ export default function Fabs({
   });
 
   const StyledToggleButton = styled(ToggleButton)({
+    pointerEvents: "auto",
     backgroundColor: theme.palette.background.default,
     borderRadius: "50%",
     "&.Mui-selected": {

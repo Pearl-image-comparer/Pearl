@@ -1,32 +1,33 @@
 import { json, LoaderFunction } from "@remix-run/node";
+import { LatLngExpression } from "leaflet";
 
-interface Sighting {
+export interface Sighting {
   finnishName: string;
   latinName: string;
-  sightingTime: Date;
-  coordinates: string;
+  sightingTime: string;
+  coordinates: LatLngExpression;
   endangerment: string;
 }
 interface LajiApiResponse {
   results: Array<{
+    gathering: {
+      conversions: {
+        wgs84CenterPoint: {
+          lat: number;
+          lon: number;
+        };
+      };
+      displayDateTime: string;
+    };
     unit: {
       linkings: {
         taxon: {
-          nameFinnish: string;
+          latestRedListStatusFinland: {
+            status: string;
+          };
           scientificName: string;
-          latestRedListStatusFinland: string;
+          nameFinnish: string;
         };
-        originalTaxon: {
-          latestRedListStatusFinland: string;
-        };
-      };
-    };
-    gathering: {
-      displayDateTime: Date;
-    };
-    document: {
-      namedPlace: {
-        wgs84CenterPoint: string;
       };
     };
   }>;
@@ -71,13 +72,15 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   const queryParams = new URLSearchParams({
+    selected:
+      "gathering.conversions.wgs84CenterPoint.lat,gathering.conversions.wgs84CenterPoint.lon,gathering.displayDateTime,unit.linkings.taxon.scientificName,unit.linkings.taxon.nameFinnish,unit.linkings.taxon.latestRedListStatusFinland.status",
     wgs84CenterPoint: `${encodeURIComponent(southLat)}:${encodeURIComponent(northLat)}:${encodeURIComponent(westLng)}:${encodeURIComponent(eastLng)}:WGS84`,
     redListStatusId: "MX.iucnEN,MX.iucnCR,MX.iucnVU,MX.iucnNT",
     pageSize: "1000",
     access_token: accessToken,
   });
 
-  const api = `https://api.laji.fi/v0/warehouse/query/unit/list?selected=document.namedPlace.wgs84CenterPoint.lat%2Cdocument.namedPlace.wgs84CenterPoint.lon%2Cgathering.displayDateTime%2Cunit.identifications.linkings.taxon.latestRedListStatusFinland.status%2Cunit.identifications.linkings.taxon.latestRedListStatusFinland.year%2Cunit.identifications.linkings.taxon.nameFinnish%2Cunit.linkings.originalTaxon.latestRedListStatusFinland.status%2Cunit.linkings.originalTaxon.latestRedListStatusFinland.year%2Cunit.linkings.taxon.latestRedListStatusFinland.status%2Cunit.linkings.taxon.latestRedListStatusFinland.year%2Cunit.linkings.taxon.nameFinnish%2Cunit.linkings.taxon.scientificName&includeSubTaxa=true&includeNonValidTaxa=true&time=-3653%2F0&${queryParams}`;
+  const api = `https://api.laji.fi/v0/warehouse/query/unit/list?includeSubTaxa=true&includeNonValidTaxa=true&time=-3653%2F0&${queryParams}`;
 
   try {
     const response = await fetch(api);
@@ -85,15 +88,21 @@ export const loader: LoaderFunction = async ({ request }) => {
       throw new Error("Failed to fetch data from Laji API");
     }
     const data: LajiApiResponse = await response.json();
-    const sightings: Sighting[] = data.results.map((item) => ({
-      finnishName: item.unit?.linkings?.taxon.nameFinnish,
-      latinName: item.unit?.linkings?.taxon?.scientificName,
-      sightingTime: item.gathering?.displayDateTime,
-      coordinates: item.document?.namedPlace.wgs84CenterPoint,
-      endangerment:
-        item.unit?.linkings.originalTaxon.latestRedListStatusFinland,
-    }));
-    return json({ data: sightings });
+    // Filtering out incomplete data
+    const sightings: Sighting[] = data.results
+      .filter((item) => item.unit && item.gathering)
+      .map((item) => ({
+        finnishName: item.unit.linkings.taxon.nameFinnish,
+        latinName: item.unit.linkings.taxon.scientificName,
+        sightingTime: item.gathering.displayDateTime,
+        coordinates: [
+          item.gathering.conversions.wgs84CenterPoint.lat,
+          item.gathering.conversions.wgs84CenterPoint.lon,
+        ],
+        endangerment:
+          item.unit.linkings.taxon.latestRedListStatusFinland.status,
+      }));
+    return json(sightings);
   } catch (error) {
     console.error(error);
     return json(
