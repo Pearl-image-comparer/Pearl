@@ -1,121 +1,144 @@
 import {
-    Drawer,
-    SwipeableDrawer,
-    styled,
-    Box,
-    IconButton,
-    useMediaQuery,
-    useTheme,
-    List,
+  Drawer,
+  SwipeableDrawer,
+  styled,
+  Box,
+  IconButton,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/MenuOutlined";
-import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
 import { useMap } from "react-leaflet";
 import LayerControl from "../layerControl/LayerControl";
 
-//TODO decide the correct width of drawer
 const DrawerWidth = 250;
+const drawerBleeding = 60;
 
-//TODO refactor to a better menu opening button
-//Button container for the temporary opening logic for the drawer
-const ButtonContainer = styled("div")(({ theme }) => ({
-    position: "fixed",
-    zIndex: 1200,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
-        left: "50%",
-        bottom: theme.spacing(2),
-        transform: "translateX(-50%)",
-    },
-    [theme.breakpoints.up("sm")]: {
-        left: theme.spacing(2),
-        top: "50%",
-        transform: "translateY(-50%)",
-    },
+//mobile drawer
+const SwipeableDrawerStyled = styled(SwipeableDrawer)(() => ({
+  "& .MuiDrawer-paper": {
+    overflowY: "visible",
+  },
+}));
+
+// desktop drawer
+const SwipeableDrawerStyledDesktop = styled(Drawer)(() => ({
+  "& .MuiDrawer-paper": {
+    overflowY: "visible",
+  },
 }));
 
 interface MenuDrawerProps {
-    isDrawerOpen: boolean;
-    setIsDrawerOpen: (open: boolean) => void;
-    isMobile: boolean;
+  isDrawerOpen: boolean;
+  setIsDrawerOpen: (open: boolean) => void;
+  isMobile: boolean;
 }
 
 export default function MenuDrawer({
-    isDrawerOpen,
-    setIsDrawerOpen,
-    isMobile,
+  isDrawerOpen,
+  setIsDrawerOpen,
+  isMobile,
 }: MenuDrawerProps) {
-    // Toggle function to open/close the drawer
-    const toggleDrawer = (open: boolean) => {
-        setIsDrawerOpen(open);
-    };
+  // Toggle function to open/close the drawer
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
-    // Handling the map drag when menu open
-    const map = useMap();
-    const stopMapDrag = () => map.dragging.disable();
-    const startMapDrag = () => map.dragging.enable();
+  // Handling the map drag when menu open
+  const map = useMap();
+  const stopMapDrag = () => map.dragging.disable();
+  const startMapDrag = () => map.dragging.enable();
 
-    return (
-        <>
-            <ButtonContainer>
-                <IconButton
-                    onClick={() => toggleDrawer(true)}
-                    color="primary"
-                    sx={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: "50%",
-                        backgroundColor: "primary.main",
-                        "&:hover": {
-                            backgroundColor: "primary.dark",
-                        },
-                    }}
-                >
-                    <MenuIcon />
-                </IconButton>
-            </ButtonContainer>
+  return (
+    <>
+      {isMobile ? (
+        <SwipeableDrawerStyled
+          anchor="bottom"
+          open={isDrawerOpen}
+          onClose={() => toggleDrawer()}
+          onOpen={() => toggleDrawer()}
+          swipeAreaWidth={drawerBleeding}
+          disableSwipeToOpen={false}
+          ModalProps={{ keepMounted: true }}
+          onMouseDown={stopMapDrag}
+          onMouseUp={startMapDrag}
+          onTouchStart={stopMapDrag}
+          onTouchEnd={startMapDrag}
+          sx={{
+            "& .MuiDrawer-paper": {
+              height: "50%",
+            },
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: -drawerBleeding / 2,
+              right: 0,
+              left: 0,
+              height: drawerBleeding,
+              backgroundColor: "background.paper",
+              textAlign: "center",
+              visibility: "visible",
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+            }}
+          >
+            <DragHandleRoundedIcon />
+          </Box>
+          <Box sx={{ padding: 2, height: "100%" }}>
+            <LayerControl />
+          </Box>
+        </SwipeableDrawerStyled>
+      ) : (
+        <SwipeableDrawerStyledDesktop
+          variant="persistent"
+          anchor="left"
+          open={isDrawerOpen}
+          sx={{
+            "& .MuiDrawer-paper": {
+              width: DrawerWidth,
+              height: "100vh",
+            },
+          }}
+          onMouseDown={stopMapDrag}
+          onMouseUp={startMapDrag}
+          onTouchStart={stopMapDrag}
+          onTouchEnd={startMapDrag}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              right: -40,
+              width: 40,
+              height: "20%",
+              backgroundColor: "background.paper",
+              visibility: "visible",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderTopRightRadius: 15,
+              borderBottomRightRadius: 15,
+              transform: "translateY(-50%)",
+            }}
+          >
+            <IconButton onClick={() => toggleDrawer()}>
+              <DragIndicatorIcon />
+            </IconButton>
+          </Box>
 
-            <Drawer
-                variant="persistent"
-                anchor={isMobile ? "bottom" : "left"}
-                open={isDrawerOpen}
-                onMouseDown={stopMapDrag}
-                onMouseUp={startMapDrag}
-                onTouchStart={stopMapDrag}
-                onTouchEnd={startMapDrag}
-                sx={{
-                    "& .MuiDrawer-paper": {
-                        width: isMobile ? "100%" : DrawerWidth,
-                        height: isMobile ? "50%" : "100vh", //TODO decide the drawer height on mobile
-                        bottom: isMobile ? 0 : "unset",
-                        left: isMobile ? "unset" : 0,
-                    },
-                }}
-            >
-                <Box
-                    sx={{
-                        padding: 2,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                    }}
-                >
-                    <IconButton
-                        onClick={() => toggleDrawer(false)}
-                        sx={{
-                            alignSelf: "flex-end",
-                            marginBottom: 2,
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-
-                    <LayerControl />
-                </Box>
-            </Drawer>
-        </>
-    );
+          <Box
+            sx={{
+              padding: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+            }}
+          >
+            <LayerControl />
+          </Box>
+        </SwipeableDrawerStyledDesktop>
+      )}
+    </>
+  );
 }
