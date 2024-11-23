@@ -54,7 +54,7 @@ function LocationSearch() {
       debounce(
         (
           request: { input: string },
-          callback: (results?: readonly Location[]) => void,
+          callback: (results?: readonly Location[]) => void
         ) => {
           const params = new URLSearchParams({
             q: request.input,
@@ -70,20 +70,20 @@ function LocationSearch() {
                 lat: geometry.coordinates[1],
                 id: properties.osm_id,
                 name: properties.name,
-              })),
+              }))
             )
             // Filter out duplicate results.
             .then((result) =>
               result.filter(
                 ({ id: filterId }, index, arr) =>
-                  arr.findIndex(({ id }) => id === filterId) === index,
-              ),
+                  arr.findIndex(({ id }) => id === filterId) === index
+              )
             )
             .then(callback);
         },
-        400,
+        400
       ),
-    [],
+    []
   );
 
   useEffect(() => {
@@ -131,7 +131,7 @@ function LocationSearch() {
         if (newValue)
           map.panTo(
             { lat: newValue.lat, lng: newValue.lng },
-            { animate: true },
+            { animate: true }
           );
       }}
       onInputChange={(_, newInput) => setInput(newInput)}
@@ -174,7 +174,7 @@ export default function SearchBar({ isDrawerOpen, isMobile }: SearchBarProps) {
   const StyledPaper = styled(Paper)({
     position: "absolute",
     top: "0.7rem",
-    left: isMobile || !isDrawerOpen ? "0.7rem" : `${250 + theme.spacing(1)}px`, // 250 = drawer width
+    left: isMobile || !isDrawerOpen ? "0.7rem" : `${250 + theme.spacing(1)}px`, // 250 + 50 = drawer+bleeding width
     width:
       isMobile || !isDrawerOpen
         ? "calc(100% - 1.4rem)"
