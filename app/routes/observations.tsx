@@ -16,6 +16,5 @@ export const loader: LoaderFunction = async ({ request }) => {
     };
   }
 
-  const observations = await getObservations(area);
-  return observations;
+  return getObservations(area);
 };
