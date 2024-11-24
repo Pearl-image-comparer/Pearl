@@ -3,60 +3,55 @@ import { List, ListItem, Checkbox, Box, Typography } from "@mui/material";
 
 // Mock data: array of layer options
 const layerOptions = [
-    { key: "conservation", name: "Conservation Layer" },
-    { key: "reports", name: "Reports Layer" },
-    { key: "species", name: "Species Layer" },
+  { key: "sightings", name: "Uhanalaislajihavainnot" },
+  { key: "observations", name: "Käyttäjähavainnot" },
+  { key: "conservation", name: "Suojelualueet" },
 ] as const;
 
 type LayerKey = (typeof layerOptions)[number]["key"];
 
 export default function LayerControl() {
-    const [checkedLayers, setCheckedLayers] = useState<
-        Record<LayerKey, boolean>
-    >({
-        conservation: false,
-        reports: false,
-        species: false,
-    });
+  //TODO move this to the map component
+  const [overlayVisibility, setOverlayVisibility] = useState<
+    Record<LayerKey, boolean>
+  >({
+    sightings: false,
+    observations: false,
+    conservation: false,
+  });
 
-    // Toggle layer
-    const handleCheckboxChange = (key: LayerKey) => {
-        setCheckedLayers((prevState) => ({
-            ...prevState,
-            [key]: !prevState[key],
-        }));
-    };
+  // Toggle layer
+  const handleCheckboxChange = (key: LayerKey) => {
+    setOverlayVisibility((prevState) => ({
+      ...prevState,
+      [key]: !prevState[key],
+    }));
+  };
 
-    return (
-        <Box
+  return (
+    <Box>
+      <Typography variant="h6" sx={{ mb: 1 }}>
+        Kartan tasot
+      </Typography>
+      <List sx={{ padding: 0 }}>
+        {layerOptions.map((layer) => (
+          <ListItem
+            key={layer.key}
             sx={{
-                width: 200,
-                padding: 1,
-                borderRadius: 2,
+              padding: "4px 0px",
+              display: "flex",
+              alignItems: "center",
             }}
-        >
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                Layers
-            </Typography>
-            <List sx={{ padding: 0 }}>
-                {layerOptions.map((layer) => (
-                    <ListItem
-                        key={layer.key}
-                        sx={{
-                            padding: "4px 8px",
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Checkbox
-                            size="small"
-                            checked={checkedLayers[layer.key]}
-                            onChange={() => handleCheckboxChange(layer.key)}
-                        />
-                        <Typography variant="body2">{layer.name}</Typography>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    );
+          >
+            <Checkbox
+              size="small"
+              checked={overlayVisibility[layer.key]}
+              onChange={() => handleCheckboxChange(layer.key)}
+            />
+            <Typography variant="body2">{layer.name}</Typography>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 }
