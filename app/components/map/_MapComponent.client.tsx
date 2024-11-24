@@ -119,6 +119,8 @@ export default function MapComponent() {
           setStartDate={setStartDate}
           setEndDate={setEndDate}
           onAddClick={() => setSelectLocation((prev) => !prev)}
+          startDate={startDate}
+          endDate={endDate}
         />
       </MapContainer>
       <Backdrop

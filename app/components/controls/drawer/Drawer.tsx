@@ -9,6 +9,8 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
 import { useMap } from "react-leaflet";
 import LayerControl from "../layerControl/LayerControl";
+import DatePickers from "../datePickers/DatePickers";
+import { Dayjs } from "dayjs";
 
 const DrawerWidth = 250;
 const drawerBleeding = 60;
@@ -31,12 +33,20 @@ interface MenuDrawerProps {
   isDrawerOpen: boolean;
   setIsDrawerOpen: (open: boolean) => void;
   isMobile: boolean;
+  setStartDate: (date: Dayjs | null) => void;
+  setEndDate: (date: Dayjs | null) => void;
+  startDate: Dayjs;
+  endDate: Dayjs;
 }
 
 export default function MenuDrawer({
   isDrawerOpen,
   setIsDrawerOpen,
   isMobile,
+  setStartDate,
+  setEndDate,
+  startDate,
+  endDate,
 }: MenuDrawerProps) {
   // Toggle function to open/close the drawer
   const toggleDrawer = () => {
@@ -86,6 +96,12 @@ export default function MenuDrawer({
             <DragHandleRoundedIcon />
           </Box>
           <Box sx={{ padding: 2, height: "100%" }}>
+            <DatePickers
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+              startDate={startDate}
+              endDate={endDate}
+            />
             <LayerControl />
           </Box>
         </SwipeableDrawerStyled>
@@ -135,6 +151,12 @@ export default function MenuDrawer({
               alignItems: "flex-start",
             }}
           >
+            <DatePickers
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+              startDate={startDate}
+              endDate={endDate}
+            />
             <LayerControl />
           </Box>
         </SwipeableDrawerStyledDesktop>

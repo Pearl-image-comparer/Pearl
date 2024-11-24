@@ -22,6 +22,8 @@ export interface ControlsProps {
   setStartDate: (v: Dayjs) => void;
   setEndDate: (v: Dayjs) => void;
   isDrawerOpen: boolean;
+  startDate: Dayjs;
+  endDate: Dayjs;
 }
 
 export default function Controls({
@@ -33,10 +35,12 @@ export default function Controls({
   setStartDate,
   setEndDate,
   onAddClick,
+  startDate,
+  endDate,
 }: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
-    dayjs().valueOf(),
+    dayjs().valueOf()
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const theme = useTheme();
@@ -65,7 +69,7 @@ export default function Controls({
           setEndDate(dayjs(value));
         }
       }, 400),
-    [setEndDate, setStartDate],
+    [setEndDate, setStartDate]
   );
 
   const handleSliderChange = (event: Event, value: number | number[]) => {
@@ -79,6 +83,10 @@ export default function Controls({
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
         isMobile={isMobile}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        startDate={startDate}
+        endDate={endDate}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
       <StyledContainer maxWidth={false}>
@@ -93,8 +101,8 @@ export default function Controls({
           <DateSlider
             value={sliderValue}
             onChange={handleSliderChange}
-            min={period.start.valueOf()}
-            max={period.end.valueOf()}
+            min={startDate.valueOf()}
+            max={endDate.valueOf()}
           />
         )}
       </StyledContainer>
