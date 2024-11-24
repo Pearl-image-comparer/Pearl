@@ -28,11 +28,13 @@ export const action = async ({ request }: { request: Request }) => {
 
     if (picture && picture.data && picture.ext) {
       try {
+        const generatedKey = genKey(picture.ext);
+
         const imageData = Uint8Array.from(atob(picture.data), (char) =>
           char.charCodeAt(0),
         );
 
-        pictureKey = await uploadToS3(imageData, picture.ext);
+        pictureKey = await uploadToS3(imageData, generatedKey);
       } catch (error) {
         console.error("Failed to upload picture to S3:", error);
         return json({ error: "Failed to upload picture" }, { status: 500 });
