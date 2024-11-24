@@ -54,7 +54,7 @@ function LocationSearch() {
       debounce(
         (
           request: { input: string },
-          callback: (results?: readonly Location[]) => void
+          callback: (results?: readonly Location[]) => void,
         ) => {
           const params = new URLSearchParams({
             q: request.input,
@@ -70,20 +70,20 @@ function LocationSearch() {
                 lat: geometry.coordinates[1],
                 id: properties.osm_id,
                 name: properties.name,
-              }))
+              })),
             )
             // Filter out duplicate results.
             .then((result) =>
               result.filter(
                 ({ id: filterId }, index, arr) =>
-                  arr.findIndex(({ id }) => id === filterId) === index
-              )
+                  arr.findIndex(({ id }) => id === filterId) === index,
+              ),
             )
             .then(callback);
         },
-        400
+        400,
       ),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -131,7 +131,7 @@ function LocationSearch() {
         if (newValue)
           map.panTo(
             { lat: newValue.lat, lng: newValue.lng },
-            { animate: true }
+            { animate: true },
           );
       }}
       onInputChange={(_, newInput) => setInput(newInput)}

@@ -27,7 +27,7 @@ export default function DatePickers({
     setStartDate(newValue);
     if (newValue && endDate && newValue.isAfter(endDate)) {
       setStartDateError(
-        "Aloituspäivä ei voi olla myöhemmin kuin vertailtava päivä"
+        "Aloituspäivä ei voi olla myöhemmin kuin vertailtava päivä",
       );
     } else {
       setStartDateError(null);
@@ -39,7 +39,7 @@ export default function DatePickers({
     setEndDate(newValue);
     if (startDate && newValue && newValue.isBefore(startDate)) {
       setEndDateError(
-        "Vertailtava päivä ei voi olla aikaisemmin kuin aloitupäivä"
+        "Vertailtava päivä ei voi olla aikaisemmin kuin aloitupäivä",
       );
     } else {
       setStartDateError(null);

@@ -40,7 +40,7 @@ export default function Controls({
 }: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
-    dayjs().valueOf()
+    dayjs().valueOf(),
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const theme = useTheme();
@@ -69,7 +69,7 @@ export default function Controls({
           setEndDate(dayjs(value));
         }
       }, 400),
-    [setEndDate, setStartDate]
+    [setEndDate, setStartDate],
   );
 
   const handleSliderChange = (event: Event, value: number | number[]) => {
