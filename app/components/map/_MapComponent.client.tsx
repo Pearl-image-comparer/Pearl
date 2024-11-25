@@ -45,7 +45,7 @@ export default function MapComponent() {
   const [overlayVisibility, setOverlayVisibility] = useState<
     Record<LayerKey, boolean>
   >({
-    sightings: true,
+    sightings: false,
     observations: false,
     conservation: false,
   });
