@@ -8,12 +8,7 @@ component to be rendered on the client side so that Leaflet can access
 the window object and DOM elements.
 */
 
-import {
-  LayersControl,
-  MapContainer,
-  TileLayer,
-  WMSTileLayer,
-} from "react-leaflet";
+import { MapContainer, TileLayer, WMSTileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Controls from "~/components/controls/Controls";
 import SpeciesLayer from "./layers/SpeciesLayer";
@@ -28,6 +23,7 @@ import ReportCreator from "../observations/ReportCreator";
 import type { LatLng } from "leaflet";
 import { Backdrop, Typography } from "@mui/material";
 import { Sighting } from "~/routes/lajidata";
+import { LayerKey } from "../controls/layerControl/LayerControl";
 
 export default function MapComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,6 +38,13 @@ export default function MapComponent() {
   const [reportLocation, setReportLocation] = useState<LatLng | null>(null);
   const [selectLocation, setSelectLocation] = useState(false);
   const [sightings, setSightings] = useState<Sighting[]>([]);
+  const [overlayVisibility, setOverlayVisibility] = useState<
+    Record<LayerKey, boolean>
+  >({
+    sightings: false,
+    observations: false,
+    conservation: false,
+  });
 
   interface WMSParams {
     attribution: string;
@@ -105,11 +108,9 @@ export default function MapComponent() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
         )}
-        <LayersControl position="topright">
-          <SpeciesLayer data={sightings} />
-          <ReportLayer />
-          <ConservationLayer />
-        </LayersControl>
+        {overlayVisibility.sightings && <SpeciesLayer data={sightings} />}
+        {overlayVisibility.observations && <ReportLayer />}
+        {overlayVisibility.conservation && <ConservationLayer />}
         <Controls
           satelliteViewOpen={satelliteViewOpen}
           setSatelliteViewOpen={setSatelliteViewOpen}
@@ -120,6 +121,8 @@ export default function MapComponent() {
           onAddClick={() => setSelectLocation((prev) => !prev)}
           startDate={startDate}
           endDate={endDate}
+          overlayVisibility={overlayVisibility}
+          setOverlayVisibility={setOverlayVisibility}
         />
       </MapContainer>
       <Backdrop

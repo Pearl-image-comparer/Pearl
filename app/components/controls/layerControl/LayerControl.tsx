@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { List, ListItem, Checkbox, Box, Typography } from "@mui/material";
 
 // Mock data: array of layer options
@@ -8,18 +8,17 @@ const layerOptions = [
   { key: "conservation", name: "Suojelualueet" },
 ] as const;
 
-type LayerKey = (typeof layerOptions)[number]["key"];
+export type LayerKey = (typeof layerOptions)[number]["key"];
 
-export default function LayerControl() {
-  //TODO move this to the map component
-  const [overlayVisibility, setOverlayVisibility] = useState<
-    Record<LayerKey, boolean>
-  >({
-    sightings: false,
-    observations: false,
-    conservation: false,
-  });
+interface LayerControlProps {
+  overlayVisibility: Record<LayerKey, boolean>;
+  setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
+}
 
+export default function LayerControl({
+  overlayVisibility,
+  setOverlayVisibility,
+}: LayerControlProps) {
   // Toggle layer
   const handleCheckboxChange = (key: LayerKey) => {
     setOverlayVisibility((prevState) => ({

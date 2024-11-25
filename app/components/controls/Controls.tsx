@@ -8,9 +8,10 @@ import {
 import SearchBar from "./searchbar/SearchBar";
 import Fabs, { type FabsProps } from "./fabs/Fabs";
 import DateSlider from "./slider/DateSlider";
-import { useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
+import { LayerKey } from "./layerControl/LayerControl";
 
 export interface ControlsProps {
   setStartDate: (v: Dayjs | null) => void;
@@ -18,6 +19,8 @@ export interface ControlsProps {
   isDrawerOpen: boolean;
   startDate: Dayjs;
   endDate: Dayjs;
+  overlayVisibility: Record<LayerKey, boolean>;
+  setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
 }
 
 export default function Controls({
@@ -30,6 +33,8 @@ export default function Controls({
   onAddClick,
   startDate,
   endDate,
+  overlayVisibility,
+  setOverlayVisibility,
 }: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
@@ -80,6 +85,8 @@ export default function Controls({
         setEndDate={setEndDate}
         startDate={startDate}
         endDate={endDate}
+        overlayVisibility={overlayVisibility}
+        setOverlayVisibility={setOverlayVisibility}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
       <StyledContainer maxWidth={false}>
