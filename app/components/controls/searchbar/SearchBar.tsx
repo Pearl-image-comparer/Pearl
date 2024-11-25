@@ -4,6 +4,7 @@ import {
   Paper,
   styled,
   TextField,
+  useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useMemo, useState } from "react";
@@ -55,7 +56,10 @@ function LocationSearch() {
           request: { input: string },
           callback: (results?: readonly Location[]) => void,
         ) => {
-          const params = new URLSearchParams({ q: request.input, limit: "10" });
+          const params = new URLSearchParams({
+            q: request.input,
+            limit: "10",
+          });
           // Fetch requested locations using the GISCO API.
           fetch(`https://gisco-services.ec.europa.eu/api/?${params}`)
             .then((response) => response.json())
@@ -159,11 +163,22 @@ function LocationSearch() {
   );
 }
 
-export default function SearchBar() {
+interface SearchBarProps {
+  isDrawerOpen: boolean;
+  isMobile: boolean;
+}
+
+export default function SearchBar({ isDrawerOpen, isMobile }: SearchBarProps) {
+  const theme = useTheme();
+
   const StyledPaper = styled(Paper)({
     position: "absolute",
     top: "0.7rem",
-    left: "0.7rem",
+    left: isMobile || !isDrawerOpen ? "0.7rem" : `${250 + theme.spacing(1)}px`, // 250 + 50 = drawer+bleeding width
+    width:
+      isMobile || !isDrawerOpen
+        ? "calc(100% - 1.4rem)"
+        : `calc(100% - ${250 + 16}px)`, // Subtract drawer width + margins
     right: "0.7rem",
     zIndex: 1000,
   });

@@ -1,19 +1,23 @@
-import { Container, debounce, styled } from "@mui/material";
+import {
+  Container,
+  debounce,
+  styled,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import SearchBar from "./searchbar/SearchBar";
 import Fabs, { type FabsProps } from "./fabs/Fabs";
 import DateSlider from "./slider/DateSlider";
 import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
-
-export interface Period {
-  start: Dayjs;
-  end: Dayjs;
-}
+import MenuDrawer from "./drawer/Drawer";
 
 export interface ControlsProps {
-  period: Period;
-  setStartDate: (v: Dayjs) => void;
-  setEndDate: (v: Dayjs) => void;
+  setStartDate: (v: Dayjs | null) => void;
+  setEndDate: (v: Dayjs | null) => void;
+  isDrawerOpen: boolean;
+  startDate: Dayjs;
+  endDate: Dayjs;
 }
 
 export default function Controls({
@@ -21,15 +25,19 @@ export default function Controls({
   setSatelliteViewOpen,
   comparisonViewOpen,
   setComparisonViewOpen,
-  period,
   setStartDate,
   setEndDate,
   onAddClick,
+  startDate,
+  endDate,
 }: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
     dayjs().valueOf(),
   );
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const StyledContainer = styled(Container)({
     position: "absolute",
@@ -64,7 +72,16 @@ export default function Controls({
 
   return (
     <Container>
-      <SearchBar />
+      <MenuDrawer
+        isDrawerOpen={isDrawerOpen}
+        setIsDrawerOpen={setIsDrawerOpen}
+        isMobile={isMobile}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        startDate={startDate}
+        endDate={endDate}
+      />
+      <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
       <StyledContainer maxWidth={false}>
         <Fabs
           satelliteViewOpen={satelliteViewOpen}
@@ -77,8 +94,8 @@ export default function Controls({
           <DateSlider
             value={sliderValue}
             onChange={handleSliderChange}
-            min={period.start.valueOf()}
-            max={period.end.valueOf()}
+            min={startDate.valueOf()}
+            max={endDate.valueOf()}
           />
         )}
       </StyledContainer>
