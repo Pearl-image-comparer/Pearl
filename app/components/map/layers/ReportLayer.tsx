@@ -1,4 +1,4 @@
-import { LayersControl } from "react-leaflet";
+import { LayerGroup } from "react-leaflet";
 import CustomMarker from "~/components/map/markers/CustomMarker";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import ObservationPopup from "~/components/observations/ObservationPopup";
@@ -45,7 +45,7 @@ export default function ReportLayer() {
   ];
 
   return (
-    <LayersControl.Overlay name="Reports layer">
+    <LayerGroup>
       <MarkerClusterGroup>
         {reports.map((r, index) => (
           <CustomMarker key={index} position={[r.longitude, r.latitude]}>
@@ -53,6 +53,6 @@ export default function ReportLayer() {
           </CustomMarker>
         ))}
       </MarkerClusterGroup>
-    </LayersControl.Overlay>
+    </LayerGroup>
   );
 }

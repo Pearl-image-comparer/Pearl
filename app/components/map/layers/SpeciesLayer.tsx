@@ -1,4 +1,4 @@
-import { LayersControl } from "react-leaflet";
+import { LayerGroup } from "react-leaflet";
 import CustomMarker from "~/components/map/markers/CustomMarker";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { Sighting } from "~/routes/lajidata";
@@ -10,7 +10,7 @@ interface SpeciesLayerProps {
 
 export default function SpeciesLayer({ data }: SpeciesLayerProps) {
   return (
-    <LayersControl.Overlay name="Species layer">
+    <LayerGroup>
       <MarkerClusterGroup>
         {data &&
           data.map((s, index) => (
@@ -23,6 +23,6 @@ export default function SpeciesLayer({ data }: SpeciesLayerProps) {
             </CustomMarker>
           ))}
       </MarkerClusterGroup>
-    </LayersControl.Overlay>
+    </LayerGroup>
   );
 }

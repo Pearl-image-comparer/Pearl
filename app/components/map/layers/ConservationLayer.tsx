@@ -1,8 +1,8 @@
-import { LayersControl, WMSTileLayer } from "react-leaflet";
+import { LayerGroup, WMSTileLayer } from "react-leaflet";
 
 export default function ConservationLayer() {
   return (
-    <LayersControl.Overlay name="Conservation layer">
+    <LayerGroup>
       <WMSTileLayer
         url="https://paikkatiedot.ymparisto.fi/geoserver/syke_luonnonsuojeluohjelma_alueet/wms"
         layers="Luonnonsuojeluohjelmaalueet"
@@ -10,6 +10,6 @@ export default function ConservationLayer() {
         transparent={true}
         opacity={0.33}
       />
-    </LayersControl.Overlay>
+    </LayerGroup>
   );
 }

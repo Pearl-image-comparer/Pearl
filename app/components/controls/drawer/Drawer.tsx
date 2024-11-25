@@ -8,9 +8,10 @@ import {
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
 import { useMap } from "react-leaflet";
-import LayerControl from "../layerControl/LayerControl";
+import LayerControl, { LayerKey } from "../layerControl/LayerControl";
 import DatePickers from "../datePickers/DatePickers";
 import { Dayjs } from "dayjs";
+import { Dispatch, SetStateAction } from "react";
 
 const DrawerWidth = 250;
 const drawerBleeding = 60;
@@ -37,6 +38,8 @@ interface MenuDrawerProps {
   setEndDate: (date: Dayjs | null) => void;
   startDate: Dayjs;
   endDate: Dayjs;
+  overlayVisibility: Record<LayerKey, boolean>;
+  setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
 }
 
 export default function MenuDrawer({
@@ -47,6 +50,8 @@ export default function MenuDrawer({
   setEndDate,
   startDate,
   endDate,
+  overlayVisibility,
+  setOverlayVisibility,
 }: MenuDrawerProps) {
   // Toggle function to open/close the drawer
   const toggleDrawer = () => {
@@ -102,7 +107,10 @@ export default function MenuDrawer({
               startDate={startDate}
               endDate={endDate}
             />
-            <LayerControl />
+            <LayerControl
+              overlayVisibility={overlayVisibility}
+              setOverlayVisibility={setOverlayVisibility}
+            />
           </Box>
         </SwipeableDrawerStyled>
       ) : (
@@ -157,7 +165,10 @@ export default function MenuDrawer({
               startDate={startDate}
               endDate={endDate}
             />
-            <LayerControl />
+            <LayerControl
+              overlayVisibility={overlayVisibility}
+              setOverlayVisibility={setOverlayVisibility}
+            />
           </Box>
         </SwipeableDrawerStyledDesktop>
       )}
