@@ -12,13 +12,7 @@ import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
 
-export interface Period {
-  start: Dayjs;
-  end: Dayjs;
-}
-
 export interface ControlsProps {
-  period: Period;
   setStartDate: (v: Dayjs | null) => void;
   setEndDate: (v: Dayjs | null) => void;
   isDrawerOpen: boolean;
