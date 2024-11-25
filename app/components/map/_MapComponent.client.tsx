@@ -8,11 +8,7 @@ component to be rendered on the client side so that Leaflet can access
 the window object and DOM elements.
 */
 
-import {
-  MapContainer,
-  TileLayer,
-  WMSTileLayer,
-} from "react-leaflet";
+import { MapContainer, TileLayer, WMSTileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Controls from "~/components/controls/Controls";
 import SpeciesLayer from "./layers/SpeciesLayer";

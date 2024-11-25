@@ -15,7 +15,10 @@ interface LayerControlProps {
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
 }
 
-export default function LayerControl({ overlayVisibility, setOverlayVisibility }: LayerControlProps) {
+export default function LayerControl({
+  overlayVisibility,
+  setOverlayVisibility,
+}: LayerControlProps) {
   // Toggle layer
   const handleCheckboxChange = (key: LayerKey) => {
     setOverlayVisibility((prevState) => ({
