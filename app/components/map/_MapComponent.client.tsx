@@ -115,7 +115,6 @@ export default function MapComponent() {
           setSatelliteViewOpen={setSatelliteViewOpen}
           comparisonViewOpen={comparisonViewOpen}
           setComparisonViewOpen={setComparisonViewOpen}
-          period={period}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
           onAddClick={() => setSelectLocation((prev) => !prev)}
