@@ -1,7 +1,20 @@
 import { Box, Button, Card, TextField, Typography } from "@mui/material";
-import { ActionFunctionArgs, json } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  json,
+} from "@remix-run/node";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import argon2 from "argon2";
+import sessions from "~/utils/sessions.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await sessions.getSession(request.headers.get("Cookie"));
+
+  if (session.get("ok")) return json({ auth: true });
+
+  return json({ auth: false });
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   if (request.method !== "POST")
@@ -17,10 +30,20 @@ export async function action({ request }: ActionFunctionArgs) {
   if (!process.env.ADMIN_PASSWORD)
     return json({ error: "Admin password missing" }, { status: 500 });
 
-  if (await argon2.verify(process.env.ADMIN_PASSWORD, password))
-    return json({ ok: true });
+  if (await argon2.verify(process.env.ADMIN_PASSWORD, password)) {
+    const session = await sessions.getSession(request.headers.get("Cookie"));
+    session.set("ok", true);
+    return json(
+      { ok: true },
+      {
+        headers: {
+          "Set-Cookie": await sessions.commitSession(session),
+        },
+      },
+    );
+  }
 
-  return json({ error: "Wrong password" }, { status: 401 });
+  return json({ error: "Invalid password" }, { status: 401 });
 }
 
 function LoginPage(props: { hasError: boolean }) {
@@ -76,9 +99,10 @@ function LoginPage(props: { hasError: boolean }) {
 }
 
 export default function Admin() {
+  const { auth } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
 
-  if (!result || "error" in result || !result.ok)
+  if (!auth && (!result || "error" in result || !result.ok))
     return (
       <LoginPage
         hasError={typeof result !== "undefined" && "error" in result}
