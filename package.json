@@ -25,6 +25,7 @@
     "@remix-run/react": "^2.12.1",
     "@remix-run/serve": "^2.12.1",
     "@types/leaflet-side-by-side": "^2.2.3",
+    "argon2": "^0.41.1",
     "dayjs": "^1.11.13",
     "isbot": "^4.4.0",
     "keyv": "^5.1.2",

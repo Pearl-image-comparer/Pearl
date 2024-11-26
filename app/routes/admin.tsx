@@ -1,6 +1,7 @@
 import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
+import argon2 from "argon2";
 
 export async function action({ request }: ActionFunctionArgs) {
   if (request.method !== "POST")
@@ -13,10 +14,13 @@ export async function action({ request }: ActionFunctionArgs) {
     return json({ error: "Password not provided" }, { status: 400 });
   }
 
-  if (password !== "demo")
-    return json({ error: "Wrong password" }, { status: 401 });
+  if (!process.env.ADMIN_PASSWORD)
+    return json({ error: "Admin password missing" }, { status: 500 });
 
-  return json({ ok: true });
+  if (await argon2.verify(process.env.ADMIN_PASSWORD, password))
+    return json({ ok: true });
+
+  return json({ error: "Wrong password" }, { status: 401 });
 }
 
 function LoginPage(props: { hasError: boolean }) {
