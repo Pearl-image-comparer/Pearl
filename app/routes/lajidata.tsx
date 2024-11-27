@@ -1,5 +1,6 @@
-import { json, LoaderFunction } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { LatLngExpression } from "leaflet";
+import { parseLatitude, parseLongitude } from "~/utils/parser";
 
 export interface Sighting {
   finnishName: string;
@@ -33,7 +34,7 @@ interface LajiApiResponse {
   }>;
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const bounds = url.searchParams.get("bounds");
   const accessToken = process.env.LAJI_ACCESS_TOKEN;
@@ -52,21 +53,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const [southLat, northLat, westLng, eastLng] = bounds.split(":");
 
-  function isValidLatitude(lat: string) {
-    const num = parseFloat(lat);
-    return !isNaN(num) && num >= -90 && num <= 90;
-  }
-
-  function isValidLongitude(lng: string) {
-    const num = parseFloat(lng);
-    return !isNaN(num) && num >= -180 && num <= 180;
-  }
-
   if (
-    !isValidLatitude(southLat) ||
-    !isValidLatitude(northLat) ||
-    !isValidLongitude(westLng) ||
-    !isValidLongitude(eastLng)
+    parseLatitude(southLat) === null ||
+    parseLatitude(northLat) === null ||
+    parseLongitude(westLng) === null ||
+    parseLongitude(eastLng) === null
   ) {
     throw new Error("Invalid bounds provided");
   }
@@ -110,4 +101,4 @@ export const loader: LoaderFunction = async ({ request }) => {
       { status: 500 },
     );
   }
-};
+}
