@@ -2,18 +2,20 @@ import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
+  MetaFunction,
   json,
+  redirect,
 } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
 import argon2 from "argon2";
 import sessions from "~/utils/sessions.server";
 
+export const meta: MetaFunction = () => [{ title: "Admin Kirjautuminen" }];
+
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await sessions.getSession(request.headers.get("Cookie"));
-
-  if (session.get("ok")) return json({ auth: true });
-
-  return json({ auth: false });
+  if (session.get("ok")) return redirect("/admin");
+  return null;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -46,7 +48,9 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ error: "Invalid password" }, { status: 401 });
 }
 
-function LoginPage(props: { hasError: boolean }) {
+export default function AdminLogin() {
+  const data = useActionData<typeof action>();
+
   return (
     <Box
       sx={{
@@ -86,7 +90,7 @@ function LoginPage(props: { hasError: boolean }) {
               type="password"
               fullWidth
               autoComplete="current-password"
-              color={props.hasError ? "error" : "primary"}
+              color={!data || "error" in data || !data.ok ? "error" : "primary"}
             />
             <Button type="submit" variant="contained">
               Kirjaudu sisään
@@ -96,18 +100,4 @@ function LoginPage(props: { hasError: boolean }) {
       </Card>
     </Box>
   );
-}
-
-export default function Admin() {
-  const { auth } = useLoaderData<typeof loader>();
-  const result = useActionData<typeof action>();
-
-  if (!auth && (!result || "error" in result || !result.ok))
-    return (
-      <LoginPage
-        hasError={typeof result !== "undefined" && "error" in result}
-      />
-    );
-
-  return <>Success</>;
 }
