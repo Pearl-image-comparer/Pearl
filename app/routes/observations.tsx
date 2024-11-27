@@ -3,29 +3,30 @@ import {
   type ActionFunctionArgs,
   json,
 } from "@remix-run/node";
-import {
-  getObservations,
-  createObservation,
-  type Location,
-} from "~/utils/db.server";
+import { getObservations, createObservation } from "~/utils/db.server";
 import { createObservation as uploadToS3 } from "~/utils/s3.server";
+import { parseLatitude, parseLongitude } from "~/utils/parser";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const topLeftX = parseFloat(url.searchParams.get("topLeftX") || "");
-  const topLeftY = parseFloat(url.searchParams.get("topLeftY") || "");
-  const bottomRightX = parseFloat(url.searchParams.get("bottomRightX") || "");
-  const bottomRightY = parseFloat(url.searchParams.get("bottomRightY") || "");
+  const startLongitude = parseLongitude(url.searchParams.get("startLongitude"));
+  const startLatitude = parseLatitude(url.searchParams.get("startLatitude"));
+  const endLongitude = parseLongitude(url.searchParams.get("endLongitude"));
+  const endLatitude = parseLatitude(url.searchParams.get("endLatitude"));
 
-  let area;
-  if (topLeftX && topLeftY && bottomRightX && bottomRightY) {
-    area = {
-      topLeft: { x: topLeftX, y: topLeftY },
-      bottomRight: { x: bottomRightX, y: bottomRightY },
-    };
+  if (
+    startLongitude !== null &&
+    startLatitude !== null &&
+    endLongitude !== null &&
+    endLatitude !== null
+  ) {
+    return getObservations({
+      topLeft: { x: startLongitude, y: startLatitude },
+      bottomRight: { x: endLongitude, y: endLatitude },
+    });
   }
 
-  return getObservations(area);
+  return json({ error: "Missing required fields" }, { status: 400 });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -34,10 +35,18 @@ export async function action({ request }: ActionFunctionArgs) {
 
     const title = formData.get("title") as string | null;
     const description = formData.get("description") as string | null;
-    const location = formData.get("location") as Location | null;
     const picture = formData.get("picture") as File | null;
 
-    if (!title || !description || !location) {
+    const longitude = parseLongitude(
+      formData.get("longitude") as string | null,
+    );
+    const latitude = parseLatitude(formData.get("latitude") as string | null);
+
+    if (longitude === null || latitude === null) {
+      return json({ error: "Invalid coordinates provided" }, { status: 400 });
+    }
+
+    if (!title || !description) {
       return json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -63,7 +72,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const newObservation = await createObservation(
         title,
         description,
-        location,
+        { x: longitude, y: latitude },
         pictureKey,
       );
 
