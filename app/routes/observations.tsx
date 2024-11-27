@@ -20,10 +20,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
     endLongitude !== null &&
     endLatitude !== null
   ) {
-    return getObservations({
+    const observations = await getObservations({
       topLeft: { x: startLongitude, y: startLatitude },
       bottomRight: { x: endLongitude, y: endLatitude },
     });
+    // Map observations to a better format.
+    return observations.map((observation) => ({
+      id: observation.id,
+      title: observation.title,
+      description: observation.description,
+      data: observation.date,
+      longitude: observation.location.x,
+      latitude: observation.location.y,
+      pictureKey: observation.picture,
+    }));
   }
 
   return json({ error: "Missing required fields" }, { status: 400 });
