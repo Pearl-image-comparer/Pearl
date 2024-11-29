@@ -35,6 +35,7 @@ export default function Controls({
   endDate,
   overlayVisibility,
   setOverlayVisibility,
+  setUserLocation,
 }: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
@@ -96,6 +97,7 @@ export default function Controls({
           setSatelliteViewOpen={setSatelliteViewOpen}
           setComparisonViewOpen={setComparisonViewOpen}
           onAddClick={onAddClick}
+          setUserLocation={setUserLocation}
         />
         {satelliteViewOpen && (
           <DateSlider
