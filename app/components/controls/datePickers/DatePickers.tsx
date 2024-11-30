@@ -14,7 +14,6 @@ interface DatePickersProps {
   startDate: Dayjs | null;
   endDate: Dayjs | null;
   setPeriod: Dispatch<SetStateAction<Period>>;
-  
 }
 
 export default function DatePickers({
@@ -22,7 +21,7 @@ export default function DatePickers({
   setEndDate,
   startDate,
   endDate,
-  setPeriod
+  setPeriod,
 }: DatePickersProps) {
   const [startDateError, setStartDateError] = useState<string | null>(null);
   const [endDateError, setEndDateError] = useState<string | null>(null);
@@ -36,7 +35,6 @@ export default function DatePickers({
     } else {
       setStartDateError(null);
       setEndDateError(null);
-      
     }
 
     // If the value is not null, set the period state.
@@ -55,7 +53,6 @@ export default function DatePickers({
     } else {
       setStartDateError(null);
       setEndDateError(null);
-      
     }
     // If the value is not null, set the period state.
     if (newValue) {

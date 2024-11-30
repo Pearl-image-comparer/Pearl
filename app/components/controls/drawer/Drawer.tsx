@@ -101,9 +101,11 @@ export default function MenuDrawer({
               borderTopRightRadius: 10,
               //pointerEvents: 'all', if used, drawer no longer works with swiping
             }}
-          > <IconButton onClick={toggleDrawer}>
-            <DragHandleRoundedIcon />
-          </IconButton>
+          >
+            {" "}
+            <IconButton onClick={toggleDrawer}>
+              <DragHandleRoundedIcon />
+            </IconButton>
           </Box>
           <Box sx={{ padding: 2, height: "100%" }}>
             <DatePickers

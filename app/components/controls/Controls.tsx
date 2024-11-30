@@ -4,7 +4,7 @@ import {
   styled,
   useTheme,
   useMediaQuery,
-  Paper
+  Paper,
 } from "@mui/material";
 import SearchBar from "./searchbar/SearchBar";
 import Fabs, { type FabsProps } from "./fabs/Fabs";
@@ -103,35 +103,41 @@ export default function Controls({
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
 
       <StyledContainer maxWidth={false}>
-      <Paper
+        <Paper
           sx={{
             position: "absolute",
             backgroundColor: "transparent",
             boxShadow: "none",
             bottom: "2rem",
-            left: isMobile || !isDrawerOpen ? "0.7rem" : `${300 + theme.spacing(1)}px`, // 300 + 50 = drawer+bleeding width
-            width: isMobile || !isDrawerOpen ? "calc(100% - 1.4rem)" : `calc(100% - ${300 + 20}px)`, // Subtract drawer width + margins
+            left:
+              isMobile || !isDrawerOpen
+                ? "0.7rem"
+                : `${300 + theme.spacing(1)}px`, // 300 + 50 = drawer+bleeding width
+            width:
+              isMobile || !isDrawerOpen
+                ? "calc(100% - 1.4rem)"
+                : `calc(100% - ${300 + 20}px)`, // Subtract drawer width + margins
             right: "0.7rem",
             zIndex: 1000,
           }}
         >
-        <Fabs
-          satelliteViewOpen={satelliteViewOpen}
-          comparisonViewOpen={comparisonViewOpen}
-          setSatelliteViewOpen={setSatelliteViewOpen}
-          setComparisonViewOpen={setComparisonViewOpen}
-          onAddClick={onAddClick}
-          setUserLocation={setUserLocation}
-        />
-        {satelliteViewOpen && (
-          
-          <DateSlider
-            value={sliderValue}
-            onChange={handleSliderChange}
-            min={period.start.valueOf()}
-            max={period.end.valueOf()}
+          <Fabs
+            satelliteViewOpen={satelliteViewOpen}
+            comparisonViewOpen={comparisonViewOpen}
+            setSatelliteViewOpen={setSatelliteViewOpen}
+            setComparisonViewOpen={setComparisonViewOpen}
+            onAddClick={onAddClick}
+            setUserLocation={setUserLocation}
           />
-        )}</Paper>
+          {satelliteViewOpen && (
+            <DateSlider
+              value={sliderValue}
+              onChange={handleSliderChange}
+              min={period.start.valueOf()}
+              max={period.end.valueOf()}
+            />
+          )}
+        </Paper>
       </StyledContainer>
     </Container>
   );
