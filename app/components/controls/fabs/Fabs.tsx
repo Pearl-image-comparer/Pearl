@@ -5,6 +5,8 @@ import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { useTheme, Theme } from "@mui/material/styles";
 import { useMapEvent } from "react-leaflet";
 import CompareIcon from "@mui/icons-material/Compare";
+import { Dispatch, SetStateAction } from "react";
+import { LatLng } from "leaflet";
 
 export interface FabsProps {
   satelliteViewOpen: boolean;
@@ -12,6 +14,7 @@ export interface FabsProps {
   comparisonViewOpen: boolean;
   setComparisonViewOpen: (v: boolean) => void;
   onAddClick: () => void;
+  setUserLocation: Dispatch<SetStateAction<LatLng | null>>;
 }
 
 export default function Fabs({
@@ -20,6 +23,7 @@ export default function Fabs({
   comparisonViewOpen,
   setComparisonViewOpen,
   onAddClick,
+  setUserLocation,
 }: FabsProps) {
   const theme: Theme = useTheme();
 
@@ -56,9 +60,10 @@ export default function Fabs({
     },
   });
 
-  const map = useMapEvent("locationfound", (event) =>
-    map.flyTo(event.latlng, 16),
-  );
+  const map = useMapEvent("locationfound", (event) => {
+    map.flyTo(event.latlng, 16);
+    setUserLocation(event.latlng);
+  });
 
   return (
     <StyledStack direction="column">

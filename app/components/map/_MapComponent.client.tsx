@@ -24,6 +24,7 @@ import type { LatLng } from "leaflet";
 import { Backdrop, Typography } from "@mui/material";
 import { Sighting } from "~/routes/lajidata";
 import { LayerKey } from "../controls/layerControl/LayerControl";
+import UserMarker from "./markers/UserMarker";
 
 export default function MapComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,6 +39,7 @@ export default function MapComponent() {
   const [reportLocation, setReportLocation] = useState<LatLng | null>(null);
   const [selectLocation, setSelectLocation] = useState(false);
   const [sightings, setSightings] = useState<Sighting[]>([]);
+  const [userLocation, setUserLocation] = useState<LatLng | null>(null);
   const [overlayVisibility, setOverlayVisibility] = useState<
     Record<LayerKey, boolean>
   >({
@@ -108,6 +110,10 @@ export default function MapComponent() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
         )}
+        <UserMarker
+          location={userLocation}
+          handleClick={() => setReportLocation(userLocation)}
+        />
         {overlayVisibility.sightings && <SpeciesLayer data={sightings} />}
         {overlayVisibility.observations && <ReportLayer />}
         {overlayVisibility.conservation && <ConservationLayer />}
@@ -125,6 +131,7 @@ export default function MapComponent() {
           endDate={endDate}
           overlayVisibility={overlayVisibility}
           setOverlayVisibility={setOverlayVisibility}
+          setUserLocation={setUserLocation}
         />
       </MapContainer>
       <Backdrop
