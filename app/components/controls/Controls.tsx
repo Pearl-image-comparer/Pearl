@@ -4,6 +4,7 @@ import {
   styled,
   useTheme,
   useMediaQuery,
+  Paper
 } from "@mui/material";
 import SearchBar from "./searchbar/SearchBar";
 import Fabs, { type FabsProps } from "./fabs/Fabs";
@@ -89,7 +90,20 @@ export default function Controls({
         setOverlayVisibility={setOverlayVisibility}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
+
       <StyledContainer maxWidth={false}>
+      <Paper
+          sx={{
+            position: "absolute",
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            bottom: "1rem",
+            left: isMobile || !isDrawerOpen ? "0.7rem" : `${300 + theme.spacing(1)}px`, // 300 + 50 = drawer+bleeding width
+            width: isMobile || !isDrawerOpen ? "calc(100% - 1.4rem)" : `calc(100% - ${300 + 20}px)`, // Subtract drawer width + margins
+            right: "0.7rem",
+            zIndex: 1000,
+          }}
+        >
         <Fabs
           satelliteViewOpen={satelliteViewOpen}
           comparisonViewOpen={comparisonViewOpen}
@@ -98,13 +112,14 @@ export default function Controls({
           onAddClick={onAddClick}
         />
         {satelliteViewOpen && (
+          
           <DateSlider
             value={sliderValue}
             onChange={handleSliderChange}
             min={startDate.valueOf()}
             max={endDate.valueOf()}
           />
-        )}
+        )}</Paper>
       </StyledContainer>
     </Container>
   );

@@ -13,7 +13,7 @@ import DatePickers from "../datePickers/DatePickers";
 import { Dayjs } from "dayjs";
 import { Dispatch, SetStateAction } from "react";
 
-const DrawerWidth = 250;
+const DrawerWidth = 300;
 const drawerBleeding = 60;
 
 //mobile drawer

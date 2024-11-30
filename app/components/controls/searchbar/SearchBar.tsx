@@ -174,11 +174,11 @@ export default function SearchBar({ isDrawerOpen, isMobile }: SearchBarProps) {
   const StyledPaper = styled(Paper)({
     position: "absolute",
     top: "0.7rem",
-    left: isMobile || !isDrawerOpen ? "0.7rem" : `${250 + theme.spacing(1)}px`, // 250 + 50 = drawer+bleeding width
+    left: isMobile || !isDrawerOpen ? "0.7rem" : `${300 + theme.spacing(1)}px`, // 300 + 50 = drawer+bleeding width
     width:
       isMobile || !isDrawerOpen
         ? "calc(100% - 1.4rem)"
-        : `calc(100% - ${250 + 16}px)`, // Subtract drawer width + margins
+        : `calc(100% - ${300 + 20}px)`, // Subtract drawer width + margins
     right: "0.7rem",
     zIndex: 1000,
   });
