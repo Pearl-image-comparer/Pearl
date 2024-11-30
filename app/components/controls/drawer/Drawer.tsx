@@ -12,6 +12,7 @@ import LayerControl, { LayerKey } from "../layerControl/LayerControl";
 import DatePickers from "../datePickers/DatePickers";
 import { Dayjs } from "dayjs";
 import { Dispatch, SetStateAction } from "react";
+import { Period } from "../Controls";
 
 const DrawerWidth = 300;
 const drawerBleeding = 60;
@@ -36,6 +37,7 @@ interface MenuDrawerProps {
   isMobile: boolean;
   setStartDate: (date: Dayjs | null) => void;
   setEndDate: (date: Dayjs | null) => void;
+  setPeriod: Dispatch<SetStateAction<Period>>;
   startDate: Dayjs;
   endDate: Dayjs;
   overlayVisibility: Record<LayerKey, boolean>;
@@ -46,6 +48,7 @@ export default function MenuDrawer({
   isDrawerOpen,
   setIsDrawerOpen,
   isMobile,
+  setPeriod,
   setStartDate,
   setEndDate,
   startDate,
@@ -106,6 +109,7 @@ export default function MenuDrawer({
               setEndDate={setEndDate}
               startDate={startDate}
               endDate={endDate}
+              setPeriod={setPeriod}
             />
             <LayerControl
               overlayVisibility={overlayVisibility}
@@ -164,6 +168,7 @@ export default function MenuDrawer({
               setEndDate={setEndDate}
               startDate={startDate}
               endDate={endDate}
+              setPeriod={setPeriod}
             />
             <LayerControl
               overlayVisibility={overlayVisibility}

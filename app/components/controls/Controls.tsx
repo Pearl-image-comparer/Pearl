@@ -14,7 +14,14 @@ import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
 
+export interface Period {
+  start: Dayjs;
+  end: Dayjs;
+}
+
 export interface ControlsProps {
+  period: Period;
+  setPeriod: Dispatch<SetStateAction<Period>>;
   setStartDate: (v: Dayjs | null) => void;
   setEndDate: (v: Dayjs | null) => void;
   isDrawerOpen: boolean;
@@ -29,6 +36,8 @@ export default function Controls({
   setSatelliteViewOpen,
   comparisonViewOpen,
   setComparisonViewOpen,
+  period,
+  setPeriod,
   setStartDate,
   setEndDate,
   onAddClick,
@@ -82,6 +91,7 @@ export default function Controls({
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
         isMobile={isMobile}
+        setPeriod={setPeriod}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         startDate={startDate}
@@ -116,8 +126,8 @@ export default function Controls({
           <DateSlider
             value={sliderValue}
             onChange={handleSliderChange}
-            min={startDate.valueOf()}
-            max={endDate.valueOf()}
+            min={period.start.valueOf()}
+            max={period.end.valueOf()}
           />
         )}</Paper>
       </StyledContainer>
