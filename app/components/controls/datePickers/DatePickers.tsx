@@ -1,17 +1,19 @@
 import { Box, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import { fiFI } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/fi";
+import { Period } from "../Controls";
 
 interface DatePickersProps {
   setStartDate: (date: Dayjs | null) => void;
   setEndDate: (date: Dayjs | null) => void;
   startDate: Dayjs | null;
   endDate: Dayjs | null;
+  setPeriod: Dispatch<SetStateAction<Period>>;
 }
 
 export default function DatePickers({
@@ -19,6 +21,7 @@ export default function DatePickers({
   setEndDate,
   startDate,
   endDate,
+  setPeriod,
 }: DatePickersProps) {
   const [startDateError, setStartDateError] = useState<string | null>(null);
   const [endDateError, setEndDateError] = useState<string | null>(null);
@@ -33,10 +36,16 @@ export default function DatePickers({
       setStartDateError(null);
       setEndDateError(null);
     }
+
+    // If the value is not null, set the period state.
+    if (newValue) {
+      setPeriod((prev) => ({ ...prev, start: newValue }));
+    }
   };
 
   const handleEndDateChange = (newValue: Dayjs | null) => {
     setEndDate(newValue);
+
     if (startDate && newValue && newValue.isBefore(startDate)) {
       setEndDateError(
         "Vertailtava päivä ei voi olla aikaisemmin kuin aloitupäivä",
@@ -44,6 +53,10 @@ export default function DatePickers({
     } else {
       setStartDateError(null);
       setEndDateError(null);
+    }
+    // If the value is not null, set the period state.
+    if (newValue) {
+      setPeriod((prev) => ({ ...prev, end: newValue }));
     }
   };
 

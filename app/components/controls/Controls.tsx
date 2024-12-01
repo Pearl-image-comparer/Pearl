@@ -4,6 +4,7 @@ import {
   styled,
   useTheme,
   useMediaQuery,
+  Paper,
 } from "@mui/material";
 import SearchBar from "./searchbar/SearchBar";
 import Fabs, { type FabsProps } from "./fabs/Fabs";
@@ -13,7 +14,14 @@ import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
 
+export interface Period {
+  start: Dayjs;
+  end: Dayjs;
+}
+
 export interface ControlsProps {
+  period: Period;
+  setPeriod: Dispatch<SetStateAction<Period>>;
   setStartDate: (v: Dayjs | null) => void;
   setEndDate: (v: Dayjs | null) => void;
   isDrawerOpen: boolean;
@@ -28,6 +36,8 @@ export default function Controls({
   setSatelliteViewOpen,
   comparisonViewOpen,
   setComparisonViewOpen,
+  period,
+  setPeriod,
   setStartDate,
   setEndDate,
   onAddClick,
@@ -82,6 +92,7 @@ export default function Controls({
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
         isMobile={isMobile}
+        setPeriod={setPeriod}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         startDate={startDate}
@@ -90,23 +101,43 @@ export default function Controls({
         setOverlayVisibility={setOverlayVisibility}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
+
       <StyledContainer maxWidth={false}>
-        <Fabs
-          satelliteViewOpen={satelliteViewOpen}
-          comparisonViewOpen={comparisonViewOpen}
-          setSatelliteViewOpen={setSatelliteViewOpen}
-          setComparisonViewOpen={setComparisonViewOpen}
-          onAddClick={onAddClick}
-          setUserLocation={setUserLocation}
-        />
-        {satelliteViewOpen && (
-          <DateSlider
-            value={sliderValue}
-            onChange={handleSliderChange}
-            min={startDate.valueOf()}
-            max={endDate.valueOf()}
+        <Paper
+          sx={{
+            position: "absolute",
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            bottom: "2rem",
+            left:
+              isMobile || !isDrawerOpen
+                ? "0.7rem"
+                : `${300 + theme.spacing(1)}px`, // 300 + 50 = drawer+bleeding width
+            width:
+              isMobile || !isDrawerOpen
+                ? "calc(100% - 1.4rem)"
+                : `calc(100% - ${300 + 20}px)`, // Subtract drawer width + margins
+            right: "0.7rem",
+            zIndex: 1000,
+          }}
+        >
+          <Fabs
+            satelliteViewOpen={satelliteViewOpen}
+            comparisonViewOpen={comparisonViewOpen}
+            setSatelliteViewOpen={setSatelliteViewOpen}
+            setComparisonViewOpen={setComparisonViewOpen}
+            onAddClick={onAddClick}
+            setUserLocation={setUserLocation}
           />
-        )}
+          {satelliteViewOpen && (
+            <DateSlider
+              value={sliderValue}
+              onChange={handleSliderChange}
+              min={period.start.valueOf()}
+              max={period.end.valueOf()}
+            />
+          )}
+        </Paper>
       </StyledContainer>
     </Container>
   );
