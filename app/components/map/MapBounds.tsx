@@ -1,18 +1,28 @@
 import { useMap } from "react-leaflet";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Sighting } from "~/routes/lajidata";
 import { debounce } from "@mui/material";
+import { LoadingState } from "./_MapComponent.client";
 
 interface MapBoundsProps {
   setSightings: (v: Sighting[]) => void;
+  setLoading: Dispatch<SetStateAction<LoadingState>>;
 }
 
-export default function MapBounds({ setSightings }: MapBoundsProps) {
+export default function MapBounds({
+  setSightings,
+  setLoading,
+}: MapBoundsProps) {
   const map = useMap();
   const [hasFetchedInitially, setHasFetchedInitially] = useState(false);
 
   useEffect(() => {
     const fetchSightings = () => {
+      setLoading((prev) => ({
+        ...prev,
+        sightings: true,
+      }));
+
       const newBounds = map.getBounds();
       const northEast = newBounds.getNorthEast();
       const southEast = newBounds.getSouthEast();
@@ -37,6 +47,10 @@ export default function MapBounds({ setSightings }: MapBoundsProps) {
         })
         .then((data) => {
           setSightings(data);
+          setLoading((prev) => ({
+            ...prev,
+            sightings: false,
+          }));
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -57,7 +71,7 @@ export default function MapBounds({ setSightings }: MapBoundsProps) {
       map.off("moveend", debouncedFetch);
       debouncedFetch.clear();
     };
-  }, [map, hasFetchedInitially, setSightings]);
+  }, [map, hasFetchedInitially, setSightings, setLoading]);
 
   return null;
 }

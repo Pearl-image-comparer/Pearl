@@ -26,6 +26,11 @@ import { Sighting } from "~/routes/lajidata";
 import { LayerKey } from "../controls/layerControl/LayerControl";
 import UserMarker from "./markers/UserMarker";
 
+export interface LoadingState {
+  sightings: boolean;
+  observations: boolean;
+}
+
 export default function MapComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [period, setPeriod] = useState({
@@ -46,6 +51,11 @@ export default function MapComponent() {
     sightings: false,
     observations: false,
     conservation: false,
+  });
+
+  const [loading, setLoading] = useState<LoadingState>({
+    sightings: false,
+    observations: false,
   });
 
   interface WMSParams {
@@ -87,7 +97,7 @@ export default function MapComponent() {
           }}
           singleClickSelect={selectLocation}
         />
-        <MapBounds setSightings={setSightings} />
+        <MapBounds setSightings={setSightings} setLoading={setLoading} />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
             <SideBySide
@@ -132,6 +142,7 @@ export default function MapComponent() {
           overlayVisibility={overlayVisibility}
           setOverlayVisibility={setOverlayVisibility}
           setUserLocation={setUserLocation}
+          loading={loading}
         />
       </MapContainer>
       <Backdrop
