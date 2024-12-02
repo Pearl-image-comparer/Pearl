@@ -101,8 +101,8 @@ export default function MapComponent() {
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
             <SideBySide
-              leftDate={startDate.toISOString().split("T")[0]}
-              rightDate={endDate.toISOString().split("T")[0]}
+              leftDate={dayjs(startDate).format("YYYY-MM-DD")}
+              rightDate={dayjs(endDate).format("YYYY-MM-DD")}
               opacity={1}
               onTop="left"
             />
@@ -111,7 +111,7 @@ export default function MapComponent() {
               attribution='&copy; <a href="https://dataspace.copernicus.eu/" target="_blank">Copernicus Data Space Ecosystem</a>'
               url="/wms"
               layers="TRUE_COLOR"
-              time={endDate.toISOString().split("T")[0]}
+              time={dayjs(endDate).format("YYYY-MM-DD")}
             />
           )
         ) : (

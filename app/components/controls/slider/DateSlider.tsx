@@ -1,5 +1,6 @@
 import { Container, Slider, styled, Typography } from "@mui/material";
 import dayjs from "dayjs";
+import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
 interface DateSliderProps {
@@ -25,6 +26,9 @@ export default function DateSlider({
   max,
 }: DateSliderProps) {
   const map = useMap();
+
+  // empty useEffect to update the component when the value changes
+  useEffect(() => {}, [value]);
 
   // Handling the map drag when slider is dragged
   const stopMapDrag = () => map.dragging.disable();
@@ -55,13 +59,13 @@ export default function DateSlider({
       <RowContainer>
         <Typography color="white" variant="h6">
           {typeof value === "number"
-            ? dayjs(min).toISOString().split("T")[0]
-            : dayjs(value[0]).toISOString().split("T")[0]}
+            ? dayjs(min).format("DD-MM-YYYY")
+            : dayjs(value[0]).format("DD-MM-YYYY")}
         </Typography>
         <Typography color="white" variant="h6">
           {typeof value === "number"
-            ? dayjs(value).toISOString().split("T")[0]
-            : dayjs(value[1]).toISOString().split("T")[0]}
+            ? dayjs(value).format("DD-MM-YYYY")
+            : dayjs(value[1]).format("DD-MM-YYYY")}
         </Typography>
       </RowContainer>
       <StyledSlider
