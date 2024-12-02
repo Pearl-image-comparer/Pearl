@@ -8,7 +8,7 @@ component to be rendered on the client side so that Leaflet can access
 the window object and DOM elements.
 */
 
-import { MapContainer, TileLayer, WMSTileLayer } from "react-leaflet";
+import { MapContainer, Popup, TileLayer, WMSTileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Controls from "~/components/controls/Controls";
 import SpeciesLayer from "./layers/SpeciesLayer";
@@ -21,10 +21,11 @@ import { memo, useState } from "react";
 import dayjs from "dayjs";
 import ReportCreator from "../observations/ReportCreator";
 import type { LatLng } from "leaflet";
-import { Backdrop, Typography } from "@mui/material";
+import { Backdrop, Button, Typography } from "@mui/material";
 import { Sighting } from "~/routes/lajidata";
 import { LayerKey } from "../controls/layerControl/LayerControl";
 import UserMarker from "./markers/UserMarker";
+import CustomMarker from "./markers/CustomMarker";
 
 export interface LoadingState {
   sightings: boolean;
@@ -42,6 +43,7 @@ export default function MapComponent() {
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
   const [reportLocation, setReportLocation] = useState<LatLng | null>(null);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [sightings, setSightings] = useState<Sighting[]>([]);
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
@@ -80,9 +82,12 @@ export default function MapComponent() {
   return (
     <div className="map" style={{ width: "100%", height: "100%" }}>
       <ReportDialog
-        isOpen={reportLocation !== null}
+        isOpen={reportDialogOpen}
         location={reportLocation}
-        onClose={() => setReportLocation(null)}
+        onClose={() => {
+          setReportDialogOpen(false);
+          setReportLocation(null);
+        }}
       />
       <MapContainer
         center={center}
@@ -96,6 +101,16 @@ export default function MapComponent() {
           }}
           singleClickSelect={selectLocation}
         />
+        {reportLocation && (
+          <CustomMarker position={reportLocation}>
+            <Popup>
+              <Button onClick={() => setReportDialogOpen(true)}>
+                Luo raportti?
+              </Button>
+            </Popup>
+          </CustomMarker>
+        )}
+
         <MapBounds setSightings={setSightings} setLoading={setLoading} />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
