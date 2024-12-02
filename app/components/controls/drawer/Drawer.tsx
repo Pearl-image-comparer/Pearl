@@ -42,6 +42,7 @@ interface MenuDrawerProps {
   endDate: Dayjs;
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
+  setSliderValue: Dispatch<SetStateAction<number | number[]>>;
 }
 
 export default function MenuDrawer({
@@ -55,6 +56,7 @@ export default function MenuDrawer({
   endDate,
   overlayVisibility,
   setOverlayVisibility,
+  setSliderValue,
 }: MenuDrawerProps) {
   // Toggle function to open/close the drawer
   const toggleDrawer = () => {
@@ -114,6 +116,7 @@ export default function MenuDrawer({
               startDate={startDate}
               endDate={endDate}
               setPeriod={setPeriod}
+              setSliderValue={setSliderValue}
             />
             <LayerControl
               overlayVisibility={overlayVisibility}
@@ -174,6 +177,7 @@ export default function MenuDrawer({
               startDate={startDate}
               endDate={endDate}
               setPeriod={setPeriod}
+              setSliderValue={setSliderValue}
             />
             <LayerControl
               overlayVisibility={overlayVisibility}
