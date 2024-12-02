@@ -83,7 +83,6 @@ export default function MapComponent() {
         isOpen={reportLocation !== null}
         location={reportLocation}
         onClose={() => setReportLocation(null)}
-        onSubmit={console.log}
       />
       <MapContainer
         center={center}
