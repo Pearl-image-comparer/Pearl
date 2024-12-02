@@ -6,7 +6,7 @@ import { LoadingState } from "./_MapComponent.client";
 import { Observation } from "~/routes/observations";
 
 interface MapBoundsProps {
-  setSightings: (v: Sighting[]) => void;
+  setSightings: Dispatch<SetStateAction<Sighting[]>>;
   setLoading: Dispatch<SetStateAction<LoadingState>>;
   setObservations: (v: Observation[]) => void;
 }

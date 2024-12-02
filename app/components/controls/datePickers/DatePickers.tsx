@@ -9,8 +9,8 @@ import "dayjs/locale/fi";
 import { Period } from "../Controls";
 
 interface DatePickersProps {
-  setStartDate: (date: Dayjs | null) => void;
-  setEndDate: (date: Dayjs | null) => void;
+  setStartDate: Dispatch<SetStateAction<Dayjs | null>>;
+  setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
   startDate: Dayjs | null;
   endDate: Dayjs | null;
   setPeriod: Dispatch<SetStateAction<Period>>;

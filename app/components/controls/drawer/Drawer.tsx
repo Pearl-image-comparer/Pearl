@@ -33,7 +33,7 @@ const SwipeableDrawerStyledDesktop = styled(Drawer)(() => ({
 
 interface MenuDrawerProps {
   isDrawerOpen: boolean;
-  setIsDrawerOpen: (open: boolean) => void;
+  setIsDrawerOpen: Dispatch<SetStateAction<boolean>>;
   isMobile: boolean;
   setStartDate: Dispatch<SetStateAction<Dayjs | null>>;
   setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
