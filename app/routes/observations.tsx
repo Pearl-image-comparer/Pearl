@@ -9,34 +9,39 @@ import { parseLatitude, parseLongitude } from "~/utils/parser";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const startLongitude = parseLongitude(url.searchParams.get("startLongitude"));
-  const startLatitude = parseLatitude(url.searchParams.get("startLatitude"));
-  const endLongitude = parseLongitude(url.searchParams.get("endLongitude"));
+  const startLatitude = parseLatitude(url.searchParams.get("startLongitude"));
+  const startLongitude = parseLongitude(url.searchParams.get("startLatitude"));
   const endLatitude = parseLatitude(url.searchParams.get("endLatitude"));
+  const endLongitude = parseLongitude(url.searchParams.get("endLangitude"));
+
+  let observations;
 
   if (
-    startLongitude !== null &&
-    startLatitude !== null &&
-    endLongitude !== null &&
-    endLatitude !== null
+    startLatitude === null ||
+    startLongitude === null ||
+    endLatitude === null ||
+    endLongitude === null
   ) {
-    const observations = await getObservations({
+    observations = await getObservations();
+  } else {
+    observations = await getObservations({
       topLeft: { x: startLongitude, y: startLatitude },
       bottomRight: { x: endLongitude, y: endLatitude },
     });
-    // Map observations to a better format.
-    return observations.map((observation) => ({
+  }
+
+  // Map observations to a better format
+  return json(
+    observations.map((observation) => ({
       id: observation.id,
       title: observation.title,
       description: observation.description,
       data: observation.date,
-      longitude: observation.location.x,
       latitude: observation.location.y,
+      longitude: observation.location.x,
       pictureKey: observation.picture,
-    }));
-  }
-
-  return json({ error: "Missing required fields" }, { status: 400 });
+    })),
+  );
 }
 
 export async function action({ request }: ActionFunctionArgs) {
