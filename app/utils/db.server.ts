@@ -19,7 +19,7 @@ async function init() {
 }
 
 // Make sure database connection is initialized.
-await init();
+init();
 
 export default client;
 
