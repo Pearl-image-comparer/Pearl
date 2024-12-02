@@ -14,6 +14,7 @@ interface DatePickersProps {
   startDate: Dayjs | null;
   endDate: Dayjs | null;
   setPeriod: Dispatch<SetStateAction<Period>>;
+  setSliderValue: Dispatch<SetStateAction<number | number[]>>;
 }
 
 export default function DatePickers({
@@ -22,6 +23,7 @@ export default function DatePickers({
   startDate,
   endDate,
   setPeriod,
+  setSliderValue,
 }: DatePickersProps) {
   const [startDateError, setStartDateError] = useState<string | null>(null);
   const [endDateError, setEndDateError] = useState<string | null>(null);
@@ -40,6 +42,7 @@ export default function DatePickers({
     // If the value is not null, set the period state.
     if (newValue) {
       setPeriod((prev) => ({ ...prev, start: newValue }));
+      //setSliderValue(newValue.valueOf());
     }
   };
 
@@ -53,6 +56,11 @@ export default function DatePickers({
     } else {
       setStartDateError(null);
       setEndDateError(null);
+      
+    }
+
+    if (startDate && newValue) {
+      setSliderValue([startDate.valueOf(), newValue.valueOf()]);
     }
     // If the value is not null, set the period state.
     if (newValue) {

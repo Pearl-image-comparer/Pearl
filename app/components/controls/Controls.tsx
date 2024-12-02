@@ -103,6 +103,7 @@ export default function Controls({
         endDate={endDate}
         overlayVisibility={overlayVisibility}
         setOverlayVisibility={setOverlayVisibility}
+        setSliderValue={setSliderValue}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
       {(loading.sightings || loading.observations) && (
