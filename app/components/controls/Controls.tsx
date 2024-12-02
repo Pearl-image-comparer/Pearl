@@ -14,7 +14,7 @@ import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
 import ProgressIndicator from "./indicators/ProgressIndicator";
-import { LoadingState } from "../map/_MapComponent.client";
+import { LoadingState } from "~/components/map/_MapComponent.client";
 
 export interface Period {
   start: Dayjs;
