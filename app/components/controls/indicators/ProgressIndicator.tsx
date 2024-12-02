@@ -19,7 +19,11 @@ export default function ProgressIndicator({ text }: ProgressIndicatorProps) {
 
   return (
     <StyledBox>
-      <Alert severity="info" icon={<CircularProgress size={20} />} sx={{ bgcolor: "background.paper", color: "text.primary" }}>
+      <Alert
+        severity="info"
+        icon={<CircularProgress size={20} />}
+        sx={{ bgcolor: "background.paper", color: "text.primary" }}
+      >
         {text}
       </Alert>
     </StyledBox>
