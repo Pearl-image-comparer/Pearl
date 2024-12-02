@@ -26,6 +26,7 @@ import { Sighting } from "~/routes/lajidata";
 import { LayerKey } from "../controls/layerControl/LayerControl";
 import UserMarker from "./markers/UserMarker";
 import CustomMarker from "./markers/CustomMarker";
+import { Observation } from "~/routes/observations";
 
 export interface LoadingState {
   sightings: boolean;
@@ -46,6 +47,7 @@ export default function MapComponent() {
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [sightings, setSightings] = useState<Sighting[]>([]);
+  const [observations, setObservations] = useState<Observation[]>([]);
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
   const [overlayVisibility, setOverlayVisibility] = useState<
     Record<LayerKey, boolean>
@@ -111,7 +113,11 @@ export default function MapComponent() {
           </CustomMarker>
         )}
 
-        <MapBounds setSightings={setSightings} setLoading={setLoading} />
+        <MapBounds
+          setSightings={setSightings}
+          setLoading={setLoading}
+          setObservations={setObservations}
+        />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
             <SideBySide
@@ -139,7 +145,7 @@ export default function MapComponent() {
           handleClick={() => setReportLocation(userLocation)}
         />
         {overlayVisibility.sightings && <SpeciesLayer data={sightings} />}
-        {overlayVisibility.observations && <ReportLayer />}
+        {overlayVisibility.observations && <ReportLayer data={observations} />}
         {overlayVisibility.conservation && <ConservationLayer />}
         <Controls
           satelliteViewOpen={satelliteViewOpen}

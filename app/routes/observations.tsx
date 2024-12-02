@@ -7,41 +7,44 @@ import { getObservations, createObservation } from "~/utils/db.server";
 import { createObservation as uploadToS3 } from "~/utils/s3.server";
 import { parseLatitude, parseLongitude } from "~/utils/parser";
 
+export interface Observation {
+  picture: File | null;
+  title: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+}
+
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const startLatitude = parseLatitude(url.searchParams.get("startLongitude"));
-  const startLongitude = parseLongitude(url.searchParams.get("startLatitude"));
+  const startLongitude = parseLongitude(url.searchParams.get("startLongitude"));
+  const startLatitude = parseLatitude(url.searchParams.get("startLatitude"));
+  const endLongitude = parseLongitude(url.searchParams.get("endLongitude"));
   const endLatitude = parseLatitude(url.searchParams.get("endLatitude"));
-  const endLongitude = parseLongitude(url.searchParams.get("endLangitude"));
-
-  let observations;
 
   if (
-    startLatitude === null ||
-    startLongitude === null ||
-    endLatitude === null ||
-    endLongitude === null
+    startLongitude !== null &&
+    startLatitude !== null &&
+    endLongitude !== null &&
+    endLatitude !== null
   ) {
-    observations = await getObservations();
-  } else {
-    observations = await getObservations({
+    const observations = await getObservations({
       topLeft: { x: startLongitude, y: startLatitude },
       bottomRight: { x: endLongitude, y: endLatitude },
     });
-  }
-
-  // Map observations to a better format
-  return json(
-    observations.map((observation) => ({
+    // Map observations to a better format.
+    return observations.map((observation) => ({
       id: observation.id,
       title: observation.title,
       description: observation.description,
       data: observation.date,
-      latitude: observation.location.y,
       longitude: observation.location.x,
+      latitude: observation.location.y,
       pictureKey: observation.picture,
-    })),
-  );
+    }));
+  }
+
+  return json({ error: "Missing required fields" }, { status: 400 });
 }
 
 export async function action({ request }: ActionFunctionArgs) {

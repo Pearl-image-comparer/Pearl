@@ -3,15 +3,17 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Sighting } from "~/routes/lajidata";
 import { debounce } from "@mui/material";
 import { LoadingState } from "./_MapComponent.client";
+import { Observation } from "~/routes/observations";
 
 interface MapBoundsProps {
   setSightings: (v: Sighting[]) => void;
   setLoading: Dispatch<SetStateAction<LoadingState>>;
+  setObservations: (v: Observation[]) => void;
 }
-
 export default function MapBounds({
   setSightings,
   setLoading,
+  setObservations,
 }: MapBoundsProps) {
   const map = useMap();
   const [hasFetchedInitially, setHasFetchedInitially] = useState(false);
@@ -35,22 +37,41 @@ export default function MapBounds({
       const bounds = `${southLat}:${northLat}:${westLng}:${eastLng}`;
 
       const url = `/lajidata?bounds=${encodeURIComponent(bounds)}`;
+      const observationBounds = `startLongitude=${westLng}&startLatitude=${southLat}&endLongitude=${eastLng}&endLatitude=${northLat}`;
 
       fetch(url)
         .then((response) => {
           if (!response.ok) {
             throw new Error(
-              "Network response was not ok: " + response.statusText,
+              "Network response was not ok: " + response.statusText
             );
           }
           return response.json();
         })
-        .then((data) => {
-          setSightings(data);
+        .then((sightingsdata) => {
+          setSightings(sightingsdata);
           setLoading((prev) => ({
             ...prev,
             sightings: false,
           }));
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+
+      const observationsUrl = `/observations?${decodeURIComponent(observationBounds)}`;
+
+      fetch(observationsUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok: " + response.statusText
+            );
+          }
+          return response.json();
+        })
+        .then((observationdata) => {
+          setObservations(observationdata);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -71,7 +92,7 @@ export default function MapBounds({
       map.off("moveend", debouncedFetch);
       debouncedFetch.clear();
     };
-  }, [map, hasFetchedInitially, setSightings, setLoading]);
+  }, [map, hasFetchedInitially, setSightings, setLoading, setObservations]);
 
   return null;
 }
