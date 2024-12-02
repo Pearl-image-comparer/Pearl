@@ -56,7 +56,6 @@ export default function DatePickers({
     } else {
       setStartDateError(null);
       setEndDateError(null);
-      
     }
 
     if (startDate && newValue) {
