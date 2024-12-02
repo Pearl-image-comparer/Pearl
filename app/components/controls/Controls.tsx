@@ -24,11 +24,10 @@ export interface Period {
 export interface ControlsProps {
   period: Period;
   setPeriod: Dispatch<SetStateAction<Period>>;
-  setStartDate: (v: Dayjs | null) => void;
-  setEndDate: (v: Dayjs | null) => void;
-  isDrawerOpen: boolean;
-  startDate: Dayjs;
-  endDate: Dayjs;
+  setStartDate: Dispatch<SetStateAction<Dayjs | null>>;
+  setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   loading: LoadingState;

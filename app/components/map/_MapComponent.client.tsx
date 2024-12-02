@@ -18,7 +18,7 @@ import MapBounds from "./MapBounds";
 import SideBySide from "./comparison/SideBySide";
 import ReportDialog from "~/components/observations/ReportDialog";
 import { memo, useState } from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import ReportCreator from "../observations/ReportCreator";
 import type { LatLng } from "leaflet";
 import { Backdrop, Button, Typography } from "@mui/material";
@@ -39,8 +39,8 @@ export default function MapComponent() {
     start: dayjs("2015-10-10"),
     end: dayjs(),
   });
-  const [startDate, setStartDate] = useState(period.start);
-  const [endDate, setEndDate] = useState(period.end);
+  const [startDate, setStartDate] = useState<Dayjs | null>(period.start);
+  const [endDate, setEndDate] = useState<Dayjs | null>(period.end);
   const [satelliteViewOpen, setSatelliteViewOpen] = useState(false);
   const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
   const [reportLocation, setReportLocation] = useState<LatLng | null>(null);

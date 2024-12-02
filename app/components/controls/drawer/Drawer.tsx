@@ -35,11 +35,11 @@ interface MenuDrawerProps {
   isDrawerOpen: boolean;
   setIsDrawerOpen: (open: boolean) => void;
   isMobile: boolean;
-  setStartDate: (date: Dayjs | null) => void;
-  setEndDate: (date: Dayjs | null) => void;
+  setStartDate: Dispatch<SetStateAction<Dayjs | null>>;
+  setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
   setPeriod: Dispatch<SetStateAction<Period>>;
-  startDate: Dayjs;
-  endDate: Dayjs;
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   setSliderValue: Dispatch<SetStateAction<number | number[]>>;
