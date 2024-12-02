@@ -43,7 +43,7 @@ export default function MapBounds({
         .then((response) => {
           if (!response.ok) {
             throw new Error(
-              "Network response was not ok: " + response.statusText
+              "Network response was not ok: " + response.statusText,
             );
           }
           return response.json();
@@ -65,7 +65,7 @@ export default function MapBounds({
         .then((response) => {
           if (!response.ok) {
             throw new Error(
-              "Network response was not ok: " + response.statusText
+              "Network response was not ok: " + response.statusText,
             );
           }
           return response.json();
