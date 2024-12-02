@@ -62,7 +62,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
     let pictureKey: string | undefined;
 
-    if (picture) {
+    if (picture && picture instanceof File) {
       try {
         const ext = picture.name.split(".").pop();
         if (!ext) {

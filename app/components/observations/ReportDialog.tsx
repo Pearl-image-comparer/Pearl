@@ -93,7 +93,11 @@ export default function ReportDialog(props: {
           event.preventDefault();
           const data = new FormData(event.currentTarget);
           if (picture) data.set("picture", picture);
-          fetcher.submit(data, { method: "POST", action: "/observations" });
+          fetcher.submit(data, {
+            method: "POST",
+            action: "/observations",
+            encType: "multipart/form-data",
+          });
           // Close after submission.
           props.onClose();
         },
