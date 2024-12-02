@@ -13,8 +13,10 @@ import {
   styled,
   TextField,
 } from "@mui/material";
+import { useFetcher } from "@remix-run/react";
 import { LatLng } from "leaflet";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { action } from "~/routes/observations";
 
 export interface Observation {
   picture: File | null;
@@ -28,8 +30,9 @@ export default function ReportDialog(props: {
   isOpen: boolean;
   location: LatLng | null;
   onClose: () => void;
-  onSubmit: (observation: Observation) => void;
 }) {
+  const fetcher = useFetcher<typeof action>();
+
   const [picture, setPicture] = useState<File | null>(null);
   const pictureUrl = useMemo(
     () => picture && URL.createObjectURL(picture),
@@ -85,16 +88,15 @@ export default function ReportDialog(props: {
       onClose={props.onClose}
       scroll="body"
       PaperProps={{
-        component: "form",
+        component: fetcher.Form,
         onSubmit: (event: FormEvent<HTMLFormElement>) => {
           event.preventDefault();
           const data = new FormData(event.currentTarget);
-          props.onSubmit({
-            picture,
-            title: data.get("title") as string,
-            latitude: Number(data.get("latitude") as string),
-            longitude: Number(data.get("longitude") as string),
-            description: data.get("description") as string,
+          if (picture) data.set("picture", picture);
+          fetcher.submit(data, {
+            method: "POST",
+            action: "/observations",
+            encType: "multipart/form-data",
           });
           // Close after submission.
           props.onClose();

@@ -43,9 +43,9 @@ export async function action({ request }: ActionFunctionArgs) {
   if (request.method === "POST") {
     const formData = await request.formData();
 
-    const title = formData.get("title") as string | null;
-    const description = formData.get("description") as string | null;
-    const picture = formData.get("picture") as File | null;
+    const title = formData.get("title");
+    const description = formData.get("description");
+    const picture = formData.get("picture");
 
     const longitude = parseLongitude(
       formData.get("longitude") as string | null,
@@ -56,13 +56,18 @@ export async function action({ request }: ActionFunctionArgs) {
       return json({ error: "Invalid coordinates provided" }, { status: 400 });
     }
 
-    if (!title || !description) {
+    if (
+      !title ||
+      typeof title !== "string" ||
+      !description ||
+      typeof description !== "string"
+    ) {
       return json({ error: "Missing required fields" }, { status: 400 });
     }
 
     let pictureKey: string | undefined;
 
-    if (picture) {
+    if (picture && picture instanceof File && picture.size > 0) {
       try {
         const ext = picture.name.split(".").pop();
         if (!ext) {

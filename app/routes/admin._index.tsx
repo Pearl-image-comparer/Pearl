@@ -1,4 +1,4 @@
-import { Box, Button, Paper } from "@mui/material";
+import { Box, Button, Dialog, DialogTitle, Paper, styled } from "@mui/material";
 import {
   DataGrid,
   GridToolbarColumnsButton,
@@ -19,6 +19,7 @@ import {
 } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
+import { useState } from "react";
 import { deleteObservation, getObservations } from "~/utils/db.server";
 import sessions from "~/utils/sessions.server";
 
@@ -80,6 +81,7 @@ function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
 export default function Admin() {
   const observations = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
+  const [pictureUrl, setPictureUrl] = useState<string | null>(null);
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID" },
@@ -88,7 +90,9 @@ export default function Admin() {
     {
       field: "location",
       headerName: "Sijainti",
-      valueGetter: (_, row) => `${row.location.y}, ${row.location.x}`,
+      width: 200,
+      valueGetter: (_, row) =>
+        `${row.location.y.toPrecision(10)}, ${row.location.x.toPrecision(10)}`,
     },
     {
       field: "date",
@@ -98,15 +102,35 @@ export default function Admin() {
     },
   ];
 
+  const StyledImage = styled("img")({
+    width: "100%",
+    borderRadius: "0.5rem",
+  });
+
   return (
     <Paper sx={{ height: "100%" }}>
+      <Dialog onClose={() => setPictureUrl(null)} open={pictureUrl !== null}>
+        <DialogTitle>Havainto</DialogTitle>
+        <Box sx={{ p: 1 }}>
+          {pictureUrl && <StyledImage src={pictureUrl} alt="Havainnon kuva" />}
+        </Box>
+      </Dialog>
       <DataGrid
         rows={observations}
         columns={columns}
         checkboxSelection
         sx={{ border: 0 }}
         slots={{ toolbar: Toolbar }}
+        disableRowSelectionOnClick
         loading={fetcher.state !== "idle"}
+        onRowClick={async ({ row }) => {
+          if (row.picture) {
+            const params = new URLSearchParams({ key: row.picture });
+            const response = await fetch(`/admin/picture?${params}`);
+            const data = await response.json();
+            setPictureUrl(data.url);
+          }
+        }}
         slotProps={{
           toolbar: {
             loading: fetcher.state !== "idle",
