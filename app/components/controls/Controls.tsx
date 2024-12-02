@@ -13,6 +13,8 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
+import ProgressIndicator from "./indicators/ProgressIndicator";
+import { LoadingState } from "~/components/map/_MapComponent.client";
 
 export interface Period {
   start: Dayjs;
@@ -29,6 +31,7 @@ export interface ControlsProps {
   endDate: Dayjs;
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
+  loading: LoadingState;
 }
 
 export default function Controls({
@@ -46,6 +49,7 @@ export default function Controls({
   overlayVisibility,
   setOverlayVisibility,
   setUserLocation,
+  loading,
 }: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
@@ -101,7 +105,17 @@ export default function Controls({
         setOverlayVisibility={setOverlayVisibility}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
-
+      {(loading.sightings || loading.observations) && (
+        <ProgressIndicator
+          text={
+            loading.sightings && loading.observations
+              ? "Loading data"
+              : loading.sightings
+                ? "Loading sighting data"
+                : "Loading observation data"
+          }
+        />
+      )}
       <StyledContainer maxWidth={false}>
         <Paper
           sx={{
