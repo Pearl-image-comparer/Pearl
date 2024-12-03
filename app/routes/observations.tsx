@@ -7,6 +7,14 @@ import { getObservations, createObservation } from "~/utils/db.server";
 import { createObservation as uploadToS3 } from "~/utils/s3.server";
 import { parseLatitude, parseLongitude } from "~/utils/parser";
 
+export interface Observation {
+  picture: File | null;
+  title: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+}
+
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const startLongitude = parseLongitude(url.searchParams.get("startLongitude"));
