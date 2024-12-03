@@ -121,7 +121,7 @@ export default function MapComponent() {
         )}
         {overlayVisibility.conservation && (
           <TileLayer
-            attribution='&copy; <a href="https://www.syke.fi">Syke Suomenlajitietokeskus</a>'
+            attribution='&copy; <a href="https://www.syke.fi">Syke Suomen lajitietokeskus</a>'
             url="https://www.syke.fi/"
           />
         )}
