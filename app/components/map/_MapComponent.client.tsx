@@ -113,6 +113,19 @@ export default function MapComponent() {
           </CustomMarker>
         )}
 
+        {overlayVisibility.sightings && (
+        <TileLayer
+        attribution='&copy; <a href="https://laji.fi">Laji.fi</a>'
+        url="https://laji.fi/"
+        />
+        )}
+        {overlayVisibility.conservation && (
+        <TileLayer
+        attribution='&copy; <a href="https://www.syke.fi">Syke Suomenlajitietokeskus</a>'
+        url="https://www.syke.fi/"
+        />
+        )}
+
         <MapBounds
           setSightings={setSightings}
           setLoading={setLoading}
