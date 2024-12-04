@@ -1,7 +1,6 @@
 import { Container, Slider, styled, useTheme } from "@mui/material";
 import dayjs from "dayjs";
-import { SyntheticEvent, useEffect, useRef } from "react";
-import L from "leaflet";
+import { SyntheticEvent, useEffect } from "react";
 import { useMap } from "react-leaflet";
 
 interface DateSliderProps {
