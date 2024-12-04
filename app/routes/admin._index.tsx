@@ -32,20 +32,32 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  if (request.method !== "POST")
-    return json({ error: "Method not allowed" }, { status: 405 });
-
   const session = await sessions.getSession(request.headers.get("Cookie"));
-  if (!session.get("ok")) return json({ error: "Forbidden" }, { status: 403 });
+  switch (request.method) {
+    case "POST": {
+      if (!session.get("ok"))
+        return json({ error: "Forbidden" }, { status: 403 });
 
-  const data = await request.json();
+      const data = await request.json();
 
-  const ids = data.ids;
-  if (!ids || !Array.isArray(ids) || ids.length === 0)
-    return json({ error: "Missing IDs" }, { status: 400 });
+      const ids = data.ids;
+      if (!ids || !Array.isArray(ids) || ids.length === 0)
+        return json({ error: "Missing IDs" }, { status: 400 });
 
-  await Promise.all(ids.map((id) => deleteObservation(id)));
-  return null;
+      await Promise.all(ids.map((id) => deleteObservation(id)));
+      return null;
+    }
+
+    case "DELETE":
+      return redirect("/admin/login", {
+        headers: {
+          "Set-Cookie": await sessions.destroySession(session),
+        },
+      });
+
+    default:
+      return json({ error: "Method not allowed" }, { status: 405 });
+  }
 }
 
 declare module "@mui/x-data-grid" {
@@ -58,6 +70,7 @@ declare module "@mui/x-data-grid" {
 function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
   const apiRef = useGridApiContext();
   const selectedRows = apiRef.current.getSelectedRows();
+  const fetcher = useFetcher<typeof action>();
 
   return (
     <GridToolbarContainer>
@@ -73,6 +86,13 @@ function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
         onClick={() => props.onDelete([...selectedRows.keys()])}
       >
         Poista
+      </Button>
+      <Button
+        size="small"
+        variant="contained"
+        onClick={() => fetcher.submit({}, { method: "DELETE" })}
+      >
+        Kirjaudu ulos
       </Button>
     </GridToolbarContainer>
   );
