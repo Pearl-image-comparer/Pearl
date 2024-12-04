@@ -1,4 +1,13 @@
-import { Box, Button, Dialog, DialogTitle, Paper, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  styled,
+} from "@mui/material";
 import {
   DataGrid,
   GridToolbarColumnsButton,
@@ -102,6 +111,7 @@ export default function Admin() {
   const observations = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
+  const [deleteIds, setDeleteIds] = useState<number[]>([]);
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID" },
@@ -131,10 +141,36 @@ export default function Admin() {
     <Paper sx={{ height: "100%" }}>
       <Dialog onClose={() => setPictureUrl(null)} open={pictureUrl !== null}>
         <DialogTitle>Havainto</DialogTitle>
-        <Box sx={{ p: 1 }}>
+        <DialogContent sx={{ p: 1 }}>
           {pictureUrl && <StyledImage src={pictureUrl} alt="Havainnon kuva" />}
-        </Box>
+        </DialogContent>
       </Dialog>
+
+      <Dialog open={deleteIds.length > 0}>
+        <DialogTitle>Oletko varma?</DialogTitle>
+        <DialogContent>
+          Haluatko varmasti poistaa valitsemasi havainnot? Olet poistamassa ID:{" "}
+          {deleteIds.join(", ")}
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={() => setDeleteIds([])}>
+            Peruuta
+          </Button>
+          <Button
+            color="error"
+            onClick={() => {
+              fetcher.submit(
+                { ids: deleteIds },
+                { method: "POST", encType: "application/json" },
+              );
+              setDeleteIds([]);
+            }}
+          >
+            Poista
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <DataGrid
         rows={observations}
         columns={columns}
@@ -154,12 +190,7 @@ export default function Admin() {
         slotProps={{
           toolbar: {
             loading: fetcher.state !== "idle",
-            onDelete: (ids) => {
-              fetcher.submit(
-                { ids },
-                { method: "POST", encType: "application/json" },
-              );
-            },
+            onDelete: setDeleteIds,
           },
         }}
       />
