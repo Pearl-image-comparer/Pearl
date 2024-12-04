@@ -9,7 +9,13 @@ import {
 import SearchBar from "./searchbar/SearchBar";
 import Fabs, { type FabsProps } from "./fabs/Fabs";
 import DateSlider from "./slider/DateSlider";
-import { Dispatch, SetStateAction, SyntheticEvent, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  SyntheticEvent,
+  useMemo,
+  useState,
+} from "react";
 import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
