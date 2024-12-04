@@ -30,6 +30,7 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { deleteObservation, getObservations } from "~/utils/db.server";
+import { deleteObservation as deletePicture } from "~/utils/s3.server";
 import sessions from "~/utils/sessions.server";
 import type { action as logoutAction } from "./admin.logout";
 
@@ -54,7 +55,13 @@ export async function action({ request }: ActionFunctionArgs) {
   if (!ids || !Array.isArray(ids) || ids.length === 0)
     return json({ error: "Missing IDs" }, { status: 400 });
 
-  await Promise.all(ids.map((id) => deleteObservation(id)));
+  await Promise.all(
+    ids.map(async (id) => {
+      const observation = await deleteObservation(id);
+      // Also remove any pictures associated with the observation.
+      if (observation.picture) await deletePicture(observation.picture);
+    }),
+  );
   return null;
 }
 

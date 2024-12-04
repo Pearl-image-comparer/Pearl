@@ -111,7 +111,25 @@ export async function createObservation(
   };
 }
 
-/** Delete the obervation with a given ID. */
-export async function deleteObservation(id: number) {
-  await client.query("DELETE FROM observations WHERE id = $1", [id]);
+/**
+ * Delete the obervation with a given ID.
+ *
+ * @returns The deleted observation
+ */
+export async function deleteObservation(id: number): Promise<Observation> {
+  const { rows } = await client.query(
+    `DELETE FROM observations
+    WHERE id = $1
+    RETURNING title, description, location, picture, date`,
+    [id],
+  );
+
+  return {
+    id,
+    title: rows[0].title,
+    description: rows[0].description,
+    location: rows[0].location,
+    picture: rows[0].picture,
+    date: rows[0].date,
+  };
 }

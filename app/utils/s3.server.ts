@@ -2,6 +2,7 @@ import {
   S3Client,
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -63,4 +64,17 @@ export async function createObservation(data: Uint8Array, ext: string) {
   });
   await client.send(command);
   return key;
+}
+
+/**
+ * Delete observation with the given key from S3 bucket.
+ *
+ * @param key The key to the stored picture
+ */
+export async function deleteObservation(key: string) {
+  const command = new DeleteObjectCommand({
+    Bucket: bucket,
+    Key: key,
+  });
+  await client.send(command);
 }
