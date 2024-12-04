@@ -1,11 +1,14 @@
-import { Container, Slider, styled, Typography } from "@mui/material";
+import { Container, Slider, styled, useTheme } from "@mui/material";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { SyntheticEvent, useEffect } from "react";
 import { useMap } from "react-leaflet";
 
 interface DateSliderProps {
   value: number | number[];
-  onChange: (e: Event, value: number | number[]) => void;
+  onChange: (
+    event: Event | SyntheticEvent<Element, Event>,
+    value: number | number[],
+  ) => void;
   min: number;
   max: number;
 }
@@ -26,6 +29,7 @@ export default function DateSlider({
   max,
 }: DateSliderProps) {
   const map = useMap();
+  const theme = useTheme();
 
   // empty useEffect to update the component when the value changes
   useEffect(() => {}, [value]);
@@ -44,33 +48,29 @@ export default function DateSlider({
     flexDirection: "column",
   });
 
-  const RowContainer = styled(Container)({
-    display: "flex",
-    justifyContent: "space-between",
-  });
-
   const StyledSlider = styled(Slider)({
     width: "80%",
     pointerEvents: "auto",
+    "& .MuiSlider-markLabel": {
+      color: theme.palette.common.white,
+    },
+    "& .MuiSlider-valueLabel": {
+      lineHeight: 1.2,
+      fontSize: 20,
+      fontWeight: 500,
+      background: "unset",
+      padding: 0,
+      width: 120,
+      height: 32,
+      top: -4,
+    },
   });
 
   return (
     <StyledContainer>
-      <RowContainer>
-        <Typography color="white" variant="h6">
-          {typeof value === "number"
-            ? dayjs(min).format("DD-MM-YYYY")
-            : dayjs(value[0]).format("DD-MM-YYYY")}
-        </Typography>
-        <Typography color="white" variant="h6">
-          {typeof value === "number"
-            ? dayjs(value).format("DD-MM-YYYY")
-            : dayjs(value[1]).format("DD-MM-YYYY")}
-        </Typography>
-      </RowContainer>
       <StyledSlider
         value={value}
-        onChange={onChange}
+        onChangeCommitted={onChange}
         onMouseDown={stopMapDrag}
         onMouseUp={startMapDrag}
         onTouchStart={stopMapDrag}
@@ -78,8 +78,13 @@ export default function DateSlider({
         step={dayInMs}
         min={min}
         max={max}
+        valueLabelDisplay="on"
+        valueLabelFormat={(v) => dayjs(v).format("DD/MM/YYYY")}
+        marks={[
+          { value: min, label: dayjs(min).format("DD/MM/YYYY") },
+          { value: max, label: dayjs(max).format("DD/MM/YYYY") },
+        ]}
       />
-      ;
     </StyledContainer>
   );
 }
