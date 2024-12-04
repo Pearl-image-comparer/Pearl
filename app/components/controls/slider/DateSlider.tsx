@@ -19,8 +19,8 @@ interface DateSliderProps {
  * - If the `value` prop holds a single number, a basic slider (one handle) is rendered.
  * - If the `value` prop holds an array of two numbers, a range slider (two handles) is rendered.
  *
- * @param {DateSliderProps} props - The properties passed to the `DateSlider` component.
- * @returns {JSX.Element} The rendered slider component.
+ * @param props - The properties passed to the `DateSlider` component.
+ * @returns The rendered slider component.
  */
 export default function DateSlider({
   value,
@@ -69,7 +69,7 @@ export default function DateSlider({
   return (
     <StyledContainer>
       <StyledSlider
-        value={value}
+        defaultValue={value}
         onChangeCommitted={onChange}
         onMouseDown={stopMapDrag}
         onMouseUp={startMapDrag}

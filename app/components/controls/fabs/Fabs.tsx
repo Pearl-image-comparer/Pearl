@@ -5,8 +5,8 @@ import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { useTheme, Theme } from "@mui/material/styles";
 import { useMapEvent } from "react-leaflet";
 import CompareIcon from "@mui/icons-material/Compare";
-import { Dispatch, SetStateAction } from "react";
-import { LatLng } from "leaflet";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { LatLng, default as L } from "leaflet";
 
 export interface FabsProps {
   satelliteViewOpen: boolean;
@@ -26,6 +26,12 @@ export default function Fabs({
   setUserLocation,
 }: FabsProps) {
   const theme: Theme = useTheme();
+
+  const stackRef = useRef(null);
+
+  useEffect(() => {
+    if (stackRef.current) L.DomEvent.disableClickPropagation(stackRef.current);
+  });
 
   const StyledStack = styled(Stack)({
     display: "flex",
@@ -66,7 +72,7 @@ export default function Fabs({
   });
 
   return (
-    <StyledStack direction="column">
+    <StyledStack direction="column" ref={stackRef}>
       <StyledToggleButton value="button" onChange={() => map.locate()}>
         {<LocationSearchingIcon />}
       </StyledToggleButton>

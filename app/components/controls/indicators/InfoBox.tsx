@@ -1,4 +1,6 @@
 import { Alert, Box, CircularProgress, styled } from "@mui/material";
+import { useEffect, useRef } from "react";
+import L from "leaflet";
 
 type InfoBoxType = "loading" | "error";
 
@@ -8,6 +10,12 @@ export interface InfoBoxProps {
 }
 
 export default function InfoBox({ text, type = "loading" }: InfoBoxProps) {
+  const boxRef = useRef(null);
+
+  useEffect(() => {
+    if (boxRef.current) L.DomEvent.disableClickPropagation(boxRef.current);
+  });
+
   const StyledBox = styled(Box)({
     display: "flex",
     position: "absolute",
@@ -21,7 +29,7 @@ export default function InfoBox({ text, type = "loading" }: InfoBoxProps) {
   });
 
   return (
-    <StyledBox>
+    <StyledBox ref={boxRef}>
       {type === "loading" ? (
         <Alert
           severity="info"
