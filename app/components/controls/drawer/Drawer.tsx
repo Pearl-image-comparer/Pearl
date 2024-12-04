@@ -45,6 +45,7 @@ interface MenuDrawerProps {
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   setSliderValue: Dispatch<SetStateAction<number | number[]>>;
   setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
+  setFetchingError: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function MenuDrawer({
@@ -60,6 +61,7 @@ export default function MenuDrawer({
   setOverlayVisibility,
   setSliderValue,
   setFetchingEnabled,
+  setFetchingError,
 }: MenuDrawerProps) {
   // Toggle function to open/close the drawer
   const toggleDrawer = () => {
@@ -125,6 +127,7 @@ export default function MenuDrawer({
               overlayVisibility={overlayVisibility}
               setOverlayVisibility={setOverlayVisibility}
               setFetchingEnabled={setFetchingEnabled}
+              setFetchingError={setFetchingError}
             />
           </Box>
         </SwipeableDrawerStyled>
@@ -187,6 +190,7 @@ export default function MenuDrawer({
               overlayVisibility={overlayVisibility}
               setOverlayVisibility={setOverlayVisibility}
               setFetchingEnabled={setFetchingEnabled}
+              setFetchingError={setFetchingError}
             />
           </Box>
         </SwipeableDrawerStyledDesktop>

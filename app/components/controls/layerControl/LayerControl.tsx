@@ -16,12 +16,14 @@ interface LayerControlProps {
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
+  setFetchingError: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function LayerControl({
   overlayVisibility,
   setOverlayVisibility,
   setFetchingEnabled,
+  setFetchingError,
 }: LayerControlProps) {
   const [zoomLevel, setZoomLevel] = useState(0);
   const zoomThreshold = 13;
@@ -36,12 +38,27 @@ export default function LayerControl({
   }, [map, setOverlayVisibility]);
 
   useEffect(() => {
+    const sightingsError =
+      overlayVisibility.sightings && zoomLevel < zoomThreshold;
+    const observationsError =
+      overlayVisibility.observations && zoomLevel < zoomThreshold;
+
+    if (sightingsError && observationsError) {
+      setFetchingError("Zoomaa lähemmäksi tietojen hakemista varten");
+    } else if (sightingsError) {
+      setFetchingError("Zoomaa lähemmäksi lajitietojen hakemista varten");
+    } else if (observationsError) {
+      setFetchingError("Zoomaa lähemmäksi havaintotietojen hakemista varten");
+    } else {
+      setFetchingError(null);
+    }
+
     setFetchingEnabled(() => ({
       sightings: overlayVisibility.sightings && zoomLevel >= zoomThreshold,
       observations:
         overlayVisibility.observations && zoomLevel >= zoomThreshold,
     }));
-  }, [overlayVisibility, setFetchingEnabled, zoomLevel]);
+  }, [overlayVisibility, setFetchingEnabled, setFetchingError, zoomLevel]);
 
   // Toggle layer
   const handleCheckboxChange = (key: LayerKey) => {

@@ -13,8 +13,8 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
-import ProgressIndicator from "./indicators/ProgressIndicator";
 import { LoadingState } from "~/components/map/_MapComponent.client";
+import InfoBox from "./indicators/InfoBox";
 
 export interface Period {
   start: Dayjs;
@@ -57,6 +57,7 @@ export default function Controls({
     dayjs().valueOf(),
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [fetchingError, setFetchingError] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -107,10 +108,11 @@ export default function Controls({
         setOverlayVisibility={setOverlayVisibility}
         setSliderValue={setSliderValue}
         setFetchingEnabled={setFetchingEnabled}
+        setFetchingError={setFetchingError}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
       {(loading.sightings || loading.observations) && (
-        <ProgressIndicator
+        <InfoBox
           text={
             loading.sightings && loading.observations
               ? "Loading data"
@@ -120,6 +122,7 @@ export default function Controls({
           }
         />
       )}
+      {fetchingError && <InfoBox text={fetchingError} type="error" />}
       <StyledContainer maxWidth={false}>
         <Paper
           sx={{
