@@ -1,4 +1,13 @@
-import { Box, Button, Dialog, DialogTitle, Paper, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  styled,
+} from "@mui/material";
 import {
   DataGrid,
   GridToolbarColumnsButton,
@@ -21,7 +30,9 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { deleteObservation, getObservations } from "~/utils/db.server";
+import { deleteObservation as deletePicture } from "~/utils/s3.server";
 import sessions from "~/utils/sessions.server";
+import type { action as logoutAction } from "./admin.logout";
 
 export const meta: MetaFunction = () => [{ title: "Admin" }];
 
@@ -32,7 +43,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  if (request.method !== "POST")
+  if (request.method !== "DELETE")
     return json({ error: "Method not allowed" }, { status: 405 });
 
   const session = await sessions.getSession(request.headers.get("Cookie"));
@@ -44,7 +55,13 @@ export async function action({ request }: ActionFunctionArgs) {
   if (!ids || !Array.isArray(ids) || ids.length === 0)
     return json({ error: "Missing IDs" }, { status: 400 });
 
-  await Promise.all(ids.map((id) => deleteObservation(id)));
+  await Promise.all(
+    ids.map(async (id) => {
+      const observation = await deleteObservation(id);
+      // Also remove any pictures associated with the observation.
+      if (observation.picture) await deletePicture(observation.picture);
+    }),
+  );
   return null;
 }
 
@@ -58,6 +75,7 @@ declare module "@mui/x-data-grid" {
 function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
   const apiRef = useGridApiContext();
   const selectedRows = apiRef.current.getSelectedRows();
+  const fetcher = useFetcher<typeof logoutAction>();
 
   return (
     <GridToolbarContainer>
@@ -74,6 +92,15 @@ function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
       >
         Poista
       </Button>
+      <Button
+        size="small"
+        variant="contained"
+        onClick={() =>
+          fetcher.submit({}, { action: "/admin/logout", method: "DELETE" })
+        }
+      >
+        Kirjaudu ulos
+      </Button>
     </GridToolbarContainer>
   );
 }
@@ -82,6 +109,7 @@ export default function Admin() {
   const observations = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
+  const [deleteIds, setDeleteIds] = useState<number[]>([]);
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID" },
@@ -111,10 +139,36 @@ export default function Admin() {
     <Paper sx={{ height: "100%" }}>
       <Dialog onClose={() => setPictureUrl(null)} open={pictureUrl !== null}>
         <DialogTitle>Havainto</DialogTitle>
-        <Box sx={{ p: 1 }}>
+        <DialogContent sx={{ p: 1 }}>
           {pictureUrl && <StyledImage src={pictureUrl} alt="Havainnon kuva" />}
-        </Box>
+        </DialogContent>
       </Dialog>
+
+      <Dialog open={deleteIds.length > 0}>
+        <DialogTitle>Oletko varma?</DialogTitle>
+        <DialogContent>
+          Haluatko varmasti poistaa valitsemasi havainnot? Olet poistamassa ID:{" "}
+          {deleteIds.join(", ")}
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={() => setDeleteIds([])}>
+            Peruuta
+          </Button>
+          <Button
+            color="error"
+            onClick={() => {
+              fetcher.submit(
+                { ids: deleteIds },
+                { method: "DELETE", encType: "application/json" },
+              );
+              setDeleteIds([]);
+            }}
+          >
+            Poista
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <DataGrid
         rows={observations}
         columns={columns}
@@ -134,12 +188,7 @@ export default function Admin() {
         slotProps={{
           toolbar: {
             loading: fetcher.state !== "idle",
-            onDelete: (ids) => {
-              fetcher.submit(
-                { ids },
-                { method: "POST", encType: "application/json" },
-              );
-            },
+            onDelete: setDeleteIds,
           },
         }}
       />
