@@ -13,7 +13,9 @@ import {
   Dispatch,
   SetStateAction,
   SyntheticEvent,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import dayjs, { Dayjs } from "dayjs";
@@ -21,6 +23,7 @@ import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
 import { LoadingState } from "~/components/map/_MapComponent.client";
 import InfoBox from "./indicators/InfoBox";
+import L from "leaflet";
 
 export interface Period {
   start: Dayjs;
@@ -67,6 +70,13 @@ export default function Controls({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current)
+      L.DomEvent.disableClickPropagation(containerRef.current);
+  });
+
   const StyledContainer = styled(Container)({
     position: "absolute",
     zIndex: 1000,
@@ -103,7 +113,7 @@ export default function Controls({
   };
 
   return (
-    <Container>
+    <Container ref={containerRef}>
       <MenuDrawer
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
