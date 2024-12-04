@@ -13,6 +13,7 @@ import DatePickers from "../datePickers/DatePickers";
 import { Dayjs } from "dayjs";
 import { Dispatch, SetStateAction } from "react";
 import { Period } from "../Controls";
+import { LoadingState } from "~/components/map/_MapComponent.client";
 
 const DrawerWidth = 300;
 const drawerBleeding = 60;
@@ -33,16 +34,18 @@ const SwipeableDrawerStyledDesktop = styled(Drawer)(() => ({
 
 interface MenuDrawerProps {
   isDrawerOpen: boolean;
-  setIsDrawerOpen: (open: boolean) => void;
+  setIsDrawerOpen: Dispatch<SetStateAction<boolean>>;
   isMobile: boolean;
-  setStartDate: (date: Dayjs | null) => void;
-  setEndDate: (date: Dayjs | null) => void;
+  setStartDate: Dispatch<SetStateAction<Dayjs | null>>;
+  setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
   setPeriod: Dispatch<SetStateAction<Period>>;
-  startDate: Dayjs;
-  endDate: Dayjs;
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   setSliderValue: Dispatch<SetStateAction<number | number[]>>;
+  setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
+  setFetchingError: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function MenuDrawer({
@@ -57,6 +60,8 @@ export default function MenuDrawer({
   overlayVisibility,
   setOverlayVisibility,
   setSliderValue,
+  setFetchingEnabled,
+  setFetchingError,
 }: MenuDrawerProps) {
   // Toggle function to open/close the drawer
   const toggleDrawer = () => {
@@ -121,6 +126,8 @@ export default function MenuDrawer({
             <LayerControl
               overlayVisibility={overlayVisibility}
               setOverlayVisibility={setOverlayVisibility}
+              setFetchingEnabled={setFetchingEnabled}
+              setFetchingError={setFetchingError}
             />
           </Box>
         </SwipeableDrawerStyled>
@@ -182,6 +189,8 @@ export default function MenuDrawer({
             <LayerControl
               overlayVisibility={overlayVisibility}
               setOverlayVisibility={setOverlayVisibility}
+              setFetchingEnabled={setFetchingEnabled}
+              setFetchingError={setFetchingError}
             />
           </Box>
         </SwipeableDrawerStyledDesktop>

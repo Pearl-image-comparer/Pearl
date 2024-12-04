@@ -1,5 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { List, ListItem, Checkbox, Box, Typography } from "@mui/material";
+import { useMap } from "react-leaflet";
+import { LoadingState } from "~/components/map/_MapComponent.client";
 
 // Mock data: array of layer options
 const layerOptions = [
@@ -13,12 +15,51 @@ export type LayerKey = (typeof layerOptions)[number]["key"];
 interface LayerControlProps {
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
+  setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
+  setFetchingError: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function LayerControl({
   overlayVisibility,
   setOverlayVisibility,
+  setFetchingEnabled,
+  setFetchingError,
 }: LayerControlProps) {
+  const [zoomLevel, setZoomLevel] = useState(0);
+  const zoomThreshold = 13;
+  const map = useMap();
+
+  useEffect(() => {
+    const checkZoomLevel = () => setZoomLevel(map.getZoom());
+    map.on("moveend", checkZoomLevel);
+    return () => {
+      map.off("moveend", checkZoomLevel);
+    };
+  }, [map, setOverlayVisibility]);
+
+  useEffect(() => {
+    const sightingsError =
+      overlayVisibility.sightings && zoomLevel < zoomThreshold;
+    const observationsError =
+      overlayVisibility.observations && zoomLevel < zoomThreshold;
+
+    if (sightingsError && observationsError) {
+      setFetchingError("Zoomaa lähemmäksi tietojen hakemista varten");
+    } else if (sightingsError) {
+      setFetchingError("Zoomaa lähemmäksi lajitietojen hakemista varten");
+    } else if (observationsError) {
+      setFetchingError("Zoomaa lähemmäksi havaintotietojen hakemista varten");
+    } else {
+      setFetchingError(null);
+    }
+
+    setFetchingEnabled(() => ({
+      sightings: overlayVisibility.sightings && zoomLevel >= zoomThreshold,
+      observations:
+        overlayVisibility.observations && zoomLevel >= zoomThreshold,
+    }));
+  }, [overlayVisibility, setFetchingEnabled, setFetchingError, zoomLevel]);
+
   // Toggle layer
   const handleCheckboxChange = (key: LayerKey) => {
     setOverlayVisibility((prevState) => ({

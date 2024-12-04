@@ -34,7 +34,7 @@ export default function ObservationPopup({
       <Typography variant="h5">{observation.title}</Typography>
       <Stack direction="row" alignItems="center" spacing={0.5}>
         <PlaceIcon />
-        <Typography>{`${observation.longitude}, ${observation.latitude}`}</Typography>
+        <Typography>{`${observation.latitude}, ${observation.longitude}`}</Typography>
       </Stack>
       {imageUrl && <StyledImage src={imageUrl} alt={observation.title} />}
       <Typography>{observation.description}</Typography>

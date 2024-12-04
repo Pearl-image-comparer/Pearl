@@ -10,9 +10,9 @@ import { LatLng } from "leaflet";
 
 export interface FabsProps {
   satelliteViewOpen: boolean;
-  setSatelliteViewOpen: (v: boolean) => void;
+  setSatelliteViewOpen: Dispatch<SetStateAction<boolean>>;
   comparisonViewOpen: boolean;
-  setComparisonViewOpen: (v: boolean) => void;
+  setComparisonViewOpen: Dispatch<SetStateAction<boolean>>;
   onAddClick: () => void;
   setUserLocation: Dispatch<SetStateAction<LatLng | null>>;
 }

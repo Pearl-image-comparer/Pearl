@@ -9,12 +9,18 @@ import {
 import SearchBar from "./searchbar/SearchBar";
 import Fabs, { type FabsProps } from "./fabs/Fabs";
 import DateSlider from "./slider/DateSlider";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  SyntheticEvent,
+  useMemo,
+  useState,
+} from "react";
 import dayjs, { Dayjs } from "dayjs";
 import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
-import ProgressIndicator from "./indicators/ProgressIndicator";
 import { LoadingState } from "~/components/map/_MapComponent.client";
+import InfoBox from "./indicators/InfoBox";
 
 export interface Period {
   start: Dayjs;
@@ -24,14 +30,14 @@ export interface Period {
 export interface ControlsProps {
   period: Period;
   setPeriod: Dispatch<SetStateAction<Period>>;
-  setStartDate: (v: Dayjs | null) => void;
-  setEndDate: (v: Dayjs | null) => void;
-  isDrawerOpen: boolean;
-  startDate: Dayjs;
-  endDate: Dayjs;
+  setStartDate: Dispatch<SetStateAction<Dayjs | null>>;
+  setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   loading: LoadingState;
+  setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
 }
 
 export default function Controls({
@@ -50,12 +56,14 @@ export default function Controls({
   setOverlayVisibility,
   setUserLocation,
   loading,
+  setFetchingEnabled,
 }: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
     dayjs().valueOf(),
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [fetchingError, setFetchingError] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -69,6 +77,7 @@ export default function Controls({
     justifyContent: "center",
     padding: "2rem 2rem",
     pointerEvents: "none",
+    marginBottom: "1rem",
   });
 
   // Debounce wms tile fetching on slider change
@@ -85,7 +94,10 @@ export default function Controls({
     [setEndDate, setStartDate],
   );
 
-  const handleSliderChange = (event: Event, value: number | number[]) => {
+  const handleSliderChange = (
+    event: Event | SyntheticEvent<Element, Event>,
+    value: number | number[],
+  ) => {
     setSliderValue(value);
     debounceSliderInput(value);
   };
@@ -104,10 +116,12 @@ export default function Controls({
         overlayVisibility={overlayVisibility}
         setOverlayVisibility={setOverlayVisibility}
         setSliderValue={setSliderValue}
+        setFetchingEnabled={setFetchingEnabled}
+        setFetchingError={setFetchingError}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
       {(loading.sightings || loading.observations) && (
-        <ProgressIndicator
+        <InfoBox
           text={
             loading.sightings && loading.observations
               ? "Loading data"
@@ -117,6 +131,7 @@ export default function Controls({
           }
         />
       )}
+      {fetchingError && <InfoBox text={fetchingError} type="error" />}
       <StyledContainer maxWidth={false}>
         <Paper
           sx={{
