@@ -56,8 +56,11 @@ export default function MapComponent() {
     observations: false,
     conservation: false,
   });
-
   const [loading, setLoading] = useState<LoadingState>({
+    sightings: false,
+    observations: false,
+  });
+  const [fetchingEnabled, setFetchingEnabled] = useState<LoadingState>({
     sightings: false,
     observations: false,
   });
@@ -130,6 +133,7 @@ export default function MapComponent() {
           setSightings={setSightings}
           setLoading={setLoading}
           setObservations={setObservations}
+          fetchingEnabled={fetchingEnabled}
         />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
@@ -176,6 +180,7 @@ export default function MapComponent() {
           setOverlayVisibility={setOverlayVisibility}
           setUserLocation={setUserLocation}
           loading={loading}
+          setFetchingEnabled={setFetchingEnabled}
         />
       </MapContainer>
       <Backdrop

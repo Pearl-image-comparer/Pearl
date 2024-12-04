@@ -31,6 +31,7 @@ export interface ControlsProps {
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   loading: LoadingState;
+  setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
 }
 
 export default function Controls({
@@ -49,6 +50,7 @@ export default function Controls({
   setOverlayVisibility,
   setUserLocation,
   loading,
+  setFetchingEnabled,
 }: FabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
@@ -68,6 +70,7 @@ export default function Controls({
     justifyContent: "center",
     padding: "2rem 2rem",
     pointerEvents: "none",
+    marginBottom: "1rem",
   });
 
   // Debounce wms tile fetching on slider change
@@ -103,6 +106,7 @@ export default function Controls({
         overlayVisibility={overlayVisibility}
         setOverlayVisibility={setOverlayVisibility}
         setSliderValue={setSliderValue}
+        setFetchingEnabled={setFetchingEnabled}
       />
       <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
       {(loading.sightings || loading.observations) && (

@@ -13,6 +13,7 @@ import DatePickers from "../datePickers/DatePickers";
 import { Dayjs } from "dayjs";
 import { Dispatch, SetStateAction } from "react";
 import { Period } from "../Controls";
+import { LoadingState } from "~/components/map/_MapComponent.client";
 
 const DrawerWidth = 300;
 const drawerBleeding = 60;
@@ -43,6 +44,7 @@ interface MenuDrawerProps {
   overlayVisibility: Record<LayerKey, boolean>;
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   setSliderValue: Dispatch<SetStateAction<number | number[]>>;
+  setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
 }
 
 export default function MenuDrawer({
@@ -57,6 +59,7 @@ export default function MenuDrawer({
   overlayVisibility,
   setOverlayVisibility,
   setSliderValue,
+  setFetchingEnabled,
 }: MenuDrawerProps) {
   // Toggle function to open/close the drawer
   const toggleDrawer = () => {
@@ -121,6 +124,7 @@ export default function MenuDrawer({
             <LayerControl
               overlayVisibility={overlayVisibility}
               setOverlayVisibility={setOverlayVisibility}
+              setFetchingEnabled={setFetchingEnabled}
             />
           </Box>
         </SwipeableDrawerStyled>
@@ -182,6 +186,7 @@ export default function MenuDrawer({
             <LayerControl
               overlayVisibility={overlayVisibility}
               setOverlayVisibility={setOverlayVisibility}
+              setFetchingEnabled={setFetchingEnabled}
             />
           </Box>
         </SwipeableDrawerStyledDesktop>
