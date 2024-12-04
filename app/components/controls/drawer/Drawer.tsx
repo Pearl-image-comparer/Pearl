@@ -11,9 +11,10 @@ import { useMap } from "react-leaflet";
 import LayerControl, { LayerKey } from "../layerControl/LayerControl";
 import DatePickers from "../datePickers/DatePickers";
 import { Dayjs } from "dayjs";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { Period } from "../Controls";
 import { LoadingState } from "~/components/map/_MapComponent.client";
+import L from "leaflet";
 
 const DrawerWidth = 300;
 const drawerBleeding = 60;
@@ -68,13 +69,20 @@ export default function MenuDrawer({
     setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current)
+      L.DomEvent.disableClickPropagation(containerRef.current);
+  });
+
   // Handling the map drag when menu open
   const map = useMap();
   const stopMapDrag = () => map.dragging.disable();
   const startMapDrag = () => map.dragging.enable();
 
   return (
-    <>
+    <Box ref={containerRef} sx={{ display: "contents" }}>
       {isMobile ? (
         <SwipeableDrawerStyled
           anchor="bottom"
@@ -195,6 +203,6 @@ export default function MenuDrawer({
           </Box>
         </SwipeableDrawerStyledDesktop>
       )}
-    </>
+    </Box>
   );
 }

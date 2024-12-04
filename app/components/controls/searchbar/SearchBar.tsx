@@ -7,8 +7,9 @@ import {
   useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMap } from "react-leaflet";
+import L from "leaflet";
 
 interface Location {
   id: number;
@@ -171,6 +172,12 @@ interface SearchBarProps {
 export default function SearchBar({ isDrawerOpen, isMobile }: SearchBarProps) {
   const theme = useTheme();
 
+  const paperRef = useRef(null);
+
+  useEffect(() => {
+    if (paperRef.current) L.DomEvent.disableClickPropagation(paperRef.current);
+  });
+
   const StyledPaper = styled(Paper)({
     position: "absolute",
     top: "0.7rem",
@@ -184,7 +191,7 @@ export default function SearchBar({ isDrawerOpen, isMobile }: SearchBarProps) {
   });
 
   return (
-    <StyledPaper>
+    <StyledPaper ref={paperRef}>
       <LocationSearch />
     </StyledPaper>
   );
