@@ -70,7 +70,11 @@ function LocationSearch() {
                 lng: geometry.coordinates[0],
                 lat: geometry.coordinates[1],
                 id: properties.osm_id,
-                name: properties.name,
+                name: [
+                  properties.name,
+                  properties.city,
+                  properties.country,
+                ].join(", "),
               })),
             )
             // Filter out duplicate results.
