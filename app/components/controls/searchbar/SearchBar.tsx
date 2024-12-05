@@ -1,4 +1,10 @@
-import { Autocomplete, debounce, Paper, styled, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  debounce,
+  Paper,
+  styled,
+  TextField,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMap } from "react-leaflet";
@@ -172,4 +178,3 @@ export default function SearchBar() {
     </StyledPaper>
   );
 }
-
