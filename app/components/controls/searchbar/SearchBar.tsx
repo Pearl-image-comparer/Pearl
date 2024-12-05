@@ -2,9 +2,7 @@ import {
   Autocomplete,
   debounce,
   Paper,
-  styled,
   TextField,
-  useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -43,11 +41,17 @@ interface Feature {
   properties: Properties;
 }
 
-function LocationSearch() {
+export default function SearchBar() {
   const [value, setValue] = useState<Location | null>(null);
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<readonly Location[]>([]);
   const map = useMap();
+
+  const paperRef = useRef(null);
+
+  useEffect(() => {
+    if (paperRef.current) L.DomEvent.disableClickPropagation(paperRef.current);
+  });
 
   // Limit how quickly requests can be made with debounce.
   const locationFetch = useMemo(
@@ -118,85 +122,55 @@ function LocationSearch() {
   }, [value, input, locationFetch]);
 
   return (
-    <Autocomplete
-      id="location-search"
-      getOptionLabel={(option) =>
-        typeof option === "string" ? option : option.name
-      }
-      filterOptions={(x) => x}
-      options={options}
-      autoComplete
-      includeInputInList
-      filterSelectedOptions
-      value={value}
-      noOptionsText="No locations"
-      onChange={(_, newValue) => {
-        setOptions(newValue ? [newValue, ...options] : options);
-        setValue(newValue);
-        if (newValue)
-          map.panTo(
-            { lat: newValue.lat, lng: newValue.lng },
-            { animate: true },
+    <Paper ref={paperRef}>
+      <Autocomplete
+        id="location-search"
+        getOptionLabel={(option) =>
+          typeof option === "string" ? option : option.name
+        }
+        filterOptions={(x) => x}
+        options={options}
+        autoComplete
+        includeInputInList
+        filterSelectedOptions
+        value={value}
+        noOptionsText="No locations"
+        onChange={(_, newValue) => {
+          setOptions(newValue ? [newValue, ...options] : options);
+          setValue(newValue);
+          if (newValue)
+            map.panTo(
+              { lat: newValue.lat, lng: newValue.lng },
+              { animate: true },
+            );
+        }}
+        onInputChange={(_, newInput) => setInput(newInput)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            placeholder="Search for a place"
+            size="small"
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                type: "search",
+                startAdornment: <SearchIcon />,
+              },
+            }}
+          />
+        )}
+        renderOption={(props, option) => {
+          const { ...optionProps } = props;
+
+          // TODO: Make this more robust.
+          return (
+            <li {...optionProps} key={option.id}>
+              {option.name}
+            </li>
           );
-      }}
-      onInputChange={(_, newInput) => setInput(newInput)}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Search for a place"
-          size="small"
-          slotProps={{
-            input: {
-              ...params.InputProps,
-              type: "search",
-              startAdornment: <SearchIcon />,
-            },
-          }}
-        />
-      )}
-      renderOption={(props, option) => {
-        const { ...optionProps } = props;
-
-        // TODO: Make this more robust.
-        return (
-          <li {...optionProps} key={option.id}>
-            {option.name}
-          </li>
-        );
-      }}
-    />
+        }}
+      />
+    </Paper>
   );
 }
 
-interface SearchBarProps {
-  isDrawerOpen: boolean;
-  isMobile: boolean;
-}
-
-export default function SearchBar({ isDrawerOpen, isMobile }: SearchBarProps) {
-  const theme = useTheme();
-
-  const paperRef = useRef(null);
-
-  useEffect(() => {
-    if (paperRef.current) L.DomEvent.disableClickPropagation(paperRef.current);
-  });
-
-  const StyledPaper = styled(Paper)({
-    position: "absolute",
-    top: "0.7rem",
-    left: isMobile || !isDrawerOpen ? "0.7rem" : `${300 + theme.spacing(1)}px`, // 300 + 50 = drawer+bleeding width
-    width:
-      isMobile || !isDrawerOpen
-        ? "calc(100% - 1.4rem)"
-        : `calc(100% - ${300 + 20}px)`, // Subtract drawer width + margins
-    right: "0.7rem",
-    zIndex: 1000,
-  });
-
-  return (
-    <StyledPaper ref={paperRef}>
-      <LocationSearch />
-    </StyledPaper>
-  );
-}

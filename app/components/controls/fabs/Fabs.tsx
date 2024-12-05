@@ -7,14 +7,20 @@ import { useMapEvent } from "react-leaflet";
 import CompareIcon from "@mui/icons-material/Compare";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { LatLng, default as L } from "leaflet";
+import { WINDOW_HEIGHT_MIN_THRESHOLD } from "~/constants";
 
-export interface FabsProps {
+export interface ControlsFabsProps {
   satelliteViewOpen: boolean;
   setSatelliteViewOpen: Dispatch<SetStateAction<boolean>>;
   comparisonViewOpen: boolean;
   setComparisonViewOpen: Dispatch<SetStateAction<boolean>>;
   onAddClick: () => void;
   setUserLocation: Dispatch<SetStateAction<LatLng | null>>;
+}
+
+interface FabsProps extends ControlsFabsProps {
+  windowHeight: number;
+  isMobile: boolean;
 }
 
 export default function Fabs({
@@ -24,6 +30,8 @@ export default function Fabs({
   setComparisonViewOpen,
   onAddClick,
   setUserLocation,
+  windowHeight,
+  isMobile,
 }: FabsProps) {
   const theme: Theme = useTheme();
 
@@ -38,11 +46,18 @@ export default function Fabs({
     alignItems: "flex-end",
     gap: "0.5rem",
     pointerEvents: "none",
+    paddingBottom: windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD ? "0.7rem" : 0
   });
 
   const StyledAddFab = styled(Fab)({
-    width: "4.3rem",
-    height: "4.3rem",
+    width:
+      windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile
+        ? "4rem"
+        : "4.3rem",
+    height:
+      windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile
+        ? "4rem"
+        : "4.3rem",
     pointerEvents: "auto",
   });
 
@@ -51,6 +66,14 @@ export default function Fabs({
   });
 
   const StyledToggleButton = styled(ToggleButton)({
+    width:
+      windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile
+        ? "2.8rem"
+        : "3rem",
+    height:
+      windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile
+        ? "2.8rem"
+        : "3rem",
     pointerEvents: "auto",
     backgroundColor: theme.palette.background.default,
     borderRadius: "50%",
