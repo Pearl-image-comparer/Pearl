@@ -4,15 +4,16 @@ import {
   styled,
   useTheme,
   useMediaQuery,
-  Paper,
+  Box,
 } from "@mui/material";
 import SearchBar from "./searchbar/SearchBar";
-import Fabs, { type FabsProps } from "./fabs/Fabs";
+import Fabs, { type ControlsFabsProps } from "./fabs/Fabs";
 import DateSlider from "./slider/DateSlider";
 import {
   Dispatch,
   SetStateAction,
   SyntheticEvent,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -21,6 +22,7 @@ import MenuDrawer from "./drawer/Drawer";
 import { LayerKey } from "./layerControl/LayerControl";
 import { LoadingState } from "~/components/map/_MapComponent.client";
 import InfoBox from "./indicators/InfoBox";
+import { DRAWER_WIDTH, WINDOW_HEIGHT_MIN_THRESHOLD } from "~/constants";
 
 export interface Period {
   start: Dayjs;
@@ -57,27 +59,53 @@ export default function Controls({
   setUserLocation,
   loading,
   setFetchingEnabled,
-}: FabsProps & ControlsProps) {
+}: ControlsFabsProps & ControlsProps) {
   // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
     dayjs().valueOf(),
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [fetchingError, setFetchingError] = useState<string | null>(null);
+  const [windowHeight, setWindowHeight] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const StyledContainer = styled(Container)({
+  useEffect(() => {
+    const handleResize = () => setWindowHeight(window.innerHeight);
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const SharedContainer = styled(Box)({
     position: "absolute",
     zIndex: 1000,
-    bottom: 0,
-    left: 0,
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
-    padding: "2rem 2rem",
+    justifyContent: "space-between",
+    height: "100%",
+    padding: "0.7rem",
+    paddingBottom: isMobile
+      ? "2.5rem"
+      : satelliteViewOpen || comparisonViewOpen
+        ? "1.2rem"
+        : "3.8rem",
+    right: 0,
+    width:
+      isMobile || !isDrawerOpen ? "100%" : `calc(100% - ${DRAWER_WIDTH}px)`, // Subtract drawer width
+    transition: "all 1s",
     pointerEvents: "none",
-    marginBottom: "1rem",
+  });
+
+  const BottomContainer = styled(Box)({
+    width: "100%",
+    display: "flex",
+    justifyContent: "end",
+    flexDirection:
+      windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD ? "row-reverse" : "column",
+    alignItems: "end",
+    gap: windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD ? 0 : "2rem",
   });
 
   // Debounce wms tile fetching on slider change
@@ -119,38 +147,23 @@ export default function Controls({
         setFetchingEnabled={setFetchingEnabled}
         setFetchingError={setFetchingError}
       />
-      <SearchBar isDrawerOpen={isDrawerOpen} isMobile={isMobile} />
-      {(loading.sightings || loading.observations) && (
-        <InfoBox
-          text={
-            loading.sightings && loading.observations
-              ? "Loading data"
-              : loading.sightings
-                ? "Loading sighting data"
-                : "Loading observation data"
-          }
-        />
-      )}
-      {fetchingError && <InfoBox text={fetchingError} type="error" />}
-      <StyledContainer maxWidth={false}>
-        <Paper
-          sx={{
-            position: "absolute",
-            backgroundColor: "transparent",
-            boxShadow: "none",
-            bottom: "2rem",
-            left:
-              isMobile || !isDrawerOpen
-                ? "0.7rem"
-                : `${300 + theme.spacing(1)}px`, // 300 + 50 = drawer+bleeding width
-            width:
-              isMobile || !isDrawerOpen
-                ? "calc(100% - 1.4rem)"
-                : `calc(100% - ${300 + 20}px)`, // Subtract drawer width + margins
-            right: "0.7rem",
-            zIndex: 1000,
-          }}
-        >
+      <SharedContainer>
+        <Box>
+          <SearchBar />
+          {(loading.sightings || loading.observations) && (
+            <InfoBox
+              text={
+                loading.sightings && loading.observations
+                  ? "Loading data"
+                  : loading.sightings
+                    ? "Loading sighting data"
+                    : "Loading observation data"
+              }
+            />
+          )}
+          {fetchingError && <InfoBox text={fetchingError} type="error" />}
+        </Box>
+        <BottomContainer>
           <Fabs
             satelliteViewOpen={satelliteViewOpen}
             comparisonViewOpen={comparisonViewOpen}
@@ -158,6 +171,8 @@ export default function Controls({
             setComparisonViewOpen={setComparisonViewOpen}
             onAddClick={onAddClick}
             setUserLocation={setUserLocation}
+            windowHeight={windowHeight}
+            isMobile={isMobile}
           />
           {satelliteViewOpen && (
             <DateSlider
@@ -165,10 +180,12 @@ export default function Controls({
               onChange={handleSliderChange}
               min={period.start.valueOf()}
               max={period.end.valueOf()}
+              windowHeight={windowHeight}
+              isMobile={isMobile}
             />
           )}
-        </Paper>
-      </StyledContainer>
+        </BottomContainer>
+      </SharedContainer>
     </Container>
   );
 }

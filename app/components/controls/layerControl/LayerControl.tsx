@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { List, ListItem, Checkbox, Box, Typography } from "@mui/material";
 import { useMap } from "react-leaflet";
 import { LoadingState } from "~/components/map/_MapComponent.client";
+import { FETCH_ZOOM_LEVEL_THRESHOLD } from "~/constants";
 
 // Mock data: array of layer options
 const layerOptions = [
@@ -26,7 +27,6 @@ export default function LayerControl({
   setFetchingError,
 }: LayerControlProps) {
   const [zoomLevel, setZoomLevel] = useState(0);
-  const zoomThreshold = 13;
   const map = useMap();
 
   useEffect(() => {
@@ -39,9 +39,9 @@ export default function LayerControl({
 
   useEffect(() => {
     const sightingsError =
-      overlayVisibility.sightings && zoomLevel < zoomThreshold;
+      overlayVisibility.sightings && zoomLevel < FETCH_ZOOM_LEVEL_THRESHOLD;
     const observationsError =
-      overlayVisibility.observations && zoomLevel < zoomThreshold;
+      overlayVisibility.observations && zoomLevel < FETCH_ZOOM_LEVEL_THRESHOLD;
 
     if (sightingsError && observationsError) {
       setFetchingError("Zoomaa lähemmäksi tietojen hakemista varten");
@@ -54,9 +54,11 @@ export default function LayerControl({
     }
 
     setFetchingEnabled(() => ({
-      sightings: overlayVisibility.sightings && zoomLevel >= zoomThreshold,
+      sightings:
+        overlayVisibility.sightings && zoomLevel >= FETCH_ZOOM_LEVEL_THRESHOLD,
       observations:
-        overlayVisibility.observations && zoomLevel >= zoomThreshold,
+        overlayVisibility.observations &&
+        zoomLevel >= FETCH_ZOOM_LEVEL_THRESHOLD,
     }));
   }, [overlayVisibility, setFetchingEnabled, setFetchingError, zoomLevel]);
 

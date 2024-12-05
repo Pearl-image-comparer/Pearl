@@ -1,7 +1,8 @@
-import { Container, Slider, styled, useTheme } from "@mui/material";
+import { Box, Slider, styled, useTheme } from "@mui/material";
 import dayjs from "dayjs";
 import { SyntheticEvent, useEffect } from "react";
 import { useMap } from "react-leaflet";
+import { WINDOW_HEIGHT_MIN_THRESHOLD } from "~/constants";
 
 interface DateSliderProps {
   value: number | number[];
@@ -11,6 +12,8 @@ interface DateSliderProps {
   ) => void;
   min: number;
   max: number;
+  windowHeight: number;
+  isMobile: boolean;
 }
 
 /**
@@ -27,6 +30,8 @@ export default function DateSlider({
   onChange,
   min,
   max,
+  windowHeight,
+  isMobile,
 }: DateSliderProps) {
   const map = useMap();
   const theme = useTheme();
@@ -41,11 +46,14 @@ export default function DateSlider({
   // Calculating one day for the slider step
   const dayInMs = 24 * 60 * 60 * 1000;
 
-  const StyledContainer = styled(Container)({
+  const StyledContainer = styled(Box)({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
+    padding: "0 1rem",
+    paddingRight: windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD ? 0 : "1rem",
+    width: "100%",
   });
 
   const StyledSlider = styled(Slider)({
@@ -54,15 +62,26 @@ export default function DateSlider({
     "& .MuiSlider-markLabel": {
       color: theme.palette.common.white,
     },
+    "& .MuiSlider-thumb": {
+      height:
+        windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile
+          ? "1.1rem"
+          : "1.25rem",
+      width:
+        windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile
+          ? "1.1rem"
+          : "1.25rem",
+    },
     "& .MuiSlider-valueLabel": {
       lineHeight: 1.2,
-      fontSize: 20,
+      fontSize:
+        windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile ? 18 : 20,
       fontWeight: 500,
       background: "unset",
       padding: 0,
       width: 120,
       height: 32,
-      top: -4,
+      top: windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile ? 0 : -4,
     },
   });
 
