@@ -1,4 +1,4 @@
-import { Autocomplete, debounce, Paper, TextField } from "@mui/material";
+import { Autocomplete, debounce, Paper, styled, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMap } from "react-leaflet";
@@ -46,6 +46,10 @@ export default function SearchBar() {
 
   useEffect(() => {
     if (paperRef.current) L.DomEvent.disableClickPropagation(paperRef.current);
+  });
+
+  const StyledPaper = styled(Paper)({
+    pointerEvents: "auto",
   });
 
   // Limit how quickly requests can be made with debounce.
@@ -117,7 +121,7 @@ export default function SearchBar() {
   }, [value, input, locationFetch]);
 
   return (
-    <Paper ref={paperRef}>
+    <StyledPaper ref={paperRef}>
       <Autocomplete
         id="location-search"
         getOptionLabel={(option) =>
@@ -165,7 +169,7 @@ export default function SearchBar() {
           );
         }}
       />
-    </Paper>
+    </StyledPaper>
   );
 }
 

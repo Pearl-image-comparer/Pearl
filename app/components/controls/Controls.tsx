@@ -95,6 +95,7 @@ export default function Controls({
     width:
       isMobile || !isDrawerOpen ? "100%" : `calc(100% - ${DRAWER_WIDTH}px)`, // Subtract drawer width
     transition: "all 1s",
+    pointerEvents: "none",
   });
 
   const BottomContainer = styled(Box)({
