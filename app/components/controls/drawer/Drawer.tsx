@@ -15,9 +15,7 @@ import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { Period } from "../Controls";
 import { LoadingState } from "~/components/map/_MapComponent.client";
 import L from "leaflet";
-
-const DrawerWidth = 300;
-const drawerBleeding = 60;
+import { DRAWER_BLEEDING, DRAWER_WIDTH } from "~/constants";
 
 //mobile drawer
 const SwipeableDrawerStyled = styled(SwipeableDrawer)(() => ({
@@ -89,7 +87,7 @@ export default function MenuDrawer({
           open={isDrawerOpen}
           onClose={() => toggleDrawer()}
           onOpen={() => toggleDrawer()}
-          swipeAreaWidth={drawerBleeding}
+          swipeAreaWidth={DRAWER_BLEEDING}
           disableSwipeToOpen={false}
           ModalProps={{ keepMounted: true }}
           onMouseDown={stopMapDrag}
@@ -105,10 +103,10 @@ export default function MenuDrawer({
           <Box
             sx={{
               position: "absolute",
-              top: -drawerBleeding / 2,
+              top: -DRAWER_BLEEDING / 2,
               right: 0,
               left: 0,
-              height: drawerBleeding,
+              height: DRAWER_BLEEDING,
               backgroundColor: "background.paper",
               textAlign: "center",
               visibility: "visible",
@@ -146,7 +144,7 @@ export default function MenuDrawer({
           open={isDrawerOpen}
           sx={{
             "& .MuiDrawer-paper": {
-              width: DrawerWidth,
+              width: DRAWER_WIDTH,
               height: "100vh",
             },
           }}
