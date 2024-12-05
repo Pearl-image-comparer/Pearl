@@ -53,7 +53,7 @@ export default function DateSlider({
     flexDirection: "column",
     padding: "0 1rem",
     paddingRight: windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD ? 0 : "1rem",
-    width: "100%"
+    width: "100%",
   });
 
   const StyledSlider = styled(Slider)({

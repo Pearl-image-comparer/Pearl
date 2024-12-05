@@ -46,7 +46,7 @@ export default function Fabs({
     alignItems: "flex-end",
     gap: "0.5rem",
     pointerEvents: "none",
-    paddingBottom: windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD ? "0.7rem" : 0
+    paddingBottom: windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD ? "0.7rem" : 0,
   });
 
   const StyledAddFab = styled(Fab)({
