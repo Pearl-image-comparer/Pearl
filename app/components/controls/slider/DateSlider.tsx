@@ -61,6 +61,9 @@ export default function DateSlider({
     pointerEvents: "auto",
     "& .MuiSlider-markLabel": {
       color: theme.palette.common.white,
+      backgroundColor: theme.palette.primary.main,
+      borderRadius: "6px",
+      padding: "0.2rem 0.5rem",
     },
     "& .MuiSlider-thumb": {
       height:
@@ -77,7 +80,8 @@ export default function DateSlider({
       fontSize:
         windowHeight <= WINDOW_HEIGHT_MIN_THRESHOLD || isMobile ? 18 : 20,
       fontWeight: 500,
-      background: "unset",
+      background: theme.palette.primary.main,
+      borderRadius: "6px",
       padding: 0,
       width: 120,
       height: 32,
