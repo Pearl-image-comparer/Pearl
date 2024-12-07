@@ -105,7 +105,7 @@ export default function MenuDrawer({
           ModalProps={{ keepMounted: true }}
           sx={{
             "& .MuiDrawer-paper": {
-              height: "50%",
+              minHeight: "50%",
             },
           }}
         >
