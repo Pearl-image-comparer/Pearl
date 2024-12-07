@@ -49,7 +49,6 @@ interface MenuDrawerProps {
   setSatelliteViewOpen: Dispatch<SetStateAction<boolean>>;
   comparisonViewOpen: boolean;
   setComparisonViewOpen: Dispatch<SetStateAction<boolean>>;
-
 }
 
 export default function MenuDrawer({
@@ -212,7 +211,6 @@ export default function MenuDrawer({
               setSatelliteViewOpen={setSatelliteViewOpen}
               comparisonViewOpen={comparisonViewOpen}
               setComparisonViewOpen={setComparisonViewOpen}
-              
             />
             <LayerControl
               overlayVisibility={overlayVisibility}

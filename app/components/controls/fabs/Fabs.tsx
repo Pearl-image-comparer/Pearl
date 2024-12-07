@@ -10,7 +10,6 @@ import { LatLng, default as L } from "leaflet";
 import { WINDOW_HEIGHT_MIN_THRESHOLD } from "~/constants";
 import dayjs, { Dayjs } from "dayjs";
 
-
 export interface ControlsFabsProps {
   satelliteViewOpen: boolean;
   setSatelliteViewOpen: Dispatch<SetStateAction<boolean>>;
@@ -19,7 +18,6 @@ export interface ControlsFabsProps {
   onAddClick: () => void;
   setUserLocation: Dispatch<SetStateAction<LatLng | null>>;
   setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
-  
 }
 
 interface FabsProps extends ControlsFabsProps {
@@ -105,7 +103,7 @@ export default function Fabs({
   const handleCompareViewChange = () => {
     setComparisonViewOpen((prev) => {
       const newState = !prev;
-  
+
       if (!newState) {
         // When closing comparison view, only keep the first value of the slider
         if (Array.isArray(sliderValue) && sliderValue.length > 0) {
@@ -114,15 +112,16 @@ export default function Fabs({
       } else {
         // When opening comparison view, set the end date to the current time
         setSliderValue((prevValue) => {
-          const firstValue = Array.isArray(prevValue) ? prevValue[0] : prevValue;
+          const firstValue = Array.isArray(prevValue)
+            ? prevValue[0]
+            : prevValue;
           return [firstValue, dayjs().valueOf()];
         });
       }
-  
+
       return newState;
     });
-    
-  }
+  };
 
   const map = useMapEvent("locationfound", (event) => {
     map.flyTo(event.latlng, 16);

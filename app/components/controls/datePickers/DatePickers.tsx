@@ -39,10 +39,7 @@ export default function DatePickers({
   const [localStartDate, setLocalStartDate] = useState<Dayjs | null>(null);
   const [localEndDate, setLocalEndDate] = useState<Dayjs | null>(null);
 
-
-
   useEffect(() => {
-
     if (satelliteViewOpen === false) {
       setLocalStartDate(null);
       setLocalEndDate(null);
@@ -51,10 +48,14 @@ export default function DatePickers({
     if (comparisonViewOpen === true && startDate && endDate) {
       setSliderValue([startDate.valueOf(), endDate.valueOf()]);
     }
-
-  }, [satelliteViewOpen, comparisonViewOpen, endDate, startDate, setSliderValue]);
+  }, [
+    satelliteViewOpen,
+    comparisonViewOpen,
+    endDate,
+    startDate,
+    setSliderValue,
+  ]);
   const handleStartDateChange = (newValue: Dayjs | null) => {
-
     // Set the local state and the start date state.
     setLocalStartDate(newValue);
     setStartDate(newValue);
@@ -67,7 +68,6 @@ export default function DatePickers({
     } else {
       setStartDateError(null);
       setEndDateError(null);
-      
     }
 
     // If the incoming value is not null, set the period state and the slider value.
@@ -77,8 +77,8 @@ export default function DatePickers({
       setSatelliteViewOpen(true);
     }
 
-    // If the incoming value is null, set the start date state and 
-    //close the satellite view and comparison view. 
+    // If the incoming value is null, set the start date state and
+    //close the satellite view and comparison view.
     //Update the period state and set the slider value.
     if (newValue == null) {
       setSatelliteViewOpen(false);
@@ -88,17 +88,14 @@ export default function DatePickers({
       setSliderValue([dayjs().valueOf()]);
       setPeriod((prev) => ({ ...prev, start: dayjs("2015-10-10") }));
     }
-
   };
 
-
   const handleEndDateChange = (newValue: Dayjs | null) => {
-
     // Set the local state and the end date state.
     setLocalEndDate(newValue);
     setEndDate(newValue);
 
-    // If the start date is set and the new end date is before the start date, 
+    // If the start date is set and the new end date is before the start date,
     //set an error.
     if (startDate && newValue && newValue.isBefore(startDate)) {
       setEndDateError(
@@ -109,14 +106,13 @@ export default function DatePickers({
       setEndDateError(null);
     }
 
-    // If the start date and the new end date are set, 
+    // If the start date and the new end date are set,
     //set the slider value and open the comparison view.
     if (startDate && newValue) {
       setSliderValue([startDate.valueOf(), newValue.valueOf()]);
       setComparisonViewOpen(true);
-      
     }
-    // If the value is not null, set the period state. 
+    // If the value is not null, set the period state.
     // Update period state and set the slider value.
     if (newValue != null) {
       setPeriod((prev) => ({ ...prev, end: newValue }));
@@ -124,7 +120,6 @@ export default function DatePickers({
     } else {
       setPeriod((prev) => ({ ...prev, end: dayjs() }));
       setComparisonViewOpen(false);
-      
     }
   };
 
@@ -150,8 +145,8 @@ export default function DatePickers({
           value={localStartDate}
           label="Ensimmäinen päivämäärä"
           //onChange={handleStartDateChange}
-          onAccept = {handleStartDateChange}
-          onChange={()=>true}
+          onAccept={handleStartDateChange}
+          onChange={() => true}
           minDate={dayjs("2015-10-10")}
           maxDate={dayjs()}
           format="DD/MM/YYYY"
@@ -160,17 +155,19 @@ export default function DatePickers({
               fullWidth: true,
               error: !!startDateError,
               helperText: startDateError,
-              
             },
-            field: { clearable: true, onClear: () => handleStartDateChange(null) },
+            field: {
+              clearable: true,
+              onClear: () => handleStartDateChange(null),
+            },
           }}
         />
         <DatePicker
           value={localEndDate}
           label="Toinen päivämäärä"
           //onChange={handleEndDateChange}
-          onAccept = {handleEndDateChange}
-          onChange={()=>true}
+          onAccept={handleEndDateChange}
+          onChange={() => true}
           minDate={dayjs("2015-10-10")}
           maxDate={dayjs()}
           format="DD/MM/YYYY"
@@ -180,7 +177,10 @@ export default function DatePickers({
               error: !!endDateError,
               helperText: endDateError,
             },
-            field: { clearable: true, onClear: () => handleEndDateChange(null) },
+            field: {
+              clearable: true,
+              onClear: () => handleEndDateChange(null),
+            },
           }}
         />
       </Box>
