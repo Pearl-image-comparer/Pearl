@@ -19,6 +19,7 @@ export interface ControlsFabsProps {
   onAddClick: () => void;
   setUserLocation: Dispatch<SetStateAction<LatLng | null>>;
   setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
+  
 }
 
 interface FabsProps extends ControlsFabsProps {
@@ -29,6 +30,8 @@ interface FabsProps extends ControlsFabsProps {
 interface FabsProps extends ControlsFabsProps {
   windowHeight: number;
   isMobile: boolean;
+  setSliderValue: Dispatch<SetStateAction<number | number[]>>;
+  sliderValue: number | number[];
 }
 
 export default function Fabs({
@@ -40,7 +43,8 @@ export default function Fabs({
   setUserLocation,
   windowHeight,
   isMobile,
-  setEndDate,
+  setSliderValue,
+  sliderValue,
 }: FabsProps) {
   const theme: Theme = useTheme();
 
@@ -99,8 +103,25 @@ export default function Fabs({
   });
 
   const handleCompareViewChange = () => {
-    setComparisonViewOpen(!comparisonViewOpen);
-    setEndDate(dayjs());
+    setComparisonViewOpen((prev) => {
+      const newState = !prev;
+  
+      if (!newState) {
+        // When closing comparison view, only keep the first value of the slider
+        if (Array.isArray(sliderValue) && sliderValue.length > 0) {
+          setSliderValue(sliderValue[0]);
+        }
+      } else {
+        // When opening comparison view, set the end date to the current time
+        setSliderValue((prevValue) => {
+          const firstValue = Array.isArray(prevValue) ? prevValue[0] : prevValue;
+          return [firstValue, dayjs().valueOf()];
+        });
+      }
+  
+      return newState;
+    });
+    
   }
 
   const map = useMapEvent("locationfound", (event) => {
