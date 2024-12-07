@@ -4,6 +4,7 @@ import {
   styled,
   Box,
   IconButton,
+  useMediaQuery,
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
@@ -70,10 +71,7 @@ export default function MenuDrawer({
   satelliteViewOpen,
   comparisonViewOpen,
 }: MenuDrawerProps) {
-  // Toggle function to open/close the drawer
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
-  };
+  const isCoarsePointer = useMediaQuery("(pointer: coarse)");
 
   const containerRef = useRef(null);
 
@@ -83,6 +81,11 @@ export default function MenuDrawer({
       L.DomEvent.disableScrollPropagation(containerRef.current);
     }
   });
+
+    // Toggle function to open/close the drawer
+    const toggleDrawer = () => {
+      setIsDrawerOpen(!isDrawerOpen);
+    };
 
   // Handling the map drag when menu open
   const map = useMap();
@@ -97,7 +100,7 @@ export default function MenuDrawer({
       onTouchEnd={startMapDrag}
       sx={{ display: "contents" }}
     >
-      {isMobile ? (
+      {isMobile && isCoarsePointer ? (
         <SwipeableDrawerStyled
           anchor="bottom"
           open={isDrawerOpen}
