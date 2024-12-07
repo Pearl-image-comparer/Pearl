@@ -82,10 +82,10 @@ export default function MenuDrawer({
     }
   });
 
-    // Toggle function to open/close the drawer
-    const toggleDrawer = () => {
-      setIsDrawerOpen(!isDrawerOpen);
-    };
+  // Toggle function to open/close the drawer
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
   // Handling the map drag when menu open
   const map = useMap();
