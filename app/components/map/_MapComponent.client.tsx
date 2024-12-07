@@ -27,6 +27,7 @@ import { LayerKey } from "../controls/layerControl/LayerControl";
 import UserMarker from "./markers/UserMarker";
 import CustomMarker from "./markers/CustomMarker";
 import { Observation } from "~/routes/observations";
+import { use } from "i18next";
 
 export interface LoadingState {
   sightings: boolean;
