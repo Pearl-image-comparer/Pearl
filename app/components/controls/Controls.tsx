@@ -146,6 +146,8 @@ export default function Controls({
         setSliderValue={setSliderValue}
         setFetchingEnabled={setFetchingEnabled}
         setFetchingError={setFetchingError}
+        setSatelliteViewOpen={setSatelliteViewOpen}
+        setComparisonViewOpen={setComparisonViewOpen}
       />
       <SharedContainer>
         <Box>

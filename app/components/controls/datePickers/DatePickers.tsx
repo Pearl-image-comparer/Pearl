@@ -3,7 +3,7 @@ import { useState, Dispatch, SetStateAction } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { fiFI } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/fi";
 import { Period } from "../Controls";
@@ -15,6 +15,8 @@ interface DatePickersProps {
   endDate: Dayjs | null;
   setPeriod: Dispatch<SetStateAction<Period>>;
   setSliderValue: Dispatch<SetStateAction<number | number[]>>;
+  setSatelliteViewOpen: Dispatch<SetStateAction<boolean>>;
+  setComparisonViewOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function DatePickers({
@@ -24,11 +26,16 @@ export default function DatePickers({
   endDate,
   setPeriod,
   setSliderValue,
+  setSatelliteViewOpen,
+  setComparisonViewOpen,
 }: DatePickersProps) {
   const [startDateError, setStartDateError] = useState<string | null>(null);
   const [endDateError, setEndDateError] = useState<string | null>(null);
+  const [localStartDate, setLocalStartDate] = useState<Dayjs | null>(startDate);
+  const [localEndDate, setLocalEndDate] = useState<Dayjs | null>(null);
 
   const handleStartDateChange = (newValue: Dayjs | null) => {
+    setLocalStartDate(newValue);
     setStartDate(newValue);
     if (newValue && endDate && newValue.isAfter(endDate)) {
       setStartDateError(
@@ -42,7 +49,8 @@ export default function DatePickers({
     // If the value is not null, set the period state.
     if (newValue) {
       setPeriod((prev) => ({ ...prev, start: newValue }));
-      //setSliderValue(newValue.valueOf());
+      setSliderValue(newValue.valueOf());
+      setSatelliteViewOpen(true);
     }
   };
 
@@ -60,10 +68,15 @@ export default function DatePickers({
 
     if (startDate && newValue) {
       setSliderValue([startDate.valueOf(), newValue.valueOf()]);
+      setComparisonViewOpen(true);
     }
     // If the value is not null, set the period state.
-    if (newValue) {
+    if (newValue != null) {
       setPeriod((prev) => ({ ...prev, end: newValue }));
+      setEndDate(dayjs());
+    } else {
+      setPeriod((prev) => ({ ...prev, end: dayjs() }));
+      setComparisonViewOpen(false);
     }
   };
 
@@ -86,9 +99,11 @@ export default function DatePickers({
       >
         <Typography variant="h6">Kuvien vertailu</Typography>
         <DatePicker
-          value={startDate}
+          value={localStartDate}
           label="Ensimmäinen päivämäärä"
-          onChange={handleStartDateChange}
+          //onChange={handleStartDateChange}
+          onAccept = {handleStartDateChange}
+          onChange={()=>true}
           format="DD/MM/YYYY"
           slotProps={{
             textField: {
@@ -99,9 +114,11 @@ export default function DatePickers({
           }}
         />
         <DatePicker
-          value={endDate}
+          value={localEndDate}
           label="Toinen päivämäärä"
-          onChange={handleEndDateChange}
+          //onChange={handleEndDateChange}
+          onAccept = {handleEndDateChange}
+          onChange={()=>true}
           format="DD/MM/YYYY"
           slotProps={{
             textField: {
