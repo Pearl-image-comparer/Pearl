@@ -1,3 +1,4 @@
+import { use } from "i18next";
 import L from "leaflet";
 import "leaflet-side-by-side";
 import { useEffect } from "react";
@@ -17,6 +18,8 @@ export default function SideBySide({
   onTop = "left",
 }: SideBySideProps) {
   const map = useMap();
+
+  useEffect(() => {}, [leftDate, rightDate,]);
 
   useEffect(() => {
     const leftLayer = L.tileLayer.wms("/wms", {
