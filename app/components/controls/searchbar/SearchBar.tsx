@@ -42,21 +42,12 @@ interface Feature {
   properties: Properties;
 }
 
-export default function SearchBar() {
+// This is required to be it's own component or otherwise the states do some funky stuff.
+function LocationSearch() {
   const [value, setValue] = useState<Location | null>(null);
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<readonly Location[]>([]);
   const map = useMap();
-
-  const paperRef = useRef(null);
-
-  useEffect(() => {
-    if (paperRef.current) L.DomEvent.disableClickPropagation(paperRef.current);
-  });
-
-  const StyledPaper = styled(Paper)({
-    pointerEvents: "auto",
-  });
 
   // Limit how quickly requests can be made with debounce.
   const locationFetch = useMemo(
@@ -79,11 +70,9 @@ export default function SearchBar() {
                 lng: geometry.coordinates[0],
                 lat: geometry.coordinates[1],
                 id: properties.osm_id,
-                name: [
-                  properties.name,
-                  properties.city,
-                  properties.country,
-                ].join(", "),
+                name: [properties.name, properties.city, properties.country]
+                  .filter(Boolean)
+                  .join(", "),
               })),
             )
             // Filter out duplicate results.
@@ -127,54 +116,70 @@ export default function SearchBar() {
   }, [value, input, locationFetch]);
 
   return (
-    <StyledPaper ref={paperRef}>
-      <Autocomplete
-        id="location-search"
-        getOptionLabel={(option) =>
-          typeof option === "string" ? option : option.name
-        }
-        filterOptions={(x) => x}
-        options={options}
-        autoComplete
-        includeInputInList
-        filterSelectedOptions
-        value={value}
-        noOptionsText="No locations"
-        onChange={(_, newValue) => {
-          setOptions(newValue ? [newValue, ...options] : options);
-          setValue(newValue);
-          if (newValue)
-            map.panTo(
-              { lat: newValue.lat, lng: newValue.lng },
-              { animate: true },
-            );
-        }}
-        onInputChange={(_, newInput) => setInput(newInput)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="Search for a place"
-            size="small"
-            slotProps={{
-              input: {
-                ...params.InputProps,
-                type: "search",
-                startAdornment: <SearchIcon />,
-              },
-            }}
-          />
-        )}
-        renderOption={(props, option) => {
-          const { ...optionProps } = props;
-
-          // TODO: Make this more robust.
-          return (
-            <li {...optionProps} key={option.id}>
-              {option.name}
-            </li>
+    <Autocomplete
+      id="location-search"
+      getOptionLabel={(option) =>
+        typeof option === "string" ? option : option.name
+      }
+      filterOptions={(x) => x}
+      options={options}
+      autoComplete
+      includeInputInList
+      filterSelectedOptions
+      value={value}
+      noOptionsText="No locations"
+      onChange={(_, newValue) => {
+        setOptions(newValue ? [newValue, ...options] : options);
+        setValue(newValue);
+        if (newValue)
+          map.panTo(
+            { lat: newValue.lat, lng: newValue.lng },
+            { animate: true },
           );
-        }}
-      />
+      }}
+      onInputChange={(_, newInput) => setInput(newInput)}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          placeholder="Search for a place"
+          size="small"
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              type: "search",
+              startAdornment: <SearchIcon />,
+            },
+          }}
+        />
+      )}
+      renderOption={(props, option) => {
+        const { ...optionProps } = props;
+
+        // TODO: Make this more robust.
+        return (
+          <li {...optionProps} key={option.id}>
+            {option.name}
+          </li>
+        );
+      }}
+    />
+  );
+}
+
+export default function SearchBar() {
+  const paperRef = useRef(null);
+
+  useEffect(() => {
+    if (paperRef.current) L.DomEvent.disableClickPropagation(paperRef.current);
+  });
+
+  const StyledPaper = styled(Paper)({
+    pointerEvents: "auto",
+  });
+
+  return (
+    <StyledPaper ref={paperRef}>
+      <LocationSearch />
     </StyledPaper>
   );
 }
