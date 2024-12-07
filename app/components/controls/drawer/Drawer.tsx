@@ -45,7 +45,9 @@ interface MenuDrawerProps {
   setSliderValue: Dispatch<SetStateAction<number | number[]>>;
   setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
   setFetchingError: Dispatch<SetStateAction<string | null>>;
+  satelliteViewOpen: boolean;
   setSatelliteViewOpen: Dispatch<SetStateAction<boolean>>;
+  comparisonViewOpen: boolean;
   setComparisonViewOpen: Dispatch<SetStateAction<boolean>>;
 
 }
@@ -66,6 +68,8 @@ export default function MenuDrawer({
   setFetchingError,
   setSatelliteViewOpen,
   setComparisonViewOpen,
+  satelliteViewOpen,
+  comparisonViewOpen,
 }: MenuDrawerProps) {
   // Toggle function to open/close the drawer
   const toggleDrawer = () => {
@@ -139,7 +143,9 @@ export default function MenuDrawer({
               endDate={endDate}
               setPeriod={setPeriod}
               setSliderValue={setSliderValue}
+              satelliteViewOpen={satelliteViewOpen}
               setSatelliteViewOpen={setSatelliteViewOpen}
+              comparisonViewOpen={comparisonViewOpen}
               setComparisonViewOpen={setComparisonViewOpen}
             />
             <LayerControl
@@ -202,7 +208,9 @@ export default function MenuDrawer({
               endDate={endDate}
               setPeriod={setPeriod}
               setSliderValue={setSliderValue}
+              satelliteViewOpen={satelliteViewOpen}
               setSatelliteViewOpen={setSatelliteViewOpen}
+              comparisonViewOpen={comparisonViewOpen}
               setComparisonViewOpen={setComparisonViewOpen}
               
             />
