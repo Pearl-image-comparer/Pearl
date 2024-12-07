@@ -40,6 +40,8 @@ export interface ControlsProps {
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   loading: LoadingState;
   setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
+  satelliteViewOpen: boolean;
+  comparisonViewOpen: boolean;
 }
 
 export default function Controls({
@@ -146,7 +148,9 @@ export default function Controls({
         setSliderValue={setSliderValue}
         setFetchingEnabled={setFetchingEnabled}
         setFetchingError={setFetchingError}
+        satelliteViewOpen={satelliteViewOpen}
         setSatelliteViewOpen={setSatelliteViewOpen}
+        comparisonViewOpen={comparisonViewOpen}
         setComparisonViewOpen={setComparisonViewOpen}
       />
       <SharedContainer>
@@ -175,6 +179,9 @@ export default function Controls({
             setUserLocation={setUserLocation}
             windowHeight={windowHeight}
             isMobile={isMobile}
+            setEndDate={setEndDate}
+            setSliderValue={setSliderValue}
+            sliderValue={sliderValue}
           />
           {satelliteViewOpen && (
             <DateSlider
