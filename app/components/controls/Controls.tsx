@@ -91,7 +91,7 @@ export default function Controls({
     paddingBottom: isMobile
       ? "2.5rem"
       : satelliteViewOpen || comparisonViewOpen
-        ? "1.2rem"
+        ? "1.5rem"
         : "3.8rem",
     right: 0,
     width:
