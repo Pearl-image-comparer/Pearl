@@ -70,8 +70,10 @@ export default function MenuDrawer({
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (containerRef.current)
+    if (containerRef.current) {
       L.DomEvent.disableClickPropagation(containerRef.current);
+      L.DomEvent.disableScrollPropagation(containerRef.current);
+    }
   });
 
   // Handling the map drag when menu open
@@ -80,7 +82,13 @@ export default function MenuDrawer({
   const startMapDrag = () => map.dragging.enable();
 
   return (
-    <Box ref={containerRef} sx={{ display: "contents" }}>
+    <Box
+      onMouseDown={stopMapDrag}
+      onMouseUp={startMapDrag}
+      onTouchStart={stopMapDrag}
+      onTouchEnd={startMapDrag}
+      sx={{ display: "contents" }}
+    >
       {isMobile ? (
         <SwipeableDrawerStyled
           anchor="bottom"
@@ -90,10 +98,6 @@ export default function MenuDrawer({
           swipeAreaWidth={DRAWER_BLEEDING}
           disableSwipeToOpen={false}
           ModalProps={{ keepMounted: true }}
-          onMouseDown={stopMapDrag}
-          onMouseUp={startMapDrag}
-          onTouchStart={stopMapDrag}
-          onTouchEnd={startMapDrag}
           sx={{
             "& .MuiDrawer-paper": {
               height: "50%",
@@ -112,7 +116,6 @@ export default function MenuDrawer({
               visibility: "visible",
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
-              //pointerEvents: 'all', if used, drawer no longer works with swiping
             }}
           >
             {" "}
@@ -120,7 +123,10 @@ export default function MenuDrawer({
               <DragHandleRoundedIcon />
             </IconButton>
           </Box>
-          <Box sx={{ padding: 2, height: "100%" }}>
+          <Box
+            ref={containerRef}
+            sx={{ padding: 2, height: "100%", overflowY: "auto" }}
+          >
             <DatePickers
               setStartDate={setStartDate}
               setEndDate={setEndDate}
@@ -148,10 +154,6 @@ export default function MenuDrawer({
               height: "100vh",
             },
           }}
-          onMouseDown={stopMapDrag}
-          onMouseUp={startMapDrag}
-          onTouchStart={stopMapDrag}
-          onTouchEnd={startMapDrag}
         >
           <Box
             sx={{
@@ -177,11 +179,13 @@ export default function MenuDrawer({
           </Box>
 
           <Box
+            ref={containerRef}
             sx={{
               padding: 2,
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
+              overflowY: "auto",
             }}
           >
             <DatePickers

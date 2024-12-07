@@ -4,4 +4,4 @@ export const FETCH_ZOOM_LEVEL_THRESHOLD = 13;
 
 // Basic styling
 export const DRAWER_WIDTH = 300;
-export const DRAWER_BLEEDING = 60;
+export const DRAWER_BLEEDING = 80;
