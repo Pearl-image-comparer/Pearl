@@ -7,7 +7,6 @@ import dayjs, { Dayjs } from "dayjs";
 import { fiFI } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/fi";
 import { Period } from "../Controls";
-import { use } from "i18next";
 
 interface DatePickersProps {
   setStartDate: Dispatch<SetStateAction<Dayjs | null>>;

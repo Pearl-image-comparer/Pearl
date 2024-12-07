@@ -1,4 +1,3 @@
-import { use } from "i18next";
 import L from "leaflet";
 import "leaflet-side-by-side";
 import { useEffect } from "react";
