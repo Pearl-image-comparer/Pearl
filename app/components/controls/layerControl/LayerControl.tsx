@@ -65,7 +65,7 @@ export default function LayerControl({
         overlayVisibility.observations &&
         zoomLevel >= FETCH_ZOOM_LEVEL_THRESHOLD,
     }));
-  }, [overlayVisibility, setFetchingEnabled, setFetchingError, zoomLevel]);
+  }, [overlayVisibility, setFetchingEnabled, setFetchingError, zoomLevel, t]);
 
   // Toggle layer
   const handleCheckboxChange = (key: LayerKey) => {
