@@ -80,7 +80,6 @@ function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
 
   const { t } = useTranslation();
 
-
   return (
     <GridToolbarContainer>
       <GridToolbarColumnsButton />
@@ -146,19 +145,20 @@ export default function Admin() {
       <Dialog onClose={() => setPictureUrl(null)} open={pictureUrl !== null}>
         <DialogTitle>{t("adminObservation")}</DialogTitle>
         <DialogContent sx={{ p: 1 }}>
-          {pictureUrl && <StyledImage src={pictureUrl} alt={t("adminAltImageText")} />}
+          {pictureUrl && (
+            <StyledImage src={pictureUrl} alt={t("adminAltImageText")} />
+          )}
         </DialogContent>
       </Dialog>
 
       <Dialog open={deleteIds.length > 0}>
         <DialogTitle>{t("adminConfirmation")}</DialogTitle>
         <DialogContent>
-          {t("adminDeleteConfirmation")}{" "}
-          {deleteIds.join(", ")}
+          {t("adminDeleteConfirmation")} {deleteIds.join(", ")}
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={() => setDeleteIds([])}>
-          {t("adminCancel")}
+            {t("adminCancel")}
           </Button>
           <Button
             color="error"

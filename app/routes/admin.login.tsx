@@ -53,7 +53,6 @@ export default function AdminLogin() {
   const data = useActionData<typeof action>();
   const { t } = useTranslation();
 
-
   return (
     <Box
       sx={{
@@ -96,7 +95,7 @@ export default function AdminLogin() {
               color={!data || "error" in data || !data.ok ? "error" : "primary"}
             />
             <Button type="submit" variant="contained">
-            {t("loginAdminText")}
+              {t("loginAdminText")}
             </Button>
           </Form>
         </Box>
