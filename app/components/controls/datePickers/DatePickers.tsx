@@ -7,6 +7,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { fiFI } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/fi";
 import { Period } from "../Controls";
+import { useTranslation } from "react-i18next";
 
 interface DatePickersProps {
   setStartDate: Dispatch<SetStateAction<Dayjs | null>>;
@@ -38,6 +39,8 @@ export default function DatePickers({
   const [localStartDate, setLocalStartDate] = useState<Dayjs | null>(null);
   const [localEndDate, setLocalEndDate] = useState<Dayjs | null>(null);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (satelliteViewOpen === false) {
       setLocalStartDate(null);
@@ -61,9 +64,8 @@ export default function DatePickers({
 
     // If the end date is set and the new start date is after the end date, set an error.
     if (newValue && endDate && newValue.isAfter(endDate)) {
-      setStartDateError(
-        "Aloituspäivä ei voi olla myöhemmin kuin vertailtava päivä",
-      );
+      const error = t("startDateError");
+      setStartDateError(error);
     } else {
       setStartDateError(null);
       setEndDateError(null);
@@ -97,9 +99,8 @@ export default function DatePickers({
     // If the start date is set and the new end date is before the start date,
     //set an error.
     if (startDate && newValue && newValue.isBefore(startDate)) {
-      setEndDateError(
-        "Vertailtava päivä ei voi olla aikaisemmin kuin aloitupäivä",
-      );
+      const error = t("endDateError");
+      setEndDateError(error);
     } else {
       setStartDateError(null);
       setEndDateError(null);
@@ -139,11 +140,10 @@ export default function DatePickers({
           margin: "5% auto",
         }}
       >
-        <Typography variant="h6">Kuvien vertailu</Typography>
+        <Typography variant="h6">{t('datePickerTitle')}</Typography>
         <DatePicker
           value={localStartDate}
-          label="Ensimmäinen päivämäärä"
-          //onChange={handleStartDateChange}
+          label={t('datePickerOne')}
           onAccept={handleStartDateChange}
           onChange={() => true}
           minDate={dayjs("2015-10-10")}
@@ -163,8 +163,7 @@ export default function DatePickers({
         />
         <DatePicker
           value={localEndDate}
-          label="Toinen päivämäärä"
-          //onChange={handleEndDateChange}
+          label={t("datePickerTwo")}
           onAccept={handleEndDateChange}
           onChange={() => true}
           minDate={dayjs("2015-10-10")}

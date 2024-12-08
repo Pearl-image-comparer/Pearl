@@ -3,6 +3,7 @@ import { List, ListItem, Checkbox, Box, Typography } from "@mui/material";
 import { useMap } from "react-leaflet";
 import { LoadingState } from "~/components/map/_MapComponent.client";
 import { FETCH_ZOOM_LEVEL_THRESHOLD } from "~/constants";
+import { useTranslation } from "react-i18next";
 
 // Mock data: array of layer options
 const layerOptions = [
@@ -28,6 +29,7 @@ export default function LayerControl({
 }: LayerControlProps) {
   const [zoomLevel, setZoomLevel] = useState(0);
   const map = useMap();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const checkZoomLevel = () => setZoomLevel(map.getZoom());
@@ -44,11 +46,14 @@ export default function LayerControl({
       overlayVisibility.observations && zoomLevel < FETCH_ZOOM_LEVEL_THRESHOLD;
 
     if (sightingsError && observationsError) {
-      setFetchingError("Zoomaa lähemmäksi tietojen hakemista varten");
+      const error = t("sightingsObservationsError")
+      setFetchingError(error);
     } else if (sightingsError) {
-      setFetchingError("Zoomaa lähemmäksi lajitietojen hakemista varten");
+      const error = t("sightingsError")
+      setFetchingError(error);
     } else if (observationsError) {
-      setFetchingError("Zoomaa lähemmäksi havaintotietojen hakemista varten");
+      const error = t("observationsError")
+      setFetchingError(error);
     } else {
       setFetchingError(null);
     }
@@ -73,7 +78,7 @@ export default function LayerControl({
   return (
     <Box>
       <Typography variant="h6" sx={{ mb: 1 }}>
-        Kartan tasot
+        {t("mapLayerTitle")}
       </Typography>
       <List sx={{ padding: 0 }}>
         {layerOptions.map((layer) => (
@@ -90,7 +95,7 @@ export default function LayerControl({
               checked={overlayVisibility[layer.key]}
               onChange={() => handleCheckboxChange(layer.key)}
             />
-            <Typography variant="body2">{layer.name}</Typography>
+            <Typography variant="body2">{t(layer.name)}</Typography>
           </ListItem>
         ))}
       </List>

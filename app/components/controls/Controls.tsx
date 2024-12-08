@@ -23,6 +23,8 @@ import { LayerKey } from "./layerControl/LayerControl";
 import { LoadingState } from "~/components/map/_MapComponent.client";
 import InfoBox from "./indicators/InfoBox";
 import { DRAWER_WIDTH, WINDOW_HEIGHT_MIN_THRESHOLD } from "~/constants";
+import { useTranslation } from "react-i18next";
+
 
 export interface Period {
   start: Dayjs;
@@ -71,6 +73,8 @@ export default function Controls({
   const [windowHeight, setWindowHeight] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleResize = () => setWindowHeight(window.innerHeight);
@@ -160,10 +164,10 @@ export default function Controls({
             <InfoBox
               text={
                 loading.sightings && loading.observations
-                  ? "Loading data"
+                  ? t("loadingData")
                   : loading.sightings
-                    ? "Loading sighting data"
-                    : "Loading observation data"
+                    ? t("loadingSightings")
+                    : t("loadingObservations")
               }
             />
           )}

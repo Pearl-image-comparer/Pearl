@@ -72,7 +72,6 @@ export default function MenuDrawer({
   comparisonViewOpen,
 }: MenuDrawerProps) {
   const isCoarsePointer = useMediaQuery("(pointer: coarse)");
-
   const containerRef = useRef(null);
 
   useEffect(() => {

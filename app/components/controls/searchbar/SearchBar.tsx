@@ -9,6 +9,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
+import { useTranslation } from "react-i18next";
 
 interface Location {
   id: number;
@@ -89,6 +90,9 @@ function LocationSearch() {
     [],
   );
 
+  const { t } = useTranslation();
+
+
   useEffect(() => {
     let active = true;
 
@@ -127,7 +131,7 @@ function LocationSearch() {
       includeInputInList
       filterSelectedOptions
       value={value}
-      noOptionsText="No locations"
+      noOptionsText={t("searchBarNoOptions")}
       onChange={(_, newValue) => {
         setOptions(newValue ? [newValue, ...options] : options);
         setValue(newValue);
@@ -141,7 +145,7 @@ function LocationSearch() {
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder="Search for a place"
+          placeholder={t("searchBar")}
           size="small"
           slotProps={{
             input: {
