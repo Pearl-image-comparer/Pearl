@@ -4,12 +4,14 @@ import { Sighting } from "~/routes/lajidata";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PlaceIcon from "@mui/icons-material/Place";
+import { useTranslation } from "react-i18next";
 
 interface SightingPopupProps {
   sighting: Sighting;
 }
 
 export default function SightingPopup({ sighting }: SightingPopupProps) {
+  const { t } = useTranslation();
   const capitalizeName = (name: string) => {
     if (name) {
       return name[0].toUpperCase() + name.slice(1, name.length);
@@ -18,11 +20,11 @@ export default function SightingPopup({ sighting }: SightingPopupProps) {
   };
 
   const generateReadableEndangerment = (endangerment: string) => {
-    if (endangerment.includes("MX.iucnCR")) return "Äärimmäisen uhanalaiset";
-    if (endangerment.includes("MX.iucnEN")) return "Erittäin uhanalaiset";
-    if (endangerment.includes("MX.iucnVU")) return "Vaarantuneet";
-    if (endangerment.includes("MX.iucnNT")) return "Silmälläpidettävät";
-    return "Ei tiedossa";
+    if (endangerment.includes("MX.iucnCR")) return t("extremelyEndangered");
+    if (endangerment.includes("MX.iucnEN")) return t("highlyEndangered");
+    if (endangerment.includes("MX.iucnVU")) return t("vulnerable");
+    if (endangerment.includes("MX.iucnNT")) return t("nearThreatened");
+    return t("unknown");
   };
 
   return (
