@@ -120,6 +120,10 @@ export default function DatePickers({
     } else {
       setPeriod((prev) => ({ ...prev, end: dayjs() }));
       setComparisonViewOpen(false);
+
+      if (startDate) {
+        setSliderValue([startDate.valueOf()]);
+      }
     }
   };
 
