@@ -9,6 +9,7 @@ import {
 import { Form, useActionData } from "@remix-run/react";
 import argon2 from "argon2";
 import sessions from "~/utils/sessions.server";
+import { useTranslation } from "react-i18next";
 
 export const meta: MetaFunction = () => [{ title: "Admin Kirjautuminen" }];
 
@@ -50,6 +51,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function AdminLogin() {
   const data = useActionData<typeof action>();
+  const { t } = useTranslation();
+
 
   return (
     <Box
@@ -70,7 +73,7 @@ export default function AdminLogin() {
           fontWeight="bold"
           textAlign="center"
         >
-          Admin
+          {t("loginAdmin")}
         </Typography>
         <Box
           sx={{
@@ -86,14 +89,14 @@ export default function AdminLogin() {
             <TextField
               required
               name="password"
-              label="Salasana"
+              label={t("loginAdminTextField")}
               type="password"
               fullWidth
               autoComplete="current-password"
               color={!data || "error" in data || !data.ok ? "error" : "primary"}
             />
             <Button type="submit" variant="contained">
-              Kirjaudu sisään
+            {t("loginAdminText")}
             </Button>
           </Form>
         </Box>
