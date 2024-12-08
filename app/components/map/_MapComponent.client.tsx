@@ -27,6 +27,7 @@ import { LayerKey } from "../controls/layerControl/LayerControl";
 import UserMarker from "./markers/UserMarker";
 import CustomMarker from "./markers/CustomMarker";
 import { Observation } from "~/routes/observations";
+import { useTranslation } from "react-i18next";
 
 export interface LoadingState {
   sightings: boolean;
@@ -72,6 +73,8 @@ export default function MapComponent() {
     time: string;
   }
 
+  const { t } = useTranslation();
+
   // eslint-disable-next-line react/display-name
   const MemoizedWMSTileLayer = memo((wmsParams: WMSParams) => (
     <WMSTileLayer
@@ -110,7 +113,7 @@ export default function MapComponent() {
           <CustomMarker position={reportLocation}>
             <Popup>
               <Button onClick={() => setReportDialogOpen(true)}>
-                Luo raportti?
+                {t("reportDialog")}
               </Button>
             </Popup>
           </CustomMarker>
@@ -187,7 +190,7 @@ export default function MapComponent() {
         open={selectLocation}
         sx={{ zIndex: 100, pointerEvents: "none" }}
       >
-        <Typography color="white">Klikkaa sijaintia kartalta</Typography>
+        <Typography color="white">{t("mapHelperText")}</Typography>
       </Backdrop>
     </div>
   );

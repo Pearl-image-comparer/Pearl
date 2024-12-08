@@ -4,6 +4,7 @@ import {
   styled,
   Box,
   IconButton,
+  useMediaQuery,
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
@@ -45,6 +46,10 @@ interface MenuDrawerProps {
   setSliderValue: Dispatch<SetStateAction<number | number[]>>;
   setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
   setFetchingError: Dispatch<SetStateAction<string | null>>;
+  satelliteViewOpen: boolean;
+  setSatelliteViewOpen: Dispatch<SetStateAction<boolean>>;
+  comparisonViewOpen: boolean;
+  setComparisonViewOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function MenuDrawer({
@@ -61,12 +66,12 @@ export default function MenuDrawer({
   setSliderValue,
   setFetchingEnabled,
   setFetchingError,
+  setSatelliteViewOpen,
+  setComparisonViewOpen,
+  satelliteViewOpen,
+  comparisonViewOpen,
 }: MenuDrawerProps) {
-  // Toggle function to open/close the drawer
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
-  };
-
+  const isCoarsePointer = useMediaQuery("(pointer: coarse)");
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -75,6 +80,11 @@ export default function MenuDrawer({
       L.DomEvent.disableScrollPropagation(containerRef.current);
     }
   });
+
+  // Toggle function to open/close the drawer
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
   // Handling the map drag when menu open
   const map = useMap();
@@ -89,7 +99,7 @@ export default function MenuDrawer({
       onTouchEnd={startMapDrag}
       sx={{ display: "contents" }}
     >
-      {isMobile ? (
+      {isMobile && isCoarsePointer ? (
         <SwipeableDrawerStyled
           anchor="bottom"
           open={isDrawerOpen}
@@ -100,7 +110,7 @@ export default function MenuDrawer({
           ModalProps={{ keepMounted: true }}
           sx={{
             "& .MuiDrawer-paper": {
-              height: "50%",
+              minHeight: "50%",
             },
           }}
         >
@@ -134,6 +144,10 @@ export default function MenuDrawer({
               endDate={endDate}
               setPeriod={setPeriod}
               setSliderValue={setSliderValue}
+              satelliteViewOpen={satelliteViewOpen}
+              setSatelliteViewOpen={setSatelliteViewOpen}
+              comparisonViewOpen={comparisonViewOpen}
+              setComparisonViewOpen={setComparisonViewOpen}
             />
             <LayerControl
               overlayVisibility={overlayVisibility}
@@ -195,6 +209,10 @@ export default function MenuDrawer({
               endDate={endDate}
               setPeriod={setPeriod}
               setSliderValue={setSliderValue}
+              satelliteViewOpen={satelliteViewOpen}
+              setSatelliteViewOpen={setSatelliteViewOpen}
+              comparisonViewOpen={comparisonViewOpen}
+              setComparisonViewOpen={setComparisonViewOpen}
             />
             <LayerControl
               overlayVisibility={overlayVisibility}

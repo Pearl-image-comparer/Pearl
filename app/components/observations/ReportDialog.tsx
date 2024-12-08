@@ -17,6 +17,7 @@ import { useFetcher } from "@remix-run/react";
 import { LatLng } from "leaflet";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { action } from "~/routes/observations";
+import { useTranslation } from "react-i18next";
 
 export interface Observation {
   picture: File | null;
@@ -32,6 +33,7 @@ export default function ReportDialog(props: {
   onClose: () => void;
 }) {
   const fetcher = useFetcher<typeof action>();
+  const { t } = useTranslation();
 
   const [picture, setPicture] = useState<File | null>(null);
   const pictureUrl = useMemo(
@@ -104,7 +106,7 @@ export default function ReportDialog(props: {
       }}
     >
       <StyledDialogTitle>
-        Raportoi havainnosta
+        {t("reportDialogTitle")}
         <IconButton onClick={props.onClose}>
           <CloseIcon />
         </IconButton>
@@ -117,7 +119,7 @@ export default function ReportDialog(props: {
           tabIndex={-1}
           startIcon={<CloudUploadIcon />}
         >
-          Lataa kuva
+          {t("reportLoadImage")}
           <VisuallyHiddenInput
             type="file"
             accept="image/*"
@@ -136,7 +138,7 @@ export default function ReportDialog(props: {
           required
           margin="dense"
           name="title"
-          label="Otsikko"
+          label={t("reportTitle")}
           fullWidth
           sx={{ mt: 2, mb: 1 }}
         />
@@ -145,7 +147,7 @@ export default function ReportDialog(props: {
             required
             margin="dense"
             name="latitude"
-            label="Leveyspiiri"
+            label={t("reportLatitude")}
             type="number"
             fullWidth
             defaultValue={props.location?.lat}
@@ -155,7 +157,7 @@ export default function ReportDialog(props: {
             required
             margin="dense"
             name="longitude"
-            label="Pituuspiiri"
+            label={t("reportLongitude")}
             type="number"
             fullWidth
             defaultValue={props.location?.lng}
@@ -166,7 +168,7 @@ export default function ReportDialog(props: {
           required
           margin="dense"
           name="description"
-          label="Kuvaus"
+          label={t("reportDescription")}
           fullWidth
           multiline
           rows={4}
@@ -174,7 +176,7 @@ export default function ReportDialog(props: {
       </DialogContent>
       <DialogActions>
         <Button variant="contained" type="submit">
-          Lähetä
+          {t("reportSubmit")}
         </Button>
       </DialogActions>
     </Dialog>

@@ -23,6 +23,7 @@ import { LayerKey } from "./layerControl/LayerControl";
 import { LoadingState } from "~/components/map/_MapComponent.client";
 import InfoBox from "./indicators/InfoBox";
 import { DRAWER_WIDTH, WINDOW_HEIGHT_MIN_THRESHOLD } from "~/constants";
+import { useTranslation } from "react-i18next";
 
 export interface Period {
   start: Dayjs;
@@ -40,6 +41,8 @@ export interface ControlsProps {
   setOverlayVisibility: Dispatch<SetStateAction<Record<LayerKey, boolean>>>;
   loading: LoadingState;
   setFetchingEnabled: Dispatch<SetStateAction<LoadingState>>;
+  satelliteViewOpen: boolean;
+  comparisonViewOpen: boolean;
 }
 
 export default function Controls({
@@ -70,6 +73,8 @@ export default function Controls({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     const handleResize = () => setWindowHeight(window.innerHeight);
     handleResize();
@@ -89,7 +94,7 @@ export default function Controls({
     paddingBottom: isMobile
       ? "2.5rem"
       : satelliteViewOpen || comparisonViewOpen
-        ? "1.2rem"
+        ? "1.5rem"
         : "3.8rem",
     right: 0,
     width:
@@ -146,6 +151,10 @@ export default function Controls({
         setSliderValue={setSliderValue}
         setFetchingEnabled={setFetchingEnabled}
         setFetchingError={setFetchingError}
+        satelliteViewOpen={satelliteViewOpen}
+        setSatelliteViewOpen={setSatelliteViewOpen}
+        comparisonViewOpen={comparisonViewOpen}
+        setComparisonViewOpen={setComparisonViewOpen}
       />
       <SharedContainer>
         <Box>
@@ -154,10 +163,10 @@ export default function Controls({
             <InfoBox
               text={
                 loading.sightings && loading.observations
-                  ? "Loading data"
+                  ? t("loadingData")
                   : loading.sightings
-                    ? "Loading sighting data"
-                    : "Loading observation data"
+                    ? t("loadingSightings")
+                    : t("loadingObservations")
               }
             />
           )}
@@ -173,6 +182,9 @@ export default function Controls({
             setUserLocation={setUserLocation}
             windowHeight={windowHeight}
             isMobile={isMobile}
+            setEndDate={setEndDate}
+            setSliderValue={setSliderValue}
+            sliderValue={sliderValue}
           />
           {satelliteViewOpen && (
             <DateSlider

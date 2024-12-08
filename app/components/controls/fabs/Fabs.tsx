@@ -8,6 +8,7 @@ import CompareIcon from "@mui/icons-material/Compare";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { LatLng, default as L } from "leaflet";
 import { WINDOW_HEIGHT_MIN_THRESHOLD } from "~/constants";
+import dayjs, { Dayjs } from "dayjs";
 
 export interface ControlsFabsProps {
   satelliteViewOpen: boolean;
@@ -16,11 +17,19 @@ export interface ControlsFabsProps {
   setComparisonViewOpen: Dispatch<SetStateAction<boolean>>;
   onAddClick: () => void;
   setUserLocation: Dispatch<SetStateAction<LatLng | null>>;
+  setEndDate: Dispatch<SetStateAction<Dayjs | null>>;
 }
 
 interface FabsProps extends ControlsFabsProps {
   windowHeight: number;
   isMobile: boolean;
+}
+
+interface FabsProps extends ControlsFabsProps {
+  windowHeight: number;
+  isMobile: boolean;
+  setSliderValue: Dispatch<SetStateAction<number | number[]>>;
+  sliderValue: number | number[];
 }
 
 export default function Fabs({
@@ -32,6 +41,8 @@ export default function Fabs({
   setUserLocation,
   windowHeight,
   isMobile,
+  setSliderValue,
+  sliderValue,
 }: FabsProps) {
   const theme: Theme = useTheme();
 
@@ -89,6 +100,29 @@ export default function Fabs({
     },
   });
 
+  const handleCompareViewChange = () => {
+    setComparisonViewOpen((prev) => {
+      const newState = !prev;
+
+      if (!newState) {
+        // When closing comparison view, only keep the first value of the slider
+        if (Array.isArray(sliderValue) && sliderValue.length > 0) {
+          setSliderValue(sliderValue[0]);
+        }
+      } else {
+        // When opening comparison view, set the end date to the current time
+        setSliderValue((prevValue) => {
+          const firstValue = Array.isArray(prevValue)
+            ? prevValue[0]
+            : prevValue;
+          return [firstValue, dayjs().valueOf()];
+        });
+      }
+
+      return newState;
+    });
+  };
+
   const map = useMapEvent("locationfound", (event) => {
     map.flyTo(event.latlng, 16);
     setUserLocation(event.latlng);
@@ -103,7 +137,7 @@ export default function Fabs({
         <StyledToggleButton
           value="check"
           selected={comparisonViewOpen}
-          onChange={() => setComparisonViewOpen(!comparisonViewOpen)}
+          onChange={handleCompareViewChange}
         >
           <CompareIcon />
         </StyledToggleButton>

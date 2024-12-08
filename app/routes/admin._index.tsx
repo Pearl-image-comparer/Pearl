@@ -33,6 +33,7 @@ import { deleteObservation, getObservations } from "~/utils/db.server";
 import { deleteObservation as deletePicture } from "~/utils/s3.server";
 import sessions from "~/utils/sessions.server";
 import type { action as logoutAction } from "./admin.logout";
+import { useTranslation } from "react-i18next";
 
 export const meta: MetaFunction = () => [{ title: "Admin" }];
 
@@ -77,6 +78,8 @@ function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
   const selectedRows = apiRef.current.getSelectedRows();
   const fetcher = useFetcher<typeof logoutAction>();
 
+  const { t } = useTranslation();
+
   return (
     <GridToolbarContainer>
       <GridToolbarColumnsButton />
@@ -90,7 +93,7 @@ function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
         disabled={props.loading || selectedRows.size === 0}
         onClick={() => props.onDelete([...selectedRows.keys()])}
       >
-        Poista
+        {t("adminDelete")}
       </Button>
       <Button
         size="small"
@@ -99,7 +102,7 @@ function Toolbar(props: PropsFromSlot<GridSlots["toolbar"]>) {
           fetcher.submit({}, { action: "/admin/logout", method: "DELETE" })
         }
       >
-        Kirjaudu ulos
+        {t("adminLogOut")}
       </Button>
     </GridToolbarContainer>
   );
@@ -110,6 +113,8 @@ export default function Admin() {
   const fetcher = useFetcher<typeof action>();
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
+
+  const { t } = useTranslation();
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID" },
@@ -138,21 +143,22 @@ export default function Admin() {
   return (
     <Paper sx={{ height: "100%" }}>
       <Dialog onClose={() => setPictureUrl(null)} open={pictureUrl !== null}>
-        <DialogTitle>Havainto</DialogTitle>
+        <DialogTitle>{t("adminObservation")}</DialogTitle>
         <DialogContent sx={{ p: 1 }}>
-          {pictureUrl && <StyledImage src={pictureUrl} alt="Havainnon kuva" />}
+          {pictureUrl && (
+            <StyledImage src={pictureUrl} alt={t("adminAltImageText")} />
+          )}
         </DialogContent>
       </Dialog>
 
       <Dialog open={deleteIds.length > 0}>
-        <DialogTitle>Oletko varma?</DialogTitle>
+        <DialogTitle>{t("adminConfirmation")}</DialogTitle>
         <DialogContent>
-          Haluatko varmasti poistaa valitsemasi havainnot? Olet poistamassa ID:{" "}
-          {deleteIds.join(", ")}
+          {t("adminDeleteConfirmation")} {deleteIds.join(", ")}
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={() => setDeleteIds([])}>
-            Peruuta
+            {t("adminCancel")}
           </Button>
           <Button
             color="error"
@@ -164,7 +170,7 @@ export default function Admin() {
               setDeleteIds([]);
             }}
           >
-            Poista
+            {t("adminDelete")}
           </Button>
         </DialogActions>
       </Dialog>
