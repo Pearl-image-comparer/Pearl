@@ -35,7 +35,6 @@ export default function ReportDialog(props: {
   const fetcher = useFetcher<typeof action>();
   const { t } = useTranslation();
 
-
   const [picture, setPicture] = useState<File | null>(null);
   const pictureUrl = useMemo(
     () => picture && URL.createObjectURL(picture),
@@ -177,7 +176,7 @@ export default function ReportDialog(props: {
       </DialogContent>
       <DialogActions>
         <Button variant="contained" type="submit">
-        {t("reportSubmit")}
+          {t("reportSubmit")}
         </Button>
       </DialogActions>
     </Dialog>
