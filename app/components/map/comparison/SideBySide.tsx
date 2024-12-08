@@ -18,8 +18,6 @@ export default function SideBySide({
 }: SideBySideProps) {
   const map = useMap();
 
-  useEffect(() => {}, [leftDate, rightDate]);
-
   useEffect(() => {
     const leftLayer = L.tileLayer.wms("/wms", {
       attribution:
