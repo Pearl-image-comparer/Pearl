@@ -92,7 +92,6 @@ function LocationSearch() {
 
   const { t } = useTranslation();
 
-
   useEffect(() => {
     let active = true;
 

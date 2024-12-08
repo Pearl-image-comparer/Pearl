@@ -3,7 +3,7 @@
   "searchBarNoOptions": "Sijaintia ei löytynyt",
   "datePickerOne": "Ensimmäinen päivämäärä",
   "datePickerTwo": "Toinen päivämäärä",
-  "datePickerTitle":"Kuvien vertailu",
+  "datePickerTitle": "Kuvien vertailu",
   "endDateError": "Vertailtava päivä ei voi olla aikaisemmin kuin aloitupäivä",
   "startDateError": "Aloituspäivä ei voi olla myöhemmin kuin vertailtava päivä",
   "mapLayerTitle": "Kartan tasot",
@@ -27,6 +27,4 @@
   "loginAdmin": "Pääkäyttäjä",
   "loginAdminText": "Kirjaudu sisään",
   "loginAdminButton": "Salasana"
-
-
 }

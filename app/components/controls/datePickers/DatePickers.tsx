@@ -140,10 +140,10 @@ export default function DatePickers({
           margin: "5% auto",
         }}
       >
-        <Typography variant="h6">{t('datePickerTitle')}</Typography>
+        <Typography variant="h6">{t("datePickerTitle")}</Typography>
         <DatePicker
           value={localStartDate}
-          label={t('datePickerOne')}
+          label={t("datePickerOne")}
           onAccept={handleStartDateChange}
           onChange={() => true}
           minDate={dayjs("2015-10-10")}

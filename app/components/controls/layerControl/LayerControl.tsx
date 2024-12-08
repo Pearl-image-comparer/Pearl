@@ -46,13 +46,13 @@ export default function LayerControl({
       overlayVisibility.observations && zoomLevel < FETCH_ZOOM_LEVEL_THRESHOLD;
 
     if (sightingsError && observationsError) {
-      const error = t("sightingsObservationsError")
+      const error = t("sightingsObservationsError");
       setFetchingError(error);
     } else if (sightingsError) {
-      const error = t("sightingsError")
+      const error = t("sightingsError");
       setFetchingError(error);
     } else if (observationsError) {
-      const error = t("observationsError")
+      const error = t("observationsError");
       setFetchingError(error);
     } else {
       setFetchingError(null);

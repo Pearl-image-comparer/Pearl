@@ -25,7 +25,6 @@ import InfoBox from "./indicators/InfoBox";
 import { DRAWER_WIDTH, WINDOW_HEIGHT_MIN_THRESHOLD } from "~/constants";
 import { useTranslation } from "react-i18next";
 
-
 export interface Period {
   start: Dayjs;
   end: Dayjs;
