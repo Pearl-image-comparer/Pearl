@@ -17,6 +17,13 @@
   "loadingSightings": "Ladataan lajihavaintoja",
   "loadingObservations": "Ladataan käyttäjähavaintoja",
   "reportDialog": "Raportoi havainnosta?",
+  "reportDialogTitle": "Raportoi havainnosta",
+  "reportLoadImage": "Lataa kuva",
+  "reportTitle": "Otsikko",
+  "reportLatitude": "Leveyspiiri",
+  "reportLongitude": "Pituuspiiri",
+  "reportDescription": "Kuvaus",
+  "reportSubmit": "Lähetä",
   "mapHelperText": "Klikkaa sijaintia kartalta",
   "adminLogOut": "Kirjaudu ulos",
   "adminDelete": "Poista",
@@ -26,5 +33,10 @@
   "adminCancel": "Peruuta",
   "loginAdmin": "Pääkäyttäjä",
   "loginAdminText": "Kirjaudu sisään",
-  "loginAdminButton": "Salasana"
+  "loginAdminButton": "Salasana",
+  "extremelyEndangered": "Äärimmäisen uhanalaiset",
+  "highlyEndangered": "Erittäin uhanalaiset",
+  "vulnerable": "Vaarantuneet",
+  "nearThreatened": "Silmälläpidettävät",
+  "unknown": "Ei tiedossa"
 }
