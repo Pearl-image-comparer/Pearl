@@ -8,9 +8,13 @@ import { useTheme } from "@mui/material";
 
 interface SpeciesLayerProps {
   data: Sighting[];
+  pauseFetching: () => void;
 }
 
-export default function SpeciesLayer({ data }: SpeciesLayerProps) {
+export default function SpeciesLayer({
+  data,
+  pauseFetching,
+}: SpeciesLayerProps) {
   const theme = useTheme();
 
   const createClusterCustomIcon = function (cluster: {
@@ -45,6 +49,7 @@ export default function SpeciesLayer({ data }: SpeciesLayerProps) {
               key={index}
               position={s.coordinates}
               endangermentStatus={s.endangerment}
+              onClick={pauseFetching}
             >
               <SightingPopup sighting={s} />
             </CustomMarker>

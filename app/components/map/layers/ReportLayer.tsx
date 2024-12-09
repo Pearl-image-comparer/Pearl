@@ -8,9 +8,10 @@ import { useTheme } from "@mui/material";
 
 interface ReportLayerProps {
   data: Observation[];
+  pauseFetching: () => void;
 }
 
-export default function ReportLayer({ data }: ReportLayerProps) {
+export default function ReportLayer({ data, pauseFetching }: ReportLayerProps) {
   const theme = useTheme();
   const createClusterCustomIcon = function (cluster: {
     getChildCount: () => number;
@@ -40,7 +41,11 @@ export default function ReportLayer({ data }: ReportLayerProps) {
       <MarkerClusterGroup iconCreateFunction={createClusterCustomIcon}>
         {data &&
           data.map((s, index) => (
-            <CustomMarker key={index} position={[s.latitude, s.longitude]}>
+            <CustomMarker
+              key={index}
+              position={[s.latitude, s.longitude]}
+              onClick={pauseFetching}
+            >
               <ObservationPopup observation={s} />
             </CustomMarker>
           ))}

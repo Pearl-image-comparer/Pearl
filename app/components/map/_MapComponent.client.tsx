@@ -50,6 +50,7 @@ export default function MapComponent() {
   const [sightings, setSightings] = useState<Sighting[]>([]);
   const [observations, setObservations] = useState<Observation[]>([]);
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
+  const [isFetchPaused, setIsFetchPaused] = useState(false);
   const [overlayVisibility, setOverlayVisibility] = useState<
     Record<LayerKey, boolean>
   >({
@@ -85,6 +86,14 @@ export default function MapComponent() {
       time={wmsParams.time}
     />
   ));
+
+  // Pausing fetching for 2 seconds on marker click
+  const pauseFetching = () => {
+    setIsFetchPaused(true);
+    setTimeout(() => {
+      setIsFetchPaused(false);
+    }, 2000);
+  };
 
   const center: L.LatLngExpression = [61.4978, 23.761];
   return (
@@ -137,6 +146,7 @@ export default function MapComponent() {
           setLoading={setLoading}
           setObservations={setObservations}
           fetchingEnabled={fetchingEnabled}
+          isFetchPaused={isFetchPaused}
         />
         {satelliteViewOpen ? (
           comparisonViewOpen ? (
@@ -164,8 +174,12 @@ export default function MapComponent() {
           location={userLocation}
           handleClick={() => setReportLocation(userLocation)}
         />
-        {overlayVisibility.sightings && <SpeciesLayer data={sightings} />}
-        {overlayVisibility.observations && <ReportLayer data={observations} />}
+        {overlayVisibility.sightings && (
+          <SpeciesLayer data={sightings} pauseFetching={pauseFetching} />
+        )}
+        {overlayVisibility.observations && (
+          <ReportLayer data={observations} pauseFetching={pauseFetching} />
+        )}
         {overlayVisibility.conservation && <ConservationLayer />}
         <Controls
           satelliteViewOpen={satelliteViewOpen}
