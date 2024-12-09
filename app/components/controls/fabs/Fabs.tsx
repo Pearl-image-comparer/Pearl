@@ -123,6 +123,22 @@ export default function Fabs({
     });
   };
 
+  const handleSatelliteViewChange = () => {
+    setSatelliteViewOpen((prev) => {
+      const newState = !prev;
+
+      if (!newState) {
+        setComparisonViewOpen(false);
+      }
+
+      return newState;
+    });
+
+    handleCompareViewChange();
+
+      
+  };
+
   const map = useMapEvent("locationfound", (event) => {
     map.flyTo(event.latlng, 16);
     setUserLocation(event.latlng);
@@ -145,7 +161,7 @@ export default function Fabs({
       <StyledToggleButton
         value="check"
         selected={satelliteViewOpen}
-        onChange={() => setSatelliteViewOpen(!satelliteViewOpen)}
+        onChange={handleSatelliteViewChange}
       >
         <SatelliteAltIcon />
       </StyledToggleButton>
