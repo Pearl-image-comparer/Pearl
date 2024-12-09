@@ -7,7 +7,6 @@ export default function LoadingScreen() {
   useEffect(() => {
     const interval = setInterval(() => {
       setDots((dots) => {
-        console.log(dots);
         if (dots.length >= 3) {
           return ".";
         }
