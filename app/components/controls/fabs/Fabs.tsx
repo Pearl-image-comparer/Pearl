@@ -133,7 +133,6 @@ export default function Fabs({
 
       return newState;
     });
-
   };
 
   const map = useMapEvent("locationfound", (event) => {
