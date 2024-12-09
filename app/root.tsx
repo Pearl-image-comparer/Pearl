@@ -15,6 +15,7 @@ import { useChangeLanguage } from "remix-i18next/react";
 import { useTranslation } from "react-i18next";
 import i18next from "~/utils/i18next.server";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
+import LoadingScreen from "./components/map/loading/LoadingScreen";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const locale = await i18next.getLocale(request);
@@ -38,7 +39,7 @@ function Layout() {
   }, []);
 
   // Due to Material UI and Emotion we can't render anything on the server.
-  if (!isClient) return <p>Loading...</p>;
+  if (!isClient) return <LoadingScreen />;
 
   return <Outlet />;
 }
