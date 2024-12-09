@@ -133,7 +133,6 @@ export default function Controls({
   ) => {
     setSliderValue(value);
     debounceSliderInput(value);
-
   };
 
   return (

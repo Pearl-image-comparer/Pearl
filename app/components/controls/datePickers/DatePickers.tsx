@@ -48,7 +48,6 @@ export default function DatePickers({
       setPeriod({ start: dayjs("2015-10-10"), end: dayjs() });
       setStartDateError(null);
       setEndDateError(null);
-
     }
 
     if (comparisonViewOpen === true && startDate && endDate) {
@@ -61,7 +60,6 @@ export default function DatePickers({
     startDate,
     setSliderValue,
     setPeriod,
-
   ]);
 
   const handleStartDateChange = (newValue: Dayjs | null) => {

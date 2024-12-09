@@ -135,8 +135,6 @@ export default function Fabs({
     });
 
     handleCompareViewChange();
-
-      
   };
 
   const map = useMapEvent("locationfound", (event) => {
