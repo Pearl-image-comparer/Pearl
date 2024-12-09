@@ -13,12 +13,14 @@ interface CustomMarkerProps {
   children?: ReactNode;
   position: LatLngExpression;
   endangermentStatus?: string | null;
+  onClick?: (() => void) | null;
 }
 
 export default function CustomMarker({
   children,
   position,
   endangermentStatus = null,
+  onClick = null,
 }: CustomMarkerProps) {
   const determineMarker = () => {
     // Default to the observation marker if no endangerment status is provided
@@ -36,6 +38,7 @@ export default function CustomMarker({
 
   return (
     <Marker
+      eventHandlers={onClick ? { click: onClick } : undefined}
       position={position}
       icon={
         new Icon({

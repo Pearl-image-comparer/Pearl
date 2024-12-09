@@ -1,5 +1,5 @@
 import { useMap } from "react-leaflet";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Sighting } from "~/routes/lajidata";
 import { debounce } from "@mui/material";
 import { LoadingState } from "./_MapComponent.client";
@@ -10,6 +10,7 @@ interface MapBoundsProps {
   setLoading: Dispatch<SetStateAction<LoadingState>>;
   setObservations: (v: Observation[]) => void;
   fetchingEnabled: LoadingState;
+  isFetchPaused: boolean;
 }
 
 export default function MapBounds({
@@ -17,12 +18,20 @@ export default function MapBounds({
   setLoading,
   setObservations,
   fetchingEnabled,
+  isFetchPaused,
 }: MapBoundsProps) {
   const map = useMap();
   const [hasFetchedInitially, setHasFetchedInitially] = useState<LoadingState>({
     sightings: false,
     observations: false,
   });
+
+  // Ref to keep track of the current fetch pause state
+  const isFetchPausedRef = useRef(isFetchPaused);
+
+  useEffect(() => {
+    isFetchPausedRef.current = isFetchPaused;
+  }, [isFetchPaused]);
 
   useEffect(() => {
     // Returns the bounds for both sightings and observations fetch
@@ -87,38 +96,38 @@ export default function MapBounds({
     const debouncedSightings = debounce(fetchSightings, 600);
     const debouncedObservations = debounce(fetchObservations, 600);
 
-    // Manage event listeners based on overlays visibilities
-    if (fetchingEnabled.sightings) {
-      // Fetch sightings straight away if the layer is toggled on
-      if (!hasFetchedInitially.sightings) fetchSightings();
+    const handleMoveEnd = () => {
+      if (isFetchPausedRef.current) return;
+      if (fetchingEnabled.sightings) debouncedSightings();
+      if (fetchingEnabled.observations) debouncedObservations();
+    };
 
-      setHasFetchedInitially((prev) => ({ ...prev, sightings: true }));
-      map.on("moveend", debouncedSightings);
-    } else {
-      setHasFetchedInitially((prev) => ({ ...prev, sightings: false }));
-      map.off("moveend", debouncedSightings);
+    if (fetchingEnabled.sightings || fetchingEnabled.observations) {
+      map.on("moveend", handleMoveEnd);
     }
 
+    // Handling initial fetch for sightings and observations
+    if (fetchingEnabled.sightings) {
+      if (!hasFetchedInitially.sightings) fetchSightings();
+      setHasFetchedInitially((prev) => ({ ...prev, sightings: true }));
+    } else {
+      setHasFetchedInitially((prev) => ({ ...prev, sightings: false }));
+    }
     if (fetchingEnabled.observations) {
-      // Fetch sightings straight away if the layer is toggled on
       if (!hasFetchedInitially.observations) fetchObservations();
-
       setHasFetchedInitially((prev) => ({ ...prev, observations: true }));
-      map.on("moveend", debouncedObservations);
     } else {
       setHasFetchedInitially((prev) => ({ ...prev, observations: false }));
-      map.off("moveend", debouncedObservations);
     }
 
     // Clearing listeners and debounce effect when unmounted.
     return () => {
-      map.off("moveend", debouncedSightings);
-      map.off("moveend", debouncedObservations);
+      map.off("moveend", handleMoveEnd);
       debouncedSightings.clear();
       debouncedObservations.clear();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, setSightings, setLoading, setObservations, fetchingEnabled]);
+  }, [map, fetchingEnabled, isFetchPaused]);
 
   return null;
 }
