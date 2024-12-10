@@ -63,9 +63,8 @@ export default function Controls({
   loading,
   setFetchingEnabled,
 }: ControlsFabsProps & ControlsProps) {
-  // Uses current day by default
   const [sliderValue, setSliderValue] = useState<number | number[]>(
-    dayjs().valueOf(),
+    period.start.valueOf(),
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [fetchingError, setFetchingError] = useState<string | null>(null);
