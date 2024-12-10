@@ -121,7 +121,7 @@ export default function Controls({
           setStartDate(dayjs(value[0]));
           setEndDate(dayjs(value[1]));
         } else {
-          setEndDate(dayjs(value));
+          setStartDate(dayjs(value));
         }
       }, 400),
     [setEndDate, setStartDate],

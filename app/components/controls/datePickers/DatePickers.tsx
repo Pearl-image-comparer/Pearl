@@ -45,6 +45,9 @@ export default function DatePickers({
     if (satelliteViewOpen === false) {
       setLocalStartDate(null);
       setLocalEndDate(null);
+      setPeriod({ start: dayjs("2015-10-10"), end: dayjs() });
+      setStartDateError(null);
+      setEndDateError(null);
     }
 
     if (comparisonViewOpen === true && startDate && endDate) {
@@ -56,14 +59,16 @@ export default function DatePickers({
     endDate,
     startDate,
     setSliderValue,
+    setPeriod,
   ]);
+
   const handleStartDateChange = (newValue: Dayjs | null) => {
     // Set the local state and the start date state.
     setLocalStartDate(newValue);
     setStartDate(newValue);
 
     // If the end date is set and the new start date is after the end date, set an error.
-    if (newValue && endDate && newValue.isAfter(endDate)) {
+    if (newValue && endDate && newValue.isAfter(localEndDate)) {
       const error = t("startDateError");
       setStartDateError(error);
     } else {
@@ -74,8 +79,9 @@ export default function DatePickers({
     // If the incoming value is not null, set the period state and the slider value.
     if (newValue) {
       setPeriod((prev) => ({ ...prev, start: newValue }));
-      setSliderValue([newValue.valueOf()]);
+      setSliderValue(newValue.valueOf());
       setSatelliteViewOpen(true);
+      setStartDate(newValue);
     }
 
     // If the incoming value is null, set the start date state and
@@ -86,7 +92,7 @@ export default function DatePickers({
       setComparisonViewOpen(false);
       setEndDate(dayjs());
       setLocalEndDate(null);
-      setSliderValue([dayjs().valueOf()]);
+      setSliderValue(dayjs().valueOf());
       setPeriod((prev) => ({ ...prev, start: dayjs("2015-10-10") }));
     }
   };
@@ -98,7 +104,7 @@ export default function DatePickers({
 
     // If the start date is set and the new end date is before the start date,
     //set an error.
-    if (startDate && newValue && newValue.isBefore(startDate)) {
+    if (startDate && newValue && newValue.isBefore(localStartDate)) {
       const error = t("endDateError");
       setEndDateError(error);
     } else {
@@ -116,13 +122,14 @@ export default function DatePickers({
     // Update period state and set the slider value.
     if (newValue != null) {
       setPeriod((prev) => ({ ...prev, end: newValue }));
-      setEndDate(dayjs());
+      setEndDate(newValue);
     } else {
       setPeriod((prev) => ({ ...prev, end: dayjs() }));
       setComparisonViewOpen(false);
+      setEndDate(dayjs());
 
       if (startDate) {
-        setSliderValue([startDate.valueOf()]);
+        setSliderValue(startDate.valueOf());
       }
     }
   };

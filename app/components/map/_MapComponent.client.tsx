@@ -161,7 +161,7 @@ export default function MapComponent() {
               attribution='&copy; <a href="https://dataspace.copernicus.eu/" target="_blank">Copernicus Data Space Ecosystem</a>'
               url="/wms"
               layers="TRUE_COLOR"
-              time={dayjs(endDate).format("YYYY-MM-DD")}
+              time={dayjs(startDate).format("YYYY-MM-DD")}
             />
           )
         ) : (
