@@ -26,6 +26,7 @@ ecosystem preservation efforts.
 Users can compare satellite imagery from different date to observe environmental changes over time.
 
 Additionally the application includes three key layers for enhanced data visualization:
+
 1. **Endangerment Species**: Displays Finnish sightings of endangered species.
 2. **Conservation Areas**: Highlights protected areas, such as national parks and nature reserves.
 3. **User Observations**: Enables users to report incidents or observations, which are then displayed on the map, providing real-time insights into local conservation efforts.
