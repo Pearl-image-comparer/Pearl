@@ -1,5 +1,7 @@
 # 🌍 Pearl Satellite Comparison
 
+<img src="./app/assets/screenshot.png" width="650">
+
 <!-- Table of Contents -->
 
 ## Table of Contents
